@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rooms</title>
+    <link rel="stylesheet" href="rooms.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+    <!-- Include the navbar -->
+    <iframe src="../View1/nav-bar/nav-bar.html" frameborder="0" width="100%" height="60px"
+        style="display: block; background: #0a0b1e;"></iframe>
+
+    <!---------------------- Profile Banner ------------------------>
+    <div class="profile-banner">
+       <!--<svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+            <defs>
+                <filter id="goo">
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+                    <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo" />
+                    <feBlend in="SourceGraphic" in2="goo" />
+                </filter>
+            </defs>
+        </svg>
+        <div class="flame-container">
+            <div class="flame-particles"></div>
+            <div class="flame-particles"></div>
+            <div class="flame-particles"></div>
+            <div class="flame-particles"></div>
+            <div class="flame-particles"></div>
+            <div class="flame-particles"></div>
+        </div> --> 
+        <div class="profile-info">
+            <img src="../View1/assets/profile.svg" alt="User Profile" class="profile-picture">
+            <div class="profile-text">
+                <h2>Searching for new Rooms?</h2>
+                <p>Go check out our rooms and enroll now!</p>
+            </div>
+        </div>
+        <div class="metrics-cards">
+            <!-- Total Rooms Progress Card -->
+            <div class="metric-card total">
+                <div class="stat-left">
+                    <i class="fas fa-door-open"></i>
+                    <span class="stat-label">Total Rooms</span>
+                </div>
+                <div class="stat-right">
+                    <span class="stat-number">0/20</span>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 20%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Difficulty Level Cards Container -->
+            <div class="difficulty-metrics">
+                <!-- Easy Machines Card -->
+                <div class="metric-card easy">
+                    <div class="stat-left">
+                        <i class="fas fa-leaf"></i>
+                        <span class="stat-label">Easy</span>
+                    </div>
+                    <div class="stat-right">
+                        <span class="stat-number">0/8</span>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 50%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Medium Machines Card -->
+                <div class="metric-card medium">
+                    <div class="stat-left">
+                        <i class="fas fa-cube"></i>
+                        <span class="stat-label">Medium</span>
+                    </div>
+                    <div class="stat-right">
+                        <span class="stat-number">0/7</span>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hard Machines Card -->
+                <div class="metric-card hard">
+                    <div class="stat-left">
+                        <i class="fas fa-fire"></i>
+                        <span class="stat-label">Hard</span>
+                    </div>
+                    <div class="stat-right">
+                        <span class="stat-number">0/5</span>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!------------------ Main Content ------------------------------->
+    <div class="main-content">
+        <!------------------ Tool Bar Section ----------------------->
+        <!-- Tool Bar Section -->
+        <div class="toolbar-container">
+            <div class="rooms-toolbar">
+                <div class="toolbar-filters">
+                    <select id="sort-select" class="toolbar-select" title="Sort by">
+                        <option value="" disabled selected>Sort by</option>
+                        <option value="newest">Newest</option>
+                        <option value="most-users">Most Users</option>
+                        <option value="most-difficult">Most Difficult</option>
+                    </select>
+
+                    <select id="complexity-select" class="toolbar-select" title="Complexity">
+                        <option value="" disabled selected>Complexity</option>
+                        <option value="all">All Levels</option>
+                        <option value="beginner">Beginner Friendly</option>
+                        <option value="easy">Easy</option>
+                        <option value="medium">Medium</option>
+                        <option value="hard">Hard</option>
+                    </select>
+
+                    <select id="enrollment-select" class="toolbar-select" title="Status">
+                        <option value="" disabled selected>Status</option>
+                        <option value="all">All Rooms</option>
+                        <option value="enrolled">Enrolled</option>
+                        <option value="not-enrolled">Not Enrolled</option>
+                    </select>
+
+                    <select id="completion-select" class="toolbar-select" title="Progress">
+                        <option value="" disabled selected>Progress</option>
+                        <option value="all">All Progress</option>
+                        <option value="completed">Completed</option>
+                        <option value="in-progress">In Progress</option>
+                        <option value="not-started">Not Started</option>
+                    </select>
+                </div>
+
+                <div class="search-bar">
+                    <input type="text" placeholder="Search rooms...">
+                    <i class="fas fa-search"></i>
+                </div>
+            </div>
+        </div>
+        <!------------------ Rooms Section component ----------------------->
+
+        <div class="rooms-grid">
+            <!-- Example Room Card -->
+            <div class="room-card">
+                <div class="room-content">
+                    <div class="room-header">
+                        <h3 class="room-title">Basic Network Enumeration</h3>
+                        <p class="room-description">Learn the fundamentals of network discovery and port scanning
+                            with basic tools.</p>
+                    </div>
+                    <div class="room-footer">
+                        <span class="difficulty-badge easy">
+                            <i class="fas fa-leaf"></i>
+                            Easy
+                        </span>
+                        <span class="time-estimate">
+                            <i class="fas fa-clock"></i>
+                            1-2 hours
+                        </span>
+                        <div class="completion-indicator">
+                            <svg viewBox="0 0 50 50">
+                                <circle cx="25" cy="25" r="20"></circle>
+                                <circle cx="25" cy="25" r="20" style="stroke-dashoffset: 94.2"></circle>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="room-design" style="background-image: url('../assets/network-enum-bg.jpg')"></div>
+            </div>
+
+            <div class="room-card">
+                <div class="room-content">
+                    <div class="room-header">
+                        <h3 class="room-title">Secure Network Analysis</h3>
+                        <p class="room-description">Dive into network security analysis with practical exercises
+                            focused on packet inspection and threat detection.</p>
+                    </div>
+                    <div class="room-footer">
+                        <span class="difficulty-badge medium">
+                            <i class="fas fa-cube"></i>
+                            Medium
+                        </span>
+                        <span class="time-estimate">
+                            <i class="fas fa-clock"></i>
+                            2-3 hours
+                        </span>
+                        <div class="completion-indicator">
+                            <svg viewBox="0 0 50 50">
+                                <circle cx="25" cy="25" r="20"></circle>
+                                <circle cx="25" cy="25" r="20" style="stroke-dashoffset: 94.2"></circle>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="room-design" style="background-image: url('../assets/network-bg.jpg')"></div>
+            </div>
+
+            <div class="room-card">
+                <div class="room-content">
+                    <div class="room-header">
+                        <h3 class="room-title">Web Application Exploitation</h3>
+                        <p class="room-description">Master common web vulnerabilities and learn how to exploit and
+                            patch security flaws in web applications.</p>
+                    </div>
+                    <div class="room-footer">
+                        <span class="difficulty-badge hard">
+                            <i class="fas fa-fire"></i>
+                            Hard
+                        </span>
+                        <span class="time-estimate">
+                            <i class="fas fa-clock"></i>
+                            4-5 hours
+                        </span>
+                        <div class="completion-indicator">
+                            <svg viewBox="0 0 50 50">
+                                <circle cx="25" cy="25" r="20"></circle>
+                                <circle cx="25" cy="25" r="20" style="stroke-dashoffset: 62.8"></circle>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="room-design" style="background-image: url('../assets/webapp-bg.jpg')"></div>
+            </div>
+
+            <div class="room-card">
+                <div class="room-content">
+                    <div class="room-header">
+                        <h3 class="room-title">Linux Privilege Escalation</h3>
+                        <p class="room-description">Advanced techniques for escalating privileges on Linux systems
+                            through misconfiguration and vulnerabilities.</p>
+                    </div>
+                    <div class="room-footer">
+                        <span class="difficulty-badge hard">
+                            <i class="fas fa-fire"></i>
+                            Hard
+                        </span>
+                        <span class="time-estimate">
+                            <i class="fas fa-clock"></i>
+                            3-4 hours
+                        </span>
+                        <div class="completion-indicator">
+                            <svg viewBox="0 0 50 50">
+                                <circle cx="25" cy="25" r="20"></circle>
+                                <circle cx="25" cy="25" r="20" style="stroke-dashoffset: 31.4"></circle>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="room-design" style="background-image: url('../assets/linux-bg.jpg')"></div>
+            </div>
+
+            <div class="room-card">
+                <div class="room-content">
+                    <div class="room-header">
+                        <h3 class="room-title">Basic Cryptography</h3>
+                        <p class="room-description">Introduction to cryptographic concepts and hands-on practice
+                            with common encryption methods.</p>
+                    </div>
+                    <div class="room-footer">
+                        <span class="difficulty-badge easy">
+                            <i class="fas fa-leaf"></i>
+                            Easy
+                        </span>
+                        <span class="time-estimate">
+                            <i class="fas fa-clock"></i>
+                            2-3 hours
+                        </span>
+                        <div class="completion-indicator">
+                            <svg viewBox="0 0 50 50">
+                                <circle cx="25" cy="25" r="20"></circle>
+                                <circle cx="25" cy="25" r="20" style="stroke-dashoffset: 0"></circle>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="room-design" style="background-image: url('../assets/crypto-bg.jpg')"></div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+
+</html>

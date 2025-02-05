@@ -1,1 +1,30 @@
-/* You can add global styles to this file, and also import other style files */
+/*
+    View1 - Navigation Bar Styles
+    
+    Requirements:
+    - Styling for the top navigation bar
+    - Will be converted to Angular component styles
+    - Contains styles for logo and navigation links
+*/
+
+/* Variables */
+:root {
+    --primary-color:#000000;/* Pink */
+    --background-color: white;
+    --hover-background-color: #ffcfe7;
+    --border-color: rgba(0, 0, 0, 0.334);
+    --hover-border-color: #ff3399;
+    --text-color:  #000000;
+    --spacing: 20px;
+}
+
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}

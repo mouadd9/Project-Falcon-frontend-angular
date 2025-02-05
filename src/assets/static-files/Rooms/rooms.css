@@ -1,0 +1,862 @@
+/*#################################------VARIABLES*/
+:root {
+    /* Main Colors */
+    --primary-color: #ff3399; /* Pink */
+    --background-color: #1a1a1a;
+    --card-background: #1a1a1a;
+    
+    /* Text Colors */
+    --text-color: white;
+    --text-secondary: white;
+    --text-muted: #c8c8c8;
+    
+    /* Status Colors */
+    --easy-color: #4CAF50;
+    --medium-color: #FFC107;
+    --hard-color: #f44336;
+    
+    /* Spacing */
+    --spacing: 20px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+/*#################################------PROFILE-BANNER*/
+.profile-banner {
+    background-color: #000000;
+    min-height: 200px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: center;
+    padding: 1.8rem 2rem;
+    box-sizing: border-box;
+    
+    position: relative;
+    overflow: visible;
+    z-index: 1;
+ 
+}
+
+.profile-banner::after {
+    content: '';
+    position: absolute;
+    bottom: -80px;
+    left: 0;
+    width: 100%;
+    height: 80px;
+    background: linear-gradient(to bottom, #000000 0%, transparent);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.profile-banner svg {
+    position: absolute;
+    width: 0;
+    height: 0;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+
+/* Profile Info */
+.profile-info {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    z-index: 2;
+    margin-top:13px ;
+}
+
+/* Profile Picture */
+.profile-picture {
+    width: 100px;
+    height: 100px;
+    border: none;
+    padding: 0;
+    background: transparent;
+    filter: drop-shadow(0 0 30px rgba(255, 108, 181, 0.907))
+            drop-shadow(0 0 60px rgba(255, 78, 166, 0.2))
+            drop-shadow(0 0 100px rgba(255, 78, 166, 0.1));
+    animation: pulse-glow 4s infinite ease-in-out;
+    position: relative;
+    z-index: 3;
+}
+
+@keyframes pulse-glow {
+    0% {
+        filter: drop-shadow(0 0 30px rgba(255, 78, 166, 0.2))
+                drop-shadow(0 0 60px rgba(255, 78, 166, 0.1))
+                drop-shadow(0 0 100px rgba(255, 78, 166, 0.05));
+    }
+    50% {
+        filter: drop-shadow(0 0 50px rgba(255, 78, 166, 0.8))
+               drop-shadow(0 0 100px rgba(255, 78, 166, 0.6))
+               drop-shadow(0 0 150px rgba(255, 78, 166, 0.4))
+               drop-shadow(0 0 200px rgba(255, 78, 166, 0.2))
+               drop-shadow(0 0 300px rgba(255, 78, 166, 0.1));
+    }
+    70% {
+        filter: drop-shadow(0 0 50px rgba(255, 78, 166, 0.8))
+               drop-shadow(0 0 100px rgba(255, 78, 166, 0.6))
+               drop-shadow(0 0 150px rgba(255, 78, 166, 0.4))
+               drop-shadow(0 0 200px rgba(255, 78, 166, 0.2))
+               drop-shadow(0 0 300px rgba(255, 78, 166, 0.1));
+    }
+    100% {
+        filter: drop-shadow(0 0 30px rgba(255, 78, 166, 0.2))
+                drop-shadow(0 0 60px rgba(255, 78, 166, 0.1))
+                drop-shadow(0 0 100px rgba(255, 78, 166, 0.05));
+    }
+}
+
+.profile-text h2 {
+    font-size: 1.8rem;
+    margin: 0 0 0.5rem 0;
+    color: var(--text-color);
+}
+
+.profile-text p {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+/*#################################------ROOM-METRICS*/
+.metrics-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 50%;
+    min-width: 50%;
+}
+
+@media (max-width: 768px) {
+    .metrics-cards {
+        width: 100%;
+        min-width: 100%;
+    }
+}
+
+.metric-card {
+    background: rgba(33, 33, 33, 0.1);
+    padding: 1.2rem 1.5rem;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid rgba(255, 51, 153, 0.2);
+    backdrop-filter: blur(5px);
+    transition: transform 0.3s ease, border-color 0.3s ease;
+    min-height: 90px;
+    gap: 1rem;
+    overflow: hidden;
+}
+
+.metric-card.easy {
+    border-color: rgba(0, 128, 0, 0.238);
+}
+.metric-card.medium {
+    border-color: rgba(255, 165, 0, 0.238);
+}
+.metric-card.hard {
+    border-color: rgba(255, 0, 0, 0.238);
+}
+
+.metric-card.total:hover {
+    transform: translateY(-3px);
+    border-color: var(--primary-color);
+}
+.metric-card.easy:hover {
+    transform: translateY(-3px);
+    border-color: var(--easy-color);
+}
+.metric-card.medium:hover {
+    transform: translateY(-3px);
+    border-color: var(--medium-color);
+}
+.metric-card.hard:hover {
+    transform: translateY(-3px);
+    border-color: var(--hard-color);
+}
+
+/*style for total metric*/
+.metric-card.total {
+    min-height: 100px;  /* Slightly taller for total card */
+}
+
+/*flex layout style for difficulty metrics*/
+.difficulty-metrics {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+}
+
+.difficulty-metrics .metric-card {
+    flex: 1;
+    width: calc((100% - 2rem) / 3);  /* Equal width for all 3 cards, accounting for gaps */
+    min-height: 75px;  /* 25% smaller than total card */
+}
+
+@media (max-width: 768px) {
+    .difficulty-metrics {
+        flex-direction: column;
+    }
+    
+    .difficulty-metrics .metric-card {
+        width: 100%;  /* Full width on mobile */
+    }
+}
+
+/*progress bar style*/
+.metric-card.easy .progress {
+    background: var(--easy-color);
+}
+
+.metric-card.medium .progress {
+    background: var(--medium-color);
+}
+
+.metric-card.hard .progress {
+    background: var(--hard-color);
+}
+
+.metric-card .stat-left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    min-width: 0;
+    flex: 1;
+}
+
+.metric-card .stat-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+.metric-card .stat-label {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+.metric-card .progress-bar {
+    width: 100px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.metric-card.total .progress-bar {
+    width: 100px;
+}
+
+.difficulty-metrics .metric-card .progress-bar {
+    width: 80px;
+    transition: width 0.3s ease;
+}
+
+@media (max-width: 1200px) {
+    .difficulty-metrics .metric-card .progress-bar {
+        width: 55px;
+    }
+}
+
+
+@media (max-width: 992px) {
+    .difficulty-metrics .metric-card .progress-bar {
+        width: 50px;
+    }
+    .metric-card {
+        padding: 1rem;
+        gap: 0.8rem;
+    }
+    
+    .metric-card .stat-number {
+        font-size: 1rem;
+    }
+    
+    .metric-card .stat-label {
+        font-size: 0.8rem;
+    }
+    
+    .metric-card .stat-left i {
+        font-size: 1rem;
+    }
+    
+    .metric-card .progress-bar {
+        width: 100px;
+    }
+    .difficulty-metrics {
+        flex-direction: column;
+    }
+    .difficulty-metrics .metric-card {
+        width: 100%;
+    }
+    
+}
+
+@media (max-width: 768px) {
+    .difficulty-metrics .metric-card .progress-bar {
+        width: 80px;
+    }
+    .difficulty-metrics {
+        flex-direction: column;
+    }
+    
+    .difficulty-metrics .metric-card {
+        width: 100%;
+    }
+    
+    .metric-card {
+        padding: 1rem;
+    }
+    
+    .metric-card .progress-bar {
+        width: 100px;
+    }
+}
+
+
+@media (max-width: 1024px) {
+    .profile-banner {
+        flex-direction: column;
+        text-align: center;
+        padding: 3rem 1rem;
+        gap: 2rem;
+    }
+
+    .profile-info {
+        flex-direction: column;
+    }
+
+    .stat-card {
+        width: 100%;
+    }
+
+    .rooms-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.metric-card .stat-left i {
+    font-size: 1.2rem;
+}
+
+.metric-card.total .stat-left i {
+    color: var(--primary-color);
+}
+
+.metric-card.easy .stat-left i {
+    color: var(--easy-color);
+}
+
+.metric-card.medium .stat-left i {
+    color: var(--medium-color);
+}
+
+.metric-card.hard .stat-left i {
+    color: var(--hard-color);
+}
+
+.metric-card .stat-number {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: white;
+    margin: 0.2rem 0;
+}
+
+.metric-card .progress {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+
+.metric-card.total .progress {
+    background: var(--primary-color);
+}
+
+/* Total card styles */
+
+.metric-card.total .stat-number {
+    font-size: 1.5rem;
+}
+
+.metric-card.total .stat-label {
+    font-size: 1rem;
+}
+
+.metric-card.total .stat-left i {
+    font-size: 1.4rem;
+}
+
+/* Difficulty cards styles (25% smaller) */
+
+.difficulty-metrics .metric-card {
+    padding: 0.9rem 1.1rem;
+}
+
+.difficulty-metrics .metric-card .stat-number {
+    font-size: 1.1rem;
+}
+
+.difficulty-metrics .metric-card .stat-label {
+    font-size: 0.75rem;
+}
+
+.difficulty-metrics .metric-card .stat-left i {
+    font-size: 1.05rem;
+}
+
+/*#################################------MAIN-CONTAINER*/
+.main-content {
+    position: relative;
+    z-index: 3;
+    background-color: var(--background-color);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/*#################################------TOOLBAR-CONTAINER*/
+.toolbar-container {
+    width: 100%;
+}
+
+.rooms-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: transparent;
+    border-radius: 8px;
+    gap: 2rem;
+}
+
+.toolbar-filters {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+}
+
+.search-bar {
+    width: 25%;
+    min-width: 200px;
+    display: flex;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    padding: 0.4rem 0.8rem;
+    height: 2.25rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+.toolbar-select {
+    background-color: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    color: var(--text-muted);
+    padding: 0.2rem 0.3rem;
+    font-size: 0.85rem;
+    height: 2rem;
+    width: 130px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.toolbar-select:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.toolbar-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.toolbar-select option {
+    background-color: white;
+    color: black;
+    padding: 0.4rem;
+}
+
+.toolbar-select option:first-child {
+    background-color: white;
+    color: black;
+}
+
+/* Responsive adjustments */
+@media (max-width: 500px) {
+    .rooms-toolbar {
+        flex-direction: column-reverse;
+        gap: 1rem;
+    }
+
+    .toolbar-filters {
+        width: 100%;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
+
+    .search-bar {
+        width: 100%;
+    }
+}
+
+/* Search Bar Styles */
+.search-bar:focus-within {
+    border-color: var(--primary-color);
+}
+
+.search-bar input {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    width: 100%;
+    font-size: 0.85rem;
+    padding-right: 0.5rem;
+}
+
+.search-bar input::placeholder {
+    color: var(--text-muted);
+}
+
+.search-bar input:focus {
+    outline: none;
+}
+
+.search-bar i {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+
+
+/*#################################------ROOMS-GRID*/
+.rooms-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 1800px;
+    margin: 0 auto;
+}
+
+/* Responsive grid adjustments */
+@media (min-width: 1400px) {
+    .rooms-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 1399px) and (min-width: 1080px) {
+    .rooms-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 1079px) and (min-width: 768px) {
+    .rooms-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 767px) {
+    .rooms-grid {
+        grid-template-columns: 1fr;
+        padding: 0.5rem;
+    }
+}
+
+/* Room Card Styles */
+.room-card {
+    width: 100%;
+    background-color: var(--card-background);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 51, 153, 0.2);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    cursor: pointer;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.room-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    border-color: rgba(255, 51, 153, 0.4);
+}
+
+.room-content {
+    flex: 1;
+    padding: 1.2rem;
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-width: 0;
+}
+
+.room-header {
+    margin-bottom: auto;
+    min-width: 0;
+}
+
+.room-title {
+    color: var(--text-color);
+    margin: 0 0 0.5rem 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.room-description {
+    color: var(--text-secondary);
+    margin: 0;
+    font-size: 0.85rem;
+    opacity: 0.8;
+    max-width: 80%;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.room-description {
+    max-width: 100%;
+}
+
+.room-footer {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    margin-top: 0.8rem;
+}
+
+.time-estimate {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+}
+
+.time-estimate i {
+    color: var(--primary-color);
+}
+
+.completion-indicator {
+    width: 35px;
+    height: 35px;
+    position: relative;
+    margin-left: auto;
+}
+
+.completion-indicator svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.completion-indicator circle {
+    fill: none;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke: rgba(255, 255, 255, 0.1);
+}
+
+.completion-indicator circle:last-child {
+    stroke: var(--primary-color);
+    stroke-dasharray: 125.6;
+    transform-origin: 50% 50%;
+    transition: stroke-dashoffset 0.3s ease;
+}
+
+.room-design {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 35%;
+    background-size: cover;
+    background-position: center;
+    mask-image: linear-gradient(to left, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0));
+    -webkit-mask-image: linear-gradient(to left, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0));
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .main-content {
+        flex-direction: column;
+        padding: 2rem;
+        gap: 2rem;
+    }
+
+}
+
+@media (max-width: 768px) {
+    .room-card {
+        height: auto;
+        flex-direction: column;
+    }
+    
+    .room-content {
+        width: 100%;
+    }
+    
+    .room-design {
+        position: relative;
+        width: 100%;
+        height: 120px;
+        mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0));
+        -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0));
+    }
+    
+    .room-description {
+        max-width: 100%;
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .rooms-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .rooms-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/*#################################------RESPONSIVE*/
+@media (min-width: 1400px) {
+    .rooms-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 1399px) and (min-width: 1080px) {
+    .rooms-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 1079px) and (min-width: 768px) {
+    .rooms-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 767px) {
+    .rooms-grid {
+        grid-template-columns: 1fr;
+        padding: 0.5rem;
+    }
+}
+
+
+
+@media (max-width: 1200px) {
+    .main-content {
+        padding: 2rem;
+        gap: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .rooms-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .rooms-tabs {
+        width: 100%;
+    }
+}
+
+@media (max-width: 992px) {
+    .difficulty-metrics .metric-card .progress-bar {
+        width: 50px;
+    }
+
+    .difficulty-metrics {
+        flex-direction: column;
+    }
+
+    .metric-card {
+        width: 100%;
+    }
+}
+
+@media (max-width: 1024px) {
+    .profile-banner {
+        flex-direction: column;
+        text-align: center;
+        padding: 3rem 1rem;
+        gap: 2rem;
+    }
+
+    .profile-info {
+        flex-direction: column;
+    }
+
+    .stat-card {
+        width: 100%;
+    }
+
+    .rooms-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .room-card {
+        flex-direction: column;
+    }
+
+    .room-content {
+        width: 100%;
+    }
+
+    .room-design {
+        width: 100%;
+        height: 80px;
+        position: relative;
+        opacity: 0.2;
+    }
+}
