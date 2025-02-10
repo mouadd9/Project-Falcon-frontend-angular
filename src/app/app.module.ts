@@ -12,35 +12,14 @@ import { CoreModule } from './core/core.module';
 
 // the AppModule should be clean and focused on bootstrapping the application. 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
-  imports: [
-    // CoreModule is imported only once here, no other feature module will import this module
-    // provides application-wide services (interceptors, provided in root services, guards)
-    // CoreModule declares components not specific to a feature (used in app module directly like for example a footer or nav bar)
-    CoreModule, 
-    BrowserModule,
-    AppRoutingModule,
+  declarations: [AppComponent],
+  imports: [// all modules here are eagerly loaded at runtime 
+    CoreModule, // this module will provide global dependencies
+    BrowserModule, // this module provides basic CommonModule directives
+    AppRoutingModule, // this module provides a configured router service and provides directives like router-link and router-outlet that will be used with router service to naviguate between routes 
     BrowserAnimationsModule
   ],
-
-  /* ###################################-----------PROVIDERS */
   providers: [],
-  /*  
-  - The providers array is part of the @NgModule decorator in Angular. 
-  - It tells Angular's dependency injection (DI) system which classes or values should be available for injection.
-  - When you provide a service in the providers array of the AppModule, 
-    Angular creates a single instance of that service (a singleton) 
-    and makes it available to any component, directive, or service that requests it via dependency injection.
-  */
- /*
-   We will use CoreModule to provide app wide singleton services thus the providers array will 
-   be empty in AppModule
-  */
   bootstrap: [AppComponent]
 })
-export class AppModule { }
-// AppModule is the root module that bootstraps the application. 
-//It only declares the AppComponent and imports other modules. 
-//The AppComponent contains the base layout structure where other components will be rendered through router-outlet.
+export class AppModule { } 

@@ -1,0 +1,35 @@
+.rooms-tabs {
+    margin-bottom: 1.5rem;
+    padding: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.rooms-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+    padding: 0;
+    width: 100%;
+}
+
+@media (min-width: 1200px) {
+    .rooms-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)); /* Prevent columns from growing beyond available space */
+    }
+}
+
+@media (max-width: 1100px) {
+    .rooms-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .rooms-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+

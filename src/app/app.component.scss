@@ -1,0 +1,70 @@
+/* Root component layout
+ * Uses flex layout to create a full-height application structure
+ * that adapts to both authenticated and non-authenticated views
+ */
+// ------------- CONTEXT ON Angular's HOST
+// by using host, we are actually styling the app-root component referenced in index.html
+// more precisely we are : 
+// Making <app-root> element itself take up the full viewport height (min-height: 100vh)
+// turning it into a flex container (display: flex)
+// setting the flex direction to column so navbar and content stack vertically  
+
+// Why is this useful ? 
+
+/*
+!!!This creates a proper flex container that allows:
+ - Navbar to stay at its fixed height (flex-shrink: 0)
+ - Router container to take all remaining space (flex: 1)
+ - Content to be properly contained whether navbar is present or not
+
+!!!Without :host, you'd have to either:
+ - Add an extra wrapper div in your HTML (unnecessary markup)
+ - Style from outside the component (breaking encapsulation)
+ - Use absolute positioning (less flexible and can cause issues)
+
+*/
+
+:host {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; // Ensures the app takes at least full viewport height
+}
+
+                       
+/* Navbar Styles */
+.navbar {
+    background-color: var(--nav-bar-background-color);
+    height: 60px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    flex-shrink: 0; // Prevents navbar from shrinking when content grows
+}
+
+/* Router container styles
+ * This wrapper provides a flexible container for all routed components
+ * - Takes remaining vertical space (flex: 1)
+ * - Allows child components to control their own layout
+ * - Enables proper scrolling behavior
+ */
+.router-container {
+    flex: 1; // Takes all remaining vertical space
+    display: flex; // Enables flex layout for routed components
+    flex-direction: column; // Stacks children vertically
+    position: relative; // Provides positioning context for absolute children if needed
+    
+    /* Optional: Add default padding that routed components can override if needed */
+    > :not(router-outlet) {
+        padding: 20px;
+    }
+    
+    /* Hide router-outlet element but keep its function */
+    router-outlet {
+        display: none;
+    }
+}
+
+/* Note: Individual routed components should handle their own layout:
+ * - Auth pages (like sign-in): Use min-height: 100vh for full-height centering
+ * - Content pages: Use flex: 1 to fill available space under navbar
+ */

@@ -1,23 +1,52 @@
-/*
-    View1 - Navigation Bar Styles
-    
-    Requirements:
-    - Styling for the top navigation bar
-    - Will be converted to Angular component styles
-    - Contains styles for logo and navigation links
-*/
-
 /* Variables */
 :root {
-    --primary-color:#000000;/* Pink */
-    --background-color: white;
-    --hover-background-color: #ffcfe7;
-    --border-color: rgba(0, 0, 0, 0.334);
-    --hover-border-color: #ff3399;
-    --text-color:  #000000;
-    --spacing: 20px;
-}
+    --nav-bar-primary-color: #000000;
+    /* Pink */
+    --nav-bar-background-color: white;
+    /*used*/
+    --nav-bar-hover-background-color: #ffcfe7;
+    --nav-bar-border-color: rgba(0, 0, 0, 0.334);
+    --nav-bar-hover-border-color: #ff3399;
+    --nav-bar-text-color: #000000;
+    /*used*/
+    --nav-bar-spacing: 20px;
+    /*used*/
 
+    /* Colors */
+    --sign-in-primary: #ff3399;
+    --sign-in-bg: #1a1a1a;
+    --sign-in-input-bg: #1a1a1a;
+    --sign-in-input-border: #48484c;
+    --sign-in-text: white;
+    --sign-in-text-muted: #c8c8c8;
+    --sign-in-separator: #48484c;
+
+    /* Sizing */
+    --sign-in-input-height: 40px;
+    --sign-in-font-base: 14px;
+
+    /* Animation */
+    --sign-in-transition: 0.15s cubic-bezier(.4, 0, .2, 1);
+
+    /* Main Colors */
+    --my-space-primary-color: #ff3399;
+    /* Pink */
+    --my-space-background-color: #1a1a1a;
+    --my-space-card-background: #1a1a1a;
+
+    /* Text Colors */
+    --my-space-text-color: white;
+    --my-space-text-secondary: white;
+    --my-space-text-muted: #c8c8c8;
+
+    /* Status Colors */
+    --easy-color: #4CAF50;
+    --medium-color: #FFC107;
+    --hard-color: #f44336;
+
+    /* Spacing */
+    --my-space-spacing: 20px;
+}
 /* Reset */
 * {
     margin: 0;
@@ -25,6 +54,16 @@
     box-sizing: border-box;
 }
 
+html,
 body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+
+
+/*body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }*/
+

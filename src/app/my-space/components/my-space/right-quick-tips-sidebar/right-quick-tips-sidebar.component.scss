@@ -1,0 +1,63 @@
+
+.quick-tips-widget {
+    width: 25%;
+    min-width: 280px;
+    background: var(--my-space-card-background);
+    border-radius: 12px;
+    padding: 1.2rem;
+    border: 1px solid rgba(255, 51, 153, 0.2);
+    height: fit-content;
+}
+.quick-tips-widget {
+    width: 100%;
+    background: var(--my-space-card-background);
+    border-radius: 12px;
+    padding: 1.2rem;
+    border: 1px solid rgba(255, 51, 153, 0.2);
+    height: fit-content;
+}
+
+.quick-tips-widget .widget-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.quick-tips-widget .widget-header fa-icon {
+    color: var(--my-space-primary-color);
+    font-size: 1.2rem;
+}
+
+.quick-tips-widget .widget-header h3 {
+    color: var(--my-space-text-color);
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+.quick-tips-widget .tip-card {
+    padding: 1rem;
+    background: rgba(255, 51, 153, 0.05);
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.quick-tips-widget .tip-card:last-child {
+    margin-bottom: 0;
+}
+
+.quick-tips-widget .tip-title {
+    color: var(--my-space-text-color);
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.quick-tips-widget .tip-content {
+    color: var(--my-space-text-secondary);
+    font-size: 0.85rem;
+    line-height: 1.4;
+    opacity: 0.8;
+}
+
+

@@ -1,14 +1,14 @@
 /*General*/
 :root {
     /* Main Colors */
-    --primary-color: #ff3399; /* Pink */
-    --background-color: #1a1a1a;
-    --card-background: #1a1a1a;
+    --my-space-primary-color: #ff3399; /* Pink */
+    --my-space-background-color: #1a1a1a;
+    --my-space-card-background: #1a1a1a;
     
     /* Text Colors */
-    --text-color: white;
-    --text-secondary: white;
-    --text-muted: #c8c8c8;
+    --my-space-text-color: white;
+    --my-space-text-secondary: white;
+    --my-space-text-muted: #c8c8c8;
     
     /* Status Colors */
     --easy-color: #4CAF50;
@@ -16,7 +16,7 @@
     --hard-color: #f44336;
     
     /* Spacing */
-    --spacing: 20px;
+    --my-space-spacing: 20px;
 }
 
 * {
@@ -29,8 +29,8 @@ body {
     margin: 0;
     padding: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--background-color);
-    color: var(--text-color);
+    background-color: var(--my-space-background-color);
+    color: var(--my-space-text-color);
     line-height: 1.6;
     min-height: 100vh;
 }
@@ -135,16 +135,16 @@ body {
 .profile-text h2 {
     font-size: 1.8rem;
     margin: 0 0 0.5rem 0;
-    color: var(--text-color);
+    color: var(--my-space-text-color);
 }
 
 .profile-text p {
     font-size: 1rem;
-    color: var(--text-secondary);
+    color: var(--my-space-text-secondary);
     margin: 0;
 }
 
-/*Flames*/
+/*Flames*//*
 .flame-container {
     position: absolute;
     inset: 0;
@@ -181,9 +181,9 @@ body {
     background: radial-gradient(circle, #ff69b4 20%, rgba(255, 105, 180, 0.4) 60%, transparent 100%);
     border-radius: 50%;
     filter: blur(2px);
-}
+} */
 
-/* Distribute particles */
+/* Distribute particles */ /*
 .flame-particles:nth-child(1) { left: 20%; animation-delay: 0s; }
 .flame-particles:nth-child(2) { left: 35%; animation-delay: 1.2s; }
 .flame-particles:nth-child(3) { left: 50%; animation-delay: 2.4s; }
@@ -235,7 +235,7 @@ body {
         transform: translateY(-200px) translateX(0) scale(0.5);
         opacity: 0;
     }
-}
+} */
 
 /*#########################################Room metrics###############################################*/
 /*#########################################Room metrics###############################################*/
@@ -265,7 +265,7 @@ body {
 
 .stat-card:hover {
     transform: translateY(-3px);
-    border-color: var(--primary-color);
+    border-color: var(--my-space-primary-color);
 }
 
 .stat-left {
@@ -277,11 +277,11 @@ body {
 
 .stat-left i {
     font-size: 1.5rem;
-    color: var(--primary-color);
+    color: var(--my-space-primary-color);
 }
 
 .stat-label {
-    color: var(--text-secondary);
+    color: var(--my-space-text-secondary);
     font-size: 0.9rem;
 }
 
@@ -315,7 +315,7 @@ body {
 
 .stat-icon i {
     font-size: 1.5rem;
-    color: var(--primary-color);
+    color: var(--my-space-primary-color);
     filter: drop-shadow(0 0 8px rgba(255, 51, 153, 0.4));
 }
 
@@ -324,14 +324,14 @@ body {
 }
 
 .stat-info h3 {
-    color: var(--text-color);
+    color: var(--my-space-text-secondary);
     font-size: 0.9rem;
     margin: 0;
     opacity: 0.8;
 }
 
 .stat-number {
-    color: var(--text-color);
+    color: var(--my-space-text-color);
     font-size: 1.5rem;
     font-weight: 600;
     margin: 0.2rem 0;
@@ -382,7 +382,7 @@ body {
     right: 0;
     width: 0;
     height: 2px;
-    background-color: var(--primary-color);
+    background-color: var(--my-space-primary-color);
     transition: width 0.3s ease;
 }
 
@@ -404,15 +404,15 @@ body {
     left: 0;
     width: 100%;
     height: 2px;
-    background-color: var(--primary-color);
+    background-color: var(--my-space-primary-color);
 }
 
 .sub-nav-item:hover {
-    color: var(--primary-color);
+    color: var(--my-space-primary-color);
 }
 
 .sub-nav-item.active {
-    color: var(--primary-color);
+    color: var(--my-space-primary-color);
 }
 /*---------------------------------------------------------------------------------------*/
 /*---------------------------------------------------------------------------------------*/
@@ -426,7 +426,7 @@ body {
 .main-content {
     position: relative;
     z-index: 3;
-    background-color: var(--background-color);
+    background-color: var(--my-space-background-color);
     margin-top: -1px;
     padding: 2rem;
     display: flex;
@@ -450,7 +450,7 @@ body {
 .room-card {
     width: 100%;
     min-width: 0;
-    background: var(--card-background);
+    background: var(--my-space-card-background);
     border-radius: 12px;
     overflow: hidden;
     transition: all 0.3s ease;
@@ -462,7 +462,7 @@ body {
 
 .room-card:hover {
     transform: translateY(-5px);
-    border-color: var(--primary-color);
+    border-color: var(--my-space-primary-color);
     box-shadow: 0 5px 15px rgba(255, 51, 153, 0.2);
 }
 
@@ -483,7 +483,7 @@ body {
 }
 
 .room-title {
-    color: var(--text-color);
+    color: var(--my-space-text-color);
     margin: 0 0 0.5rem 0;
     font-size: 1.2rem;
     font-weight: 600;
@@ -493,7 +493,7 @@ body {
 }
 
 .room-description {
-    color: var(--text-secondary);
+    color: var(--my-space-text-secondary);
     margin: 0;
     font-size: 0.85rem;
     opacity: 0.8;
@@ -546,7 +546,7 @@ body {
 }
 
 .completion-indicator circle:last-child {
-    stroke: var(--primary-color);
+    stroke: var(--my-space-primary-color);
     stroke-dasharray: 125.6;
     transform-origin: 50% 50%;
     transition: stroke-dashoffset 0.3s ease;
@@ -567,7 +567,7 @@ body {
 .quick-tips-widget {
     width: 25%;
     min-width: 280px;
-    background: var(--card-background);
+    background: var(--my-space-card-background);
     border-radius: 12px;
     padding: 1.2rem;
     border: 1px solid rgba(255, 51, 153, 0.2);
@@ -582,12 +582,12 @@ body {
 }
 
 .quick-tips-widget .widget-header i {
-    color: var(--primary-color);
+    color: var(--my-space-primary-color);
     font-size: 1.2rem;
 }
 
 .quick-tips-widget .widget-header h3 {
-    color: var(--text-color);
+    color: var(--my-space-text-color);
     font-size: 1.1rem;
     margin: 0;
 }
@@ -604,14 +604,14 @@ body {
 }
 
 .quick-tips-widget .tip-title {
-    color: var(--text-color);
+    color: var(--my-space-text-color);
     font-size: 0.9rem;
     font-weight: 500;
     margin-bottom: 0.5rem;
 }
 
 .quick-tips-widget .tip-content {
-    color: var(--text-secondary);
+    color: var(--my-space-text-secondary);
     font-size: 0.85rem;
     line-height: 1.4;
     opacity: 0.8;
@@ -639,20 +639,20 @@ body {
 }
 
 .search-bar:focus-within {
-    border-color: var(--primary-color);
+    border-color: var(--my-space-primary-color);
 }
 
 .search-bar input {
     background: none;
     border: none;
-    color: var(--text-color);
+    color: var(--my-space-text-color);
     width: 100%;
     font-size: 0.85rem;
     padding-right: 0.5rem;
 }
 
 .search-bar input::placeholder {
-    color: var(--text-muted);
+    color: var(--my-space-text-muted);
 }
 
 .search-bar input:focus {
@@ -660,7 +660,7 @@ body {
 }
 
 .search-bar i {
-    color: var(--text-muted);
+    color: var(--my-space-text-muted);
     font-size: 0.85rem;
 }
 
@@ -688,11 +688,11 @@ body {
 }
 
 .tab:hover {
-    color: var(--primary-color);
+    color: var(--my-space-primary-color);
 }
 
 .tab.active {
-    color: var(--primary-color);
+    color: var(--my-space-primary-color);
 }
 
 @media (min-width: 1200px) {

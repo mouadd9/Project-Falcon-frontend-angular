@@ -1,17 +1,8 @@
-/* Navbar Styles */
-.navbar {
-    background-color: var(--background-color);
-    height: 60px;
-    display: flex;
-    align-items: center;
-    overflow: hidden;
-}
-
 .nav-container {
     max-width: 1400px;
     width: 100%;
     margin: 0 auto;
-    padding: 0 var(--spacing);
+    padding: 0 var(--nav-bar-spacing);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -36,7 +27,7 @@
 .logo span {
     font-size: 1.2rem;
     font-weight: bold;
-    color: var(--text-color);
+    color: var(--nav-bar-text-color);
 }
 
 .nav-links {
@@ -54,7 +45,7 @@
     padding: 2.5px;
     padding-right: 16px;
     background: transparent;
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--nav-bar-border-color);
     border-radius: 24px;
     cursor: pointer;
     margin-left: auto;
@@ -62,8 +53,8 @@
 }
 
 .profile-button:hover {
-    background-color: var(--hover-background-color);
-    border-color: var(--hover-border-color);
+    background-color: var(--nav-bar-hover-background-color);
+    border-color: var(--nav-bar-hover-border-color);
 }
 
 .profile-pic-placeholder {
@@ -78,25 +69,21 @@
 }
 
 .profile-name {
-    color: var(--text-color);
+    color: var(--nav-bar-text-color);
     font-size: 1.05rem;
     font-weight: normal;
 }
 
 .profile-button .fa-chevron-down {
     font-size: 12px;
-    color: var(--text-color);
-}
-
-.profile-button:active {
-    transform: scale(0.98);
+    color: var(--nav-bar-text-color);
 }
 
 .nav-item {
     background: none;
     border: none;
     border-radius: 8px;
-    color: var(--text-color);    
+    color: var(--nav-bar-text-color);    
     font-size: 1.05rem;
     padding: 0.7rem 1.1rem;
     cursor: pointer;
@@ -106,19 +93,23 @@
     background-color: transparent;
 }
 
-.nav-item i {
+.nav-item fa-icon {
     font-size: 1.2rem;
+    margin-right: 5px;
+    margin-top: 7px;
 }
 
 .nav-item:hover {
-    color: var(--primary-color);
-    background-color: var(--hover-background-color);
+    color: var(--nav-bar-primary-color);
+    background-color: var(--nav-bar-hover-background-color);
 }
 
 .nav-item.active {
-    color: var(--primary-color);
-    background-color: var(--hover-background-color);
+    color: var(--nav-bar-primary-color);
+    background-color: var(--nav-bar-hover-background-color);
 }
+
+
 
 /* Media Queries */
 @media screen and (max-width: 768px) {

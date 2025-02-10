@@ -1,0 +1,246 @@
+#root {
+    background-color: var(--sign-in-bg);
+    color: var(--sign-in-text);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+
+
+
+
+
+
+.sign-in-form {
+    width: 100%;
+    max-width: 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 24px;
+}
+
+.logo img {
+    height: 62px;
+}
+
+.logo span {
+    font-size: 24px;
+    color: var(--sign-in-text);
+}
+
+.input-group {
+    position: relative;
+    width: 100%;
+}
+
+.input-group fa-icon {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--sign-in-text-muted);
+    font-size: 16px;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.input-group fa-icon:first-child {
+    left: 12px;
+}
+
+.input {
+    width: 100%;
+    height: var(--sign-in-input-height);
+    padding-left: 35px;
+    padding-right: 12px;
+    background-color: var(--sign-in-input-bg);
+    border: 1px solid #5a5a69;
+    border-radius: 10px;
+    color: var(--sign-in-text);
+    font-size: var(--sign-in-font-base);
+    transition: all var(--sign-in-transition);
+}
+
+.input[type="password"] {
+    padding-right: 35px;
+}
+
+.input:hover {
+    border-color: var(--sign-in-text-muted);
+}
+
+.input:focus {
+    outline: none;
+    border-color: var(--sign-in-primary);
+    box-shadow: 0 0 0 1px var(--sign-in-primary);
+}
+
+.input::placeholder {
+    color: var(--sign-in-text-muted);
+}
+
+.toggle-password {
+    position: absolute;
+    right: 8px;
+    top: 0;
+    height: 100%;
+    width: 30px;
+    background: none;
+    border: none;
+    color: var(--sign-in-text-muted);
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color var(--sign-in-transition);
+}
+
+.toggle-password:hover {
+    color: var(--sign-in-text);
+}
+
+.toggle-password fa-icon {
+    font-size: 16px;
+}
+
+.checkbox-wrapper {
+    user-select: none;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.checkbox-container input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkbox {
+    min-width: 16px;
+    height: 16px;
+    background-color: var(--sign-in-input-bg);
+    border: 1px solid var(--sign-in-input-border);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--sign-in-transition);
+}
+
+.checkbox fa-icon {
+    font-size: 10px;
+    color: var(--sign-in-text);
+    opacity: 0;
+    transition: opacity var(--sign-in-transition);
+}
+
+input[type="checkbox"]:checked ~ .checkbox {
+    background-color: var(--sign-in-primary);
+    border-color: var(--sign-in-primary);
+}
+
+input[type="checkbox"]:checked ~ .checkbox fa-icon {
+    opacity: 1;
+}
+
+.checkbox-label {
+    font-size: var(--sign-in-font-base);
+    line-height: 20px;
+    color: var(--sign-in-text-muted);
+}
+
+.link {
+    color: var(--sign-in-primary);
+    text-decoration: none;
+    transition: color var(--sign-in-transition);
+}
+
+.link:hover {
+    color: var(--sign-in-primary);
+    opacity: 0.9;
+}
+
+.button {
+    height: var(--sign-in-input-height);
+    padding: 0 14px;
+    border-radius: 10px;
+    font-size: var(--sign-in-font-base);
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all var(--sign-in-transition);
+    border: none;
+    width: 100%;
+}
+
+.button fa-icon {
+    font-size: 16px;
+}
+
+.button--primary {
+    background-color: var(--sign-in-primary);
+    color: var(--sign-in-text);
+}
+
+.button--primary:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.button--secondary {
+    background-color: transparent;
+    border: 1px solid #5a5a69;
+    color: var(--sign-in-text);
+}
+
+.button--secondary:hover {
+    border-color: var(--sign-in-text);
+    transform: translateY(-1px);
+}
+
+.form-footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 4px;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    margin: 16px 0;
+}
+
+.divider__line {
+    flex: 1;
+    height: 1px;
+    background-color: var(--sign-in-separator);
+}
+
+.divider__text {
+    padding: 0 10px;
+    color: var(--sign-in-text-muted);
+    font-size: var(--sign-in-font-base);
+}

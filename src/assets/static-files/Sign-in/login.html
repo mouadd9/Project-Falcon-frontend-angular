@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" class="notranslate" translate="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1.0,maximum-scale=1,width=device-width,viewport-fit=cover">
+    <title>Falcon Login</title>
+    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <div id="root">
+        <form class="sign-in-form">
+            <div class="logo">
+                <img src="../View1/assets/profile.svg" alt="Logo">
+                <span>Falcon</span>
+            </div>
+            
+            <div class="input-group">
+                <i class="fa-solid fa-envelope"></i>
+                <input class="input" type="text" placeholder="Phone number / email address">
+            </div>
+            
+            <div class="input-group">
+                <i class="fa-solid fa-lock"></i>
+                <input class="input" type="password" placeholder="Password">
+                <button type="button" class="toggle-password">
+                    <i class="fa-solid fa-eye"></i>
+                </button>
+            </div>
+            
+            <div class="checkbox-wrapper">
+                <label class="checkbox-container">
+                    <input type="checkbox">
+                    <span class="checkbox">
+                        <i class="fa-solid fa-check"></i>
+                    </span>
+                    <span class="checkbox-label">I confirm that I have read, consent and agree to Falcon's <a href="#" class="link">Terms of Use</a> and <a href="#" class="link">Privacy Policy</a></span>
+                </label>
+            </div>
+            
+            <button class="button button--primary">Log in</button>
+            
+            <div class="form-footer">
+                <a href="#" class="link">Forgot password?</a>
+                <a href="#" class="link">Sign up</a>
+            </div>
+            
+            <div class="divider">
+                <div class="divider__line"></div>
+                <div class="divider__text">OR</div>
+                <div class="divider__line"></div>
+            </div>
+            
+            <button class="button button--secondary">
+                <i class="fa-brands fa-google"></i>
+                <span>Log in with Google</span>
+            </button>
+        </form>
+    </div>
+</body>
+</html>

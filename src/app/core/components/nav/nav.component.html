@@ -1,25 +1,23 @@
-<nav class="navbar">
-    <div class="nav-container">
-        <div class="logo">
-            <img src="assets/images/profile.svg" alt="Logo" class="logo-img">
-            <span>CyberSpace</span>
-        </div>
-        <div class="nav-links">
-            <button class="nav-item">
-                <i class="fas fa-cube" style="padding-top: 2px !important;"></i>
-                <span>My Space</span>
-            </button>
-            <button class="nav-item active">
-                <i class="fas fa-door-open"></i>
-                <span>Rooms</span>
-            </button>
-        </div>
-        <button class="profile-button">
-            <div class="profile-pic-placeholder">
-                <i class="fas fa-user"></i>
-            </div>
-            <span class="profile-name">Hello Mouad !</span>
-            <i class="fas fa-chevron-down"></i>
+<div class="nav-container">
+    <div class="logo">
+        <img src="assets/images/profile.svg" alt="Logo" class="logo-img">
+        <span>CyberSpace</span>
+    </div>
+    <div class="nav-links">
+        <button class="nav-item" routerLink="/my-space" routerLinkActive="active">
+            <fa-icon [icon]="faCube"></fa-icon>
+            <span>My Space</span>
+        </button>
+        <button class="nav-item" routerLink="/rooms" routerLinkActive="active">
+            <fa-icon [icon]="faDoorOpen"></fa-icon>
+            <span>Rooms</span>
         </button>
     </div>
-</nav>
+    <button class="profile-button">
+        <div class="profile-pic-placeholder">
+            <fa-icon [icon]="faUser"></fa-icon>
+        </div>
+        <span class="profile-name">Hello Mouad !</span>
+        <fa-icon [icon]="faChevronDown"></fa-icon>
+    </button>
+</div>

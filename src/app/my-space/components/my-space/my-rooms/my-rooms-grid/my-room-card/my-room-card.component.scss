@@ -1,0 +1,125 @@
+.room-content {
+    flex: 1;
+    padding: 1.2rem;
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-width: 0;
+}
+
+@media (max-width: 768px) {
+    .room-content {
+        width: 100%;
+    }
+}
+
+.room-header {
+    margin-bottom: auto;
+    min-width: 0;
+}
+
+.room-title {
+    color: var(--my-space-text-color);
+    margin: 0 0 0.5rem 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.room-description {
+    color: var(--my-space-text-secondary);
+    margin: 0;
+    font-size: 0.85rem;
+    opacity: 0.8;
+    max-width: 80%;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+@media (max-width: 768px) {  
+    .room-description {
+        max-width: 100%;
+    }
+}
+
+.room-footer {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    margin-top: 0.8rem;
+}
+
+.room-footer span fa-icon {
+    font-size: 1.2rem;
+    margin-right: 2px;
+}
+
+.time-estimate {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--my-space-text-secondary);
+    font-size: 0.8rem;
+}
+
+.time-estimate fa-icon {
+    color: var(--my-space-primary-color);
+}
+
+.completion-indicator {
+    width: 35px;
+    height: 35px;
+    position: relative;
+    margin-left: auto;
+}
+
+.completion-indicator svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.completion-indicator circle {
+    fill: none;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke: rgba(255, 255, 255, 0.1);
+}
+
+.completion-indicator circle:last-child {
+    stroke: var(--my-space-primary-color);
+    stroke-dasharray: 125.6;
+    transform-origin: 50% 50%;
+    transition: stroke-dashoffset 0.3s ease;
+}
+
+.room-design {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 35%;
+    background-size: cover;
+    background-position: center;
+    mask-image: linear-gradient(to left, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0));
+    -webkit-mask-image: linear-gradient(to left, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0));
+}
+
+@media (max-width: 768px) {
+    
+    .room-design {
+        position: relative;
+        width: 100%;
+        height: 120px;
+        mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0));
+        -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0));
+    }
+}

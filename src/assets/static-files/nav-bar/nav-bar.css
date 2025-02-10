@@ -9,13 +9,13 @@
 
 /* Variables */
 :root {
-    --primary-color:#000000;/* Pink */
-    --background-color: white;
-    --hover-background-color: #ffcfe7;
-    --border-color: rgba(0, 0, 0, 0.334);
-    --hover-border-color: #ff3399;
-    --text-color:  #000000;
-    --spacing: 20px;
+    --nav-bar-primary-color:#000000;/* Pink */
+    --nav-bar-background-color: white; /*used*/
+    --nav-bar-hover-background-color: #ffcfe7;
+    --nav-bar-border-color: rgba(0, 0, 0, 0.334);
+    --nav-bar-hover-border-color: #ff3399;
+    --nav-bar-text-color:  #000000; /*used*/
+    --nav-bar-spacing: 20px; /*used*/
 }
 
 /* Reset */
@@ -31,7 +31,7 @@ body {
 
 /* Navbar Styles */
 .navbar {
-    background-color: var(--background-color);
+    background-color: var(--nav-bar-background-color);
     height: 60px;
     display: flex;
     align-items: center;
@@ -42,7 +42,7 @@ body {
     max-width: 1400px;
     width: 100%;
     margin: 0 auto;
-    padding: 0 var(--spacing);
+    padding: 0 var(--nav-bar-spacing);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -67,7 +67,7 @@ body {
 .logo span {
     font-size: 1.2rem;
     font-weight: bold;
-    color: var(--text-color);
+    color: var(--nav-bar-text-color);
 }
 
 .nav-links {
@@ -85,7 +85,7 @@ body {
     padding: 2.5px;
     padding-right: 16px;
     background: transparent;
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--nav-bar-border-color);
     border-radius: 24px;
     cursor: pointer;
     margin-left: auto;
@@ -93,8 +93,8 @@ body {
 }
 
 .profile-button:hover {
-    background-color: var(--hover-background-color);
-    border-color: var(--hover-border-color);
+    background-color: var(--nav-bar-hover-background-color);
+    border-color: var(--nav-bar-hover-border-color);
 }
 
 .profile-pic-placeholder {
@@ -109,14 +109,14 @@ body {
 }
 
 .profile-name {
-    color: var(--text-color);
+    color: var(--nav-bar-text-color);
     font-size: 1.05rem;
     font-weight: normal;
 }
 
 .profile-button .fa-chevron-down {
     font-size: 12px;
-    color: var(--text-color);
+    color: var(--nav-bar-text-color);
 }
 
 .profile-button:active {
@@ -127,7 +127,7 @@ body {
     background: none;
     border: none;
     border-radius: 8px;
-    color: var(--text-color);    
+    color: var(--nav-bar-text-color);    
     font-size: 1.05rem;
     padding: 0.7rem 1.1rem;
     cursor: pointer;
@@ -142,13 +142,13 @@ body {
 }
 
 .nav-item:hover {
-    color: var(--primary-color);
-    background-color: var(--hover-background-color);
+    color: var(--nav-bar-primary-color);
+    background-color: var(--nav-bar-hover-background-color);
 }
 
 .nav-item.active {
-    color: var(--primary-color);
-    background-color: var(--hover-background-color);
+    color: var(--nav-bar-primary-color);
+    background-color: var(--nav-bar-hover-background-color);
 }
 
 /* Media Queries */
