@@ -4,8 +4,11 @@
     <app-profile-banner class="profile-banner"></app-profile-banner>
     <app-profile-banner-sub-nav class="profile-banner-sub-nav"></app-profile-banner-sub-nav>
     <!-- My Rooms Component -->
-    <div class="content-container"> <!--for now it will directly have a selector to my rooms but in the future it will have a router outlet that will show many other contents not just my rooms-->
-        <app-my-rooms class="my-rooms"></app-my-rooms>
-        <app-right-quick-tips-sidebar class="right-quick-tips-sidebar" ></app-right-quick-tips-sidebar>
+    <div class="content-container">
+        <div class="content">
+            <router-outlet></router-outlet>
+        </div>
+        <!-- <app-my-rooms class="my-rooms"></app-my-rooms> -->
+        <app-right-quick-tips-sidebar class="right-quick-tips-sidebar"></app-right-quick-tips-sidebar>
     </div>
 </div>
