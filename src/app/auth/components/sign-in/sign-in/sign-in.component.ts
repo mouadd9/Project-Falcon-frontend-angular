@@ -24,9 +24,16 @@ export class SignInComponent {
 
   onLogin() {
     // Temporary navigation until implementation
+    console.log("signing in...");
     this.authService.signIn();
-    console.log(this.authService.signedIn)
-    this.router.navigate(['/my-space']);
+    this.authService.signedIn$.subscribe(
+      (signedIn) => {
+        if(signedIn) {
+          console.log("signed in successfully");
+          this.router.navigate(['/my-space']);
+        }
+      }
+    )
   }
 }
 

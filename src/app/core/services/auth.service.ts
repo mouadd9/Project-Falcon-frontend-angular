@@ -15,7 +15,9 @@ export class AuthService {
   }
 
   signIn() {
-    this.signedInSubject.next(true);
+    setTimeout(() => {
+      this.signedInSubject.next(true);
+    }, 2000);
   }
 
   signOut() {
