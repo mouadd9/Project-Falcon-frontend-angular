@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { NavComponent } from './components/nav/nav.component';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from '../shared/shared.module';
+import { HttpClientModule } from '@angular/common/http';
 
 // ###################### ----------- this is the CoreModule : the Module that centralizes everything global in our App
 // it is imported once in AppModule 
@@ -23,7 +24,8 @@ import { SharedModule } from '../shared/shared.module';
   imports: [// here we will declare all the global modules that should be imported in AppModule and that will be used in all the components of our app.
     CommonModule, // this module provides directives mike ngIf and ngFor, they will be used in 
     SharedModule,
-    RouterModule // we import RouterModule so that we can use routing directives in our nav bar
+    RouterModule, // we import RouterModule so that we can use routing directives in our nav bar
+    HttpClientModule
   ],
   exports: [// here we will export the core components so they can be used in app component without being lazy loaded
     NavComponent // nav bar is exported to be used in app component

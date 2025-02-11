@@ -21,6 +21,12 @@
     --sign-in-text-muted: #c8c8c8;
     --sign-in-separator: #48484c;
 
+    /* Sign up code button */
+    --sign-up-code-button-bg: #2a2a2a;
+    --sign-up-code-button-hover-bg: #3a3a3a;
+    --sign-up-code-button-active-bg: #404040;
+    --sign-up-code-button-text: #ffffff;
+
     /* Sizing */
     --sign-in-input-height: 40px;
     --sign-in-font-base: 14px;
@@ -66,4 +72,3 @@ body {
 
 
 /*body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }*/
-
