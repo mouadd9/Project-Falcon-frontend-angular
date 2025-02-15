@@ -5,13 +5,17 @@ import { MyRoomCardComponent } from './components/my-room-card/my-room-card.comp
 import { ShortenPipe } from './pipes/shorten.pipe';
 import { UsernamePipe } from './pipes/username.pipe';
 import { TimeAgoPipe } from './pipes/time-ago.pipe';
+import { HighlightDirective } from './directives/highlight.directive';
+import { GlowEffectDirective } from './directives/glow-effect.directive';
 
 @NgModule({
   declarations: [
     MyRoomCardComponent,
     ShortenPipe, // shorten long texts
     UsernamePipe,
-    TimeAgoPipe // to transform dates to descriptif texts 
+    TimeAgoPipe, // to transform dates to descriptif texts 
+    HighlightDirective,
+    GlowEffectDirective
   ],
   imports: [
     CommonModule,
@@ -22,7 +26,9 @@ import { TimeAgoPipe } from './pipes/time-ago.pipe';
     MyRoomCardComponent,
     ShortenPipe,
     UsernamePipe,
-    TimeAgoPipe
+    TimeAgoPipe,
+    HighlightDirective,
+    GlowEffectDirective
   ]
 // in a lot of times this module will be used to only export Modules without impoting them !!
 // When you export a module directly without importing it, you’re essentially saying:

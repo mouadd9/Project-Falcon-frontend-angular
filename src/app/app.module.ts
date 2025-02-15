@@ -2,7 +2,6 @@ import { NgModule, isDevMode } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CoreModule } from './core/core.module';
 import { StoreModule } from '@ngrx/store';
 import { authReducer } from './features/auth/state/auth.reducer';
@@ -16,7 +15,6 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
     CoreModule, // this module will provide global dependencies
     BrowserModule, // this module provides basic CommonModule directives
     AppRoutingModule, // this module provides a configured router service and provides directives like router-link and router-outlet that will be used with router service to naviguate between routes 
-    BrowserAnimationsModule,
     StoreModule.forRoot({auth: authReducer}),
     EffectsModule.forRoot([]),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() })
