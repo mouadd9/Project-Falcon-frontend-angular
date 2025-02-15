@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AuthService } from './core/services/auth.service';
 import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -12,12 +13,15 @@ export class AppComponent implements OnInit, OnDestroy {
   public showNavBar: boolean = false;
   private authSubscription: Subscription | undefined;
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {
     this.authSubscription = this.authService.signedIn$.subscribe(
       isSignedIn => {
         this.showNavBar = isSignedIn;
+        if (this.showNavBar) {
+          this.router.navigate(['/my-space']);
+        }
       }
     );
   }

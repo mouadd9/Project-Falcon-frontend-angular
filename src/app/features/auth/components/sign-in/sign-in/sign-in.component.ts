@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../../../../core/services/auth.service';
+import { AuthService } from '../../../../../core/services/auth.service';
 import { faEnvelope, faLock, faEye, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { faGoogle } from '@fortawesome/free-brands-svg-icons';
 
@@ -19,21 +19,13 @@ export class SignInComponent {
   faGoogle = faGoogle;
 
   // we will inject the router service 
-  constructor(private router:Router, private authService : AuthService){}
+  constructor(private authService : AuthService){}
 
 
   onLogin() {
     // Temporary navigation until implementation
     console.log("signing in...");
     this.authService.signIn();
-    this.authService.signedIn$.subscribe(
-      (signedIn) => {
-        if(signedIn) {
-          console.log("signed in successfully");
-          this.router.navigate(['/my-space']);
-        }
-      }
-    )
   }
 }
 

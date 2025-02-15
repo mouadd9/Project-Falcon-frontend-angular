@@ -7,8 +7,13 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 @NgModule({
   declarations: [],
   imports: [
+    CommonModule,
+    FontAwesomeModule
   ],
-  exports : [FontAwesomeModule] // exports in a Shared Module determine which components, directives, pipes, or even other modules are made available to other modules that import your Shared Module.
+  exports: [
+    CommonModule,
+    FontAwesomeModule
+  ]
 // in a lot of times this module will be used to only export Modules without impoting them !!
 // When you export a module directly without importing it, you’re essentially saying:
 //"I don’t need to use this module in the Shared Module itself, but I want to make it available to any module that imports the Shared Module."

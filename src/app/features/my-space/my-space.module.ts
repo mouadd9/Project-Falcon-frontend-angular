@@ -10,7 +10,7 @@ import { MyRoomsTabsComponent } from './components/my-space/my-rooms/my-rooms-ta
 import { MyRoomsGridComponent } from './components/my-space/my-rooms/my-rooms-grid/my-rooms-grid.component';
 import { RightQuickTipsSidebarComponent } from './components/my-space/right-quick-tips-sidebar/right-quick-tips-sidebar.component';
 import { MyRoomCardComponent } from './components/my-space/my-rooms/my-rooms-grid/my-room-card/my-room-card.component';
-import { SharedModule } from '../shared/shared.module';
+import { SharedModule } from '../../shared/shared.module';
 
 
 

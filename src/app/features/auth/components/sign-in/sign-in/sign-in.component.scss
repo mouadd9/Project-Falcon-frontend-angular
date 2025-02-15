@@ -12,6 +12,10 @@
 
 
 
+
+
+
+
 .sign-in-form {
     width: 100%;
     max-width: 320px;
@@ -46,27 +50,32 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    color: var(--sign-in-text-muted);
+    color: var(--sign-in-icon-muted);
     font-size: 16px;
     z-index: 1;
     pointer-events: none;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px;
 }
 
 .input-group fa-icon:first-child {
-    left: 12px;
+    left: 0;
 }
 
 .input {
     width: 100%;
     height: var(--sign-in-input-height);
-    padding-left: 35px;
-    padding-right: 12px;
+    padding: 0 12px 0 35px;
     background-color: var(--sign-in-input-bg);
-    border: 1px solid #5a5a69;
+    border: 1px solid var(--sign-in-input-border);
     border-radius: 10px;
     color: var(--sign-in-text);
     font-size: var(--sign-in-font-base);
     transition: all var(--sign-in-transition);
+    line-height: var(--sign-in-input-height);
 }
 
 .input[type="password"] {
@@ -223,32 +232,20 @@ input[type="checkbox"]:checked ~ .checkbox fa-icon {
     margin-top: 4px;
 }
 
-
-.verification-code-field {
+.divider {
     display: flex;
-    gap: 8px;
     align-items: center;
+    margin: 16px 0;
+}
 
-    .input-group {
-        flex: 1;
-    }
+.divider__line {
+    flex: 1;
+    height: 1px;
+    background-color: var(--sign-in-separator);
+}
 
-    .button {
-        padding: 0 12px;
-        width: auto;
-        min-width: 100px;
-        background-color: var(--sign-up-code-button-bg);
-        color: var(--sign-up-code-button-text);
-        border: 1px solid var(--sign-in-input-border);
-        
-        &:hover {
-            background-color: var(--sign-up-code-button-hover-bg);
-            color: var(--sign-up-code-button-hover-text);
-            border-color: var(--sign-in-primary);
-        }
-        
-        &:active {
-            background-color: var(--sign-up-code-button-active-bg);
-        }
-    }
+.divider__text {
+    padding: 0 10px;
+    color: var(--sign-in-text-muted);
+    font-size: var(--sign-in-font-base);
 }
