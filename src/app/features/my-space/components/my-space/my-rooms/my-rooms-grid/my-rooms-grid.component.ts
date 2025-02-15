@@ -8,5 +8,6 @@ import { Component } from '@angular/core';
   styleUrl: './my-rooms-grid.component.scss'
 })
 export class MyRoomsGridComponent {
+    // presenter component 
 
 }

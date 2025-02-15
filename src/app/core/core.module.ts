@@ -4,8 +4,6 @@ import { NavComponent } from './components/nav/nav.component';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from '../shared/shared.module';
 import { HttpClientModule } from '@angular/common/http';
-import { provideStoreDevtools } from '@ngrx/store-devtools';
-
 
 
 @NgModule({
@@ -22,7 +20,6 @@ import { provideStoreDevtools } from '@ngrx/store-devtools';
     NavComponent 
   ],
   providers: [
-    provideStoreDevtools({})
     // interceptors ...
   ]
 })

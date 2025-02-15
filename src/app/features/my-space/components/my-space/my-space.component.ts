@@ -7,5 +7,6 @@ import { Component } from '@angular/core';
   styleUrl: './my-space.component.scss'
 })
 export class MySpaceComponent {
+  // smart component (container component)
 
 }

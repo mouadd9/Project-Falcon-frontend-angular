@@ -13,8 +13,6 @@ import { SharedModule } from '../../shared/shared.module';
 
 
 
-
-
 @NgModule({
   declarations: [ // here we will declare the components that are part of this module
     SignInComponent,

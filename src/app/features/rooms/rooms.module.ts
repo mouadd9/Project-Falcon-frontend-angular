@@ -8,11 +8,14 @@ import { RoomsBannerComponent } from './components/rooms/rooms-banner/rooms-bann
 
 
 @NgModule({
-  declarations: [RoomsComponent, RoomsBannerComponent],
+  declarations: [
+    RoomsComponent,
+    RoomsBannerComponent
+  ],
   imports: [
     CommonModule,
     RoomsRoutingModule,
-    SharedModule
+    SharedModule // this will provide us with the icons module and the reusable room card component
   ]
 })
 export class RoomsModule { }
