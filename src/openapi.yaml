@@ -1,0 +1,80 @@
+openapi: 3.0.3
+info:
+  title: Falcon API
+  version: 1.0.0
+  description: API for project Falcon
+servers:
+  - url: http://localhost:3000/api/v1
+paths:
+  /auth/send-verification-code:
+    post:
+      tags:
+        - auth
+      summary: send a verification code 
+      description: send a verification code to the email in the request body
+      operationId: sendVerificationCode
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerificationCodeRequest'
+        required: true
+      responses:
+        '200':
+          description: Verification code sent
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerificationCodeResponse'
+        '400':
+          description: Invalid email format
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'         
+  /auth/complete-registration:
+    post:
+      tags:
+        - auth
+  /auth/login:
+    post:
+      tags:
+        - auth
+    
+
+
+components:
+  schemas:
+    VerificationCodeRequest:
+      type: object
+      required: [email]
+      properties:
+        email:
+          type: string
+          format: email
+
+    VerificationCodeResponse:
+      type: object
+      properties:
+        requestId:
+          type: integer
+          format: UUID 
+        message: 
+          type: string
+        expiryDate: 
+          type: string
+          format: date-time
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        details:
+          type: string
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
