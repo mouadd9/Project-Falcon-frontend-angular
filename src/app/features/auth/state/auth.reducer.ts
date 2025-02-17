@@ -1,100 +1,178 @@
 import { createReducer, on } from '@ngrx/store';
+import { AuthApiActions, SignUpFormActions } from './auth.actions';
 
+// Define specific error types for better error handling
+export type AuthError = {
+    code: string;
+    message: string;
+    timestamp: string;
+}
+
+// Define loading status for type safety
+export type LoadingStatus = 'IDLE' | 'LOADING' | 'SUCCESS' | 'ERROR';
+
+// auth state Shape 
 export interface AuthState {
+    // Authentication
     token: string | null;
     isLoggedIn: boolean;
-    isLoading: boolean;
-    error: string | null;
-    //verification code flow
+    refreshToken: string | null;
+    expiresAt: number | null;
+
+    // Loading states with type safety
+    loadingStates: {
+        login: LoadingStatus;
+        codeRequest: LoadingStatus;
+        signUp: LoadingStatus;
+    };
+
+    // Error handling with specific error types
+    errors: {
+        login: AuthError | null;
+        codeRequest: AuthError | null;
+        signUp: AuthError | null;
+    };
+
+    // Verification flow
     verificationState: {
         email: string | null;
         requestId: string | null;
         expiryDate: string | null;
-        isCodeSent: boolean;
-        isCodeValid: boolean;
-    }
+    };
 }
 
 export const initialAuthState: AuthState = {
+    // Authentication
     token: null,
     isLoggedIn: false,
-    isLoading: false,
-    error: null,
+    refreshToken: null,
+    expiresAt: null,
+
+    // Loading states
+    loadingStates: {
+        login: 'IDLE' as LoadingStatus,
+        codeRequest: 'IDLE' as LoadingStatus,
+        signUp: 'IDLE' as LoadingStatus
+    },
+
+    // Errors
+    errors: {
+        login: null,
+        codeRequest: null,
+        signUp: null
+    },
+
+    // Verification state
     verificationState: {
         email: null,
         requestId: null,
-        expiryDate: null,
-        isCodeSent: false,
-        isCodeValid: false
+        expiryDate: null
     }
-}
-
-
+};
 
 export const authReducer = createReducer(
-    initialAuthState, // this is the initial state that will be set when the store is created
-    // here we will add the actions and their corresponding reducers, for each action a reducer function will be defined
-    // each reducer function takes the currrent state as argument and uses the action to make a new state
+  initialAuthState,
+  // source : [Sign Up Form] , event : Verification Code Request Sent
+  on(SignUpFormActions.verificationCodeRequestSent, (state, { payload }) => ({ // this action will be received by effects too
+      ...state,
+      loadingStates: {
+          ...state.loadingStates,
+          codeRequest: 'LOADING' as LoadingStatus
+      }, 
+      errors: {
+          ...state.errors
+      },
+      verificationState: {
+          ...state.verificationState
+      }
+    })),
+  // source : [Auth API] , event : verification code request sent to the user's email successfuly
+  on(AuthApiActions.verificationCodeRequestSentSuccess, (state, { payload })=>({
+    ...state,
+    loadingStates: {
+        ...state.loadingStates,
+        codeRequest: 'SUCCESS' as LoadingStatus // code sent !
+    },
+    errors: {
+        ...state.errors // no error
+    },
+    verificationState: {
+        ...state.verificationState,
+        requestId: payload.requestId, // the Auth API responded with a requestId issued after generating a the verification code
+        expiryDate: payload.expiryDate, // the Auth API will respond with an expiry date for the code
+    }
+  })),
+  // source : [Auth API], event : verification code request not sent
+   on(AuthApiActions.verificationCodeRequestSentFailure, (state, { payload }) => ({
+    ...state,
+    loadingStates: {
+        ...state.loadingStates,
+        codeRequest: 'ERROR' as LoadingStatus
+    },
+    errors: { // in this case it could be different errors : [email is already registered | email service is down | server error while generating code | Rate limit ]
+        ...state.errors,
+        codeRequest: {
+            code : payload.error.code ,
+            message: payload.error.message ,
+            timestamp:  payload.error.timestamp
+        }  
+    },
+    verificationState: {
+        ...state.verificationState,
+        requestId: null,
+        expiryDate: null
+    }
+  })),
+  // source : [Sign Up Form], event : Registration Request Sent
+  // when the user sends a registration request the following happens : 
+  on(SignUpFormActions.registrationRequestSent, (state, { payload }) => ({ // this action will be recieved by effects too 
+    ...state,
+    loadingStates: {
+        ...state.loadingStates,
+        signUp: 'LOADING' as LoadingStatus
+    },
+    errors: {
+        ...state.errors
+    },
+    verificationState: {
+        ...state.verificationState
+    }
+  })),
+  on(AuthApiActions.registrationRequestSentSuccess, (state, { payload }) => ({
+    ...state,
+    isLoggedIn: true,
+    token: payload.token,
+    refreshToken: payload.refreshToken,
+    loadingStates: {
+        ...state.loadingStates,
+        signUp: 'SUCCESS' as LoadingStatus
+    },
+    errors: {
+        ...state.errors
+    },
+    verificationState: {
+        ...state.verificationState
+    }
+  })),
+  on(AuthApiActions.registrationRequestSentFailure, (state, { payload }) => ({
+    ...state,
+    loadingStates: {
+        ...state.loadingStates,
+        signUp: 'ERROR' as LoadingStatus
+    },
+    errors: {
+        ...state.errors,
+        signUp: {
+            code : payload.error.code ,
+            message: payload.error.message ,
+            timestamp:  payload.error.timestamp
+        } 
+    },
+    verificationState: {
+        ...state.verificationState,
+        requestId: null,
+        expiryDate: null
+    }
+  }))
+ 
 );
-
-
-/*
-This state structure will allow you to:
-Store the email when user enters it
-Store the requestId and expiryDate when received from the server
-Track the loading state during API calls
-Handle any errors that occur during the process
-Track whether the code has been sent and validated
-*/
-
-
-/*
-
-SEND_VERIFICATION_CODE -> sendingCodeAuthState
-SEND_VERIFICATION_CODE_SUCCESS -> codeSentAuthState
-SEND_VERIFICATION_CODE_ERROR -> codeErrorAuthState
-
-export const sendingCodeAuthState: AuthState = {
-    token: null,
-    isLoggedIn: false,
-    isLoading: true,
-    error: null,
-    verificationState: {
-        email: 'email',
-        requestId: null,
-        expiryDate: null,
-        isCodeSent: false,
-        isCodeValid: false
-    }
-}
-
-export const codeSentAuthState: AuthState = {
-    token: null,
-    isLoggedIn: false,
-    isLoading: false,
-    error: null,
-    verificationState: {
-        email: 'email',
-        requestId: 'requestId',
-        expiryDate: '12-03-2026',
-        isCodeSent: true,
-        isCodeValid: false
-    }
-}
-
-export const codeErrorAuthState: AuthState = {
-    token: null,
-    isLoggedIn: false,
-    isLoading: false,
-    error: 'error',
-    verificationState: {
-        email: 'email',
-        requestId: null,
-        expiryDate: null,
-        isCodeSent: true,
-        isCodeValid: false
-    }
-}
-
-
-*/

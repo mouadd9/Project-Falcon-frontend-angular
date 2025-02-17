@@ -15,7 +15,8 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
     CoreModule, // this module will provide global dependencies
     BrowserModule, // this module provides basic CommonModule directives
     AppRoutingModule, // this module provides a configured router service and provides directives like router-link and router-outlet that will be used with router service to naviguate between routes 
-    StoreModule.forRoot({auth: authReducer}),
+    // Keep auth reducer in root store since navbar needs it
+    StoreModule.forRoot({ auth: authReducer }),  
     EffectsModule.forRoot([]),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() })
     // generally the AppModule doesnt register slices of state that are related to a feature

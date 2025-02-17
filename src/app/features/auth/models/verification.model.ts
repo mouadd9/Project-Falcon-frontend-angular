@@ -1,10 +1,13 @@
+import { AuthError } from "../state/auth.reducer";
+
 export interface VerificationCodeRequest {
     email: string;
 }
 
 export interface VerificationCodeResponse {
-    requestId: string;
-    message: string;
-    expiryDate: string; // this will be used as for countdown
+    requestId: string | null;
+    error: AuthError;
+    expiryDate: string | null; // this will be used as for countdown
 }
+
   

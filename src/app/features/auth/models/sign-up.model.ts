@@ -1,3 +1,5 @@
+import { AuthError } from "../state/auth.reducer";
+
 // main form Group
 export interface SignUpFormValue {
   email: string;
@@ -29,5 +31,7 @@ export interface SignUpRequest {
 }
 
 export interface SignUpResponse {
-  message: string;
+  error: AuthError;  // for failure cases
+  token: string | null;     // for success case
+  refreshToken: string | null; // for success case
 }

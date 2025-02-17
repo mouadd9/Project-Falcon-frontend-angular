@@ -1,19 +1,34 @@
-// here we will Define all actions for the feature.
+import { createActionGroup, props } from "@ngrx/store";
+import { VerificationCodeRequest, VerificationCodeResponse } from "../models/verification.model";
+import { SignUpRequest, SignUpResponse } from "../models/sign-up.model";
+import { Credentials, logInResponse } from "../models/log-in.model";
 
-/*
+// actions (events) dispatched from the sign up form
+export const SignUpFormActions = createActionGroup({
+   source: 'Sign Up Form',
+   events: {
+     'Verification Code Request Sent': props<{payload: VerificationCodeRequest}>(),
+     'Registration Request Sent': props<{payload: SignUpRequest}>()
+   }
+})
 
+// actions dispatched from the log in form
+export const LogInFormActions = createActionGroup({
+   source: 'Log In Form',
+   events: {
+      'log In Credentials Sent': props<{payload:Credentials}>()
+   }
+})
 
-the user will dispatch actions to the store,
-   - LOGIN_REQUEST: Dispatch with credentials
-   - LOGIN_SUCCESS: Contains user data & token
-   - LOGIN_FAILURE: Contains error details
-   - LOGOUT: Dispatch when the user logs out
-
-   - SEND_VERIFICATION_CODE_REQUEST: Dispatch when the user clicks on the send verification code button
-   - SEND_VERIFICATION_CODE_REQUEST_SUCCESS: Contains the RequestID
-   - SEND_VERIFICATION_CODE_REQUEST_FAILURE: Contains error details
-
-   - COMPLETE-REGISTRATION_REQUEST: Dispatch when the user clicks on the complete registration button
-   - COMPLETE-REGISTRATION_REQUEST_SUCCESS: Contains user data & token
-   - COMPLETE-REGISTRATION_REQUEST_FAILURE: Contains error details
-*/ 
+// actions dispatched from the Auth API
+export const AuthApiActions = createActionGroup({
+   source: 'Auth API',
+   events: {
+      'Verification Code Request Sent Success': props<{payload: VerificationCodeResponse}>(),
+      'Verification Code Request Sent Failure': props<{payload: VerificationCodeResponse}>(),
+      'Registration Request Sent Success': props<{payload: SignUpResponse}>(),
+      'Registration Request Sent Failure': props<{payload: SignUpResponse}>(),
+      'log In Credentials Sent Success': props<{payload: logInResponse}>(),
+      'log In Credentials Sent Failure': props<{payload: logInResponse}>(),
+   }
+})

@@ -5,6 +5,7 @@ import { VerificationCodeRequest } from '../../../models/verification.model';
 import { SignUpFormValue, SignUpRequest } from '../../../models/sign-up.model';
 import { map, Observable } from 'rxjs';
 import { confirmEqualValidator } from '../../../validators/confirm-equal.validator';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-sign-up',
@@ -32,10 +33,16 @@ export class SignUpComponent implements OnInit {
   passwordCtr!: FormControl;
   confirmPasswordCtr!: FormControl;
 
-  showConfirmPasswordCtr$!: Observable<boolean>; // if password input is touched the show Confirm Password Observable will emit a true value, this true value will show the confirm password input
+  // observable that change the UI state
+
+  // this observable will emit a true if the user starts typing in the password input
+  // when it emits true the confirm password is shown
+  showConfirmPasswordCtr$!: Observable<boolean>;
+  
+  // this observable emits true if the confirm password control is invalid (has a password confirmation error)
   showConfirmPasswordError$!: Observable<boolean>;
 
-  constructor(private fb: FormBuilder) { } // this form builder will be used to create a form group 
+  constructor(private fb: FormBuilder, private store: Store) { } // this form builder will be used to create a form group 
 
   ngOnInit(): void {
     this.initFormControls();
@@ -44,13 +51,11 @@ export class SignUpComponent implements OnInit {
   }
 
   private initObservables(): void {
-    // the idea here is, when the password form control is dirty the confirm password will be shown 
     this.showConfirmPasswordCtr$ = this.passwordCtr.valueChanges.pipe(map(value => true)); // on value changes will return an observable, this observale emits each value the user puts in
     this.showConfirmPasswordError$ = this.loginInfoForm.statusChanges.pipe(map(status=>status === 'INVALID' &&
       this.passwordCtr.value &&
       this.confirmPasswordCtr.value &&
       this.loginInfoForm.hasError('confirmEqual')));
-
   }
 
   private initMainForm(): void {
@@ -108,8 +113,11 @@ export class SignUpComponent implements OnInit {
   onSendCode() {
     if (this.emailCtr?.valid) {
       const verificationCodeRequest: VerificationCodeRequest = this.emailCtr.value;
+
       console.log(verificationCodeRequest);
+
       //  Dispatch action with `verificationCodeRequest`
+      // this.store.dispatch(); // this action will change the state to loading 
     } else {
       console.log("email control is invalid");
     }
@@ -123,7 +131,7 @@ export class SignUpComponent implements OnInit {
         verificationCode: formValue.verificationCode,
         personalInfo: formValue.personalInfo,
         loginInfo: formValue.loginInfo,
-        requestId: '4545'
+        requestId: '4545' // we will retrieve this from the AuthState
       };
       console.log('Sign up request:', signUpRequest);
       // Dispatch sign up action
