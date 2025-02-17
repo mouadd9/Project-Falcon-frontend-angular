@@ -3,62 +3,104 @@
         <div class="logo"><img src="assets/images/profile.svg" alt="Logo"><span>Falcon</span></div>
 
         <form [formGroup]="mainForm" class="sign-in-form">  <!--(ngSubmit)="onSubmit()"-->
-            <!--controls-->
-            <div class="input-group">
-                <fa-icon [icon]="faEnvelope"></fa-icon>
-                <input class="input" 
-                       type="text" 
-                       placeholder="Email address">
+            
+            <span class="checkbox-label">Step 1 : Email verification process</span>
+
+            <div class="input-container">
+             <div class="input-group">
+                  <fa-icon [icon]="faEnvelope"></fa-icon>
+                  <input class="input" 
+                         type="text" 
+                         placeholder="Email address"
+                         formControlName="email">
+              </div>
+              <div class="error" *ngIf="emailCtr.errors && (emailCtr.dirty || emailCtr.touched)"> {{getErrorMessage(emailCtr)}} </div>
             </div>
-            <div class="input-group">
-                <fa-icon [icon]="faUser"></fa-icon>
-                <input class="input" 
-                       type="text" 
-                       placeholder="Username">
-            </div>
-            <!-------->
-            <!-------->
-            <!-------->
+            <div class="input-container">
             <div class="verification-code-field">
+                
                 <div class="input-group">
                     <fa-icon [icon]="faEnvelope"></fa-icon>
                     <input class="input"
                            type="text" 
-                           placeholder="Code">
+                           placeholder="Code"
+                           formControlName="verificationCode">
                 </div>
                 <button type="button" 
-                        class="button button--secondary">
+                        class="button"
+                        (click)="onSendCode()"
+                        [disabled]="emailCtr.invalid">
                     Send Code
                 </button>
             </div>
-            <!-------->
-            <!-------->
-            <!-------->
-            <div class="input-group">
-                <fa-icon [icon]="faLock"></fa-icon>
-                <input class="input"
-                       type="password" 
-                       placeholder="Password">
-                <button type="button" 
-                        class="toggle-password">
-                    <fa-icon [icon]="faEye"></fa-icon>
-                </button>
+            <div class="error" *ngIf="verificationCodeCtr.errors && (verificationCodeCtr.dirty || verificationCodeCtr.touched)"> {{getErrorMessage(verificationCodeCtr)}} </div>
+
+        </div>
+
+            <span class="checkbox-label">Step 2 : Personal Info (Optional)</span>
+            <div class="p-info" formGroupName="personalInfo">
+                <div class="input-group">
+                    <fa-icon [icon]="faUser"></fa-icon>
+                    <input class="input" 
+                           type="text" 
+                           placeholder="Last Name"
+                           formControlName="lastName">
+                </div>
+                <div class="input-group">
+                    <fa-icon [icon]="faUser"></fa-icon>
+                    <input class="input" 
+                           type="text" 
+                           placeholder="First Name"
+                           formControlName="firstName">
+                </div>
             </div>
-            <div class="input-group"><fa-icon [icon]="faLock"></fa-icon>
-                <input class="input" 
-                       type="password" 
-                       placeholder="Confirm password">
-                <button type="button" 
-                        class="toggle-password">
-                    <fa-icon [icon]="faEye"></fa-icon>
-                </button>
+
+            <span class="checkbox-label">Step 3 : Login Info </span>
+            <div formGroupName="loginInfo" class="sign-in-form">
+                <div class="input-container">
+                <div class="input-group">
+                    <fa-icon [icon]="faUser"></fa-icon>
+                    <input class="input" 
+                           type="text" 
+                           placeholder="Username"
+                           formControlName="username">
+                </div>
+                <div class="error" *ngIf="usernameCtrl.errors && ( usernameCtrl.dirty || usernameCtrl.touched)"> {{getErrorMessage(usernameCtrl)}}  </div>
+                </div>
+                <div class="input-container">
+                <div class="input-group">
+                    <fa-icon [icon]="faLock"></fa-icon>
+                    <input class="input"
+                           type="password" 
+                           placeholder="Password"
+                           formControlName="password">
+                    <button type="button" class="toggle-password">
+                        <fa-icon [icon]="faEye"></fa-icon>
+                    </button>
+                </div>
+                <div class="error" *ngIf="passwordCtr.errors && passwordCtr.dirty"> {{getErrorMessage(passwordCtr)}} </div>
+                </div>
+                <div class="input-container">
+                <div class="input-group" *ngIf="showConfirmPasswordCtr$ | async">
+                    <fa-icon [icon]="faLock"></fa-icon>
+                    <input class="input" 
+                           type="password" 
+                           placeholder="Confirm password"
+                           formControlName="confirmPassword">
+                    <button type="button" class="toggle-password">
+                        <fa-icon [icon]="faEye"></fa-icon>
+                    </button>
+                </div>
+                <div class="error" *ngIf="showConfirmPasswordError$ | async">Passwords do not match</div>
+                </div>
             </div>
             <!-------->
             <!-------->
             <!-------->
             <div class="checkbox-wrapper">
                 <label class="checkbox-container">
-                    <input type="checkbox">
+                    <input type="checkbox"
+                    formControlName="termsAccepted">
                     <span class="checkbox">
                         <fa-icon [icon]="faCheck"></fa-icon>
                     </span>
@@ -70,9 +112,14 @@
             <!-------->
             <!-------->
             <button type="button" 
-                    class="button button--primary">
+                    class="button"
+                    (click)="onSignUp()"
+                    [disabled]="this.mainForm.invalid">
                 Sign up
             </button>
+            <div class="error terms-error" *ngIf="mainForm.get('termsAccepted')?.errors?.['requiredTrue'] && mainForm.get('termsAccepted')?.touched">
+              You must accept the terms and conditions
+            </div>
         </form>
 
         <div class="form-footer">
@@ -80,4 +127,5 @@
             <a class="link" routerLink="/auth/sign-in">Log in</a>
         </div>
     </div>
+
 </div>

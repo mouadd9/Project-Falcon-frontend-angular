@@ -1,27 +1,33 @@
-// models/sign-up.model.ts
-export interface SignUpFormState {
+// main form Group
+export interface SignUpFormValue {
   email: string;
-  username: string;
-  password: string;
-  confirmPassword: string;
   verificationCode: string;
-  termsAccepted: boolean;
-  requestId: string | null;
-  expiryDate: string | null;
+  personalInfo?: PersonalInfo;
+  loginInfo: LoginInfo;
+  termsAccepted: boolean; // this will not be included in the sign up request
+}
+
+// each one of these will be a form group : 
+
+export interface PersonalInfo {
+    firstName: string,
+    lastName: string
+}
+
+export interface LoginInfo {
+  username: string,
+  password: string,
+  confirmPassword: string;
 }
 
 export interface SignUpRequest {
   email: string;
-  username: string;
-  password: string;
   verificationCode: string;
-  requestId: string;
+  loginInfo: LoginInfo;
+  personalInfo?: PersonalInfo;
+  requestId: string; // this will be included, in the SignUpRequest
 }
 
 export interface SignUpResponse {
   message: string;
-  // add other response fields
 }
-
-
-// Separates concerns between verification and signup
