@@ -1,12 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 import { AuthApiActions, SignUpFormActions } from './auth.actions';
-
-// Define specific error types for better error handling
-export type AuthError = {
-    code: string;
-    message: string;
-    timestamp: string;
-}
+import { ErrorResponse } from '../models/error-response';
 
 // Define loading status for type safety
 export type LoadingStatus = 'IDLE' | 'LOADING' | 'SUCCESS' | 'ERROR';
@@ -26,18 +20,18 @@ export interface AuthState {
         signUp: LoadingStatus;
     };
 
-    // Error handling with specific error types
+    // Error handling with ErrorResponse type
     errors: {
-        login: AuthError | null;
-        codeRequest: AuthError | null;
-        signUp: AuthError | null;
+        login: ErrorResponse | null;
+        codeRequest: ErrorResponse | null;
+        signUp: ErrorResponse | null;
     };
 
     // Verification flow
     verificationState: {
-        email: string | null;
         requestId: string | null;
         expiryDate: string | null;
+        message: string | null;
     };
 }
 
@@ -64,10 +58,10 @@ export const initialAuthState: AuthState = {
 
     // Verification state
     verificationState: {
-        email: null,
         requestId: null,
-        expiryDate: null
-    }
+        expiryDate: null,
+        message: null
+    },
 };
 
 export const authReducer = createReducer(
@@ -79,12 +73,14 @@ export const authReducer = createReducer(
           ...state.loadingStates,
           codeRequest: 'LOADING' as LoadingStatus
       }, 
-      errors: {
-          ...state.errors
-      },
       verificationState: {
-          ...state.verificationState
-      }
+        ...state.verificationState,
+        email: payload.email
+    },
+    errors: {
+        ...state.errors,
+        codeRequest: null
+    }
     })),
   // source : [Auth API] , event : verification code request sent to the user's email successfuly
   on(AuthApiActions.verificationCodeRequestSentSuccess, (state, { payload })=>({
@@ -100,7 +96,8 @@ export const authReducer = createReducer(
         ...state.verificationState,
         requestId: payload.requestId, // the Auth API responded with a requestId issued after generating a the verification code
         expiryDate: payload.expiryDate, // the Auth API will respond with an expiry date for the code
-    }
+        message: payload.message
+    },
   })),
   // source : [Auth API], event : verification code request not sent
    on(AuthApiActions.verificationCodeRequestSentFailure, (state, { payload }) => ({
@@ -111,11 +108,7 @@ export const authReducer = createReducer(
     },
     errors: { // in this case it could be different errors : [email is already registered | email service is down | server error while generating code | Rate limit ]
         ...state.errors,
-        codeRequest: {
-            code : payload.error.code ,
-            message: payload.error.message ,
-            timestamp:  payload.error.timestamp
-        }  
+        codeRequest: payload
     },
     verificationState: {
         ...state.verificationState,
@@ -141,8 +134,8 @@ export const authReducer = createReducer(
   on(AuthApiActions.registrationRequestSentSuccess, (state, { payload }) => ({
     ...state,
     isLoggedIn: true,
-    token: payload.token,
-    refreshToken: payload.refreshToken,
+    token: payload.token.accessToken,
+    expiresAt: payload.token.expiresIn,
     loadingStates: {
         ...state.loadingStates,
         signUp: 'SUCCESS' as LoadingStatus
@@ -162,11 +155,7 @@ export const authReducer = createReducer(
     },
     errors: {
         ...state.errors,
-        signUp: {
-            code : payload.error.code ,
-            message: payload.error.message ,
-            timestamp:  payload.error.timestamp
-        } 
+        signUp: payload
     },
     verificationState: {
         ...state.verificationState,

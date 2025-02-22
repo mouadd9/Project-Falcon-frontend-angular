@@ -1,0 +1,60 @@
+Angular's change detection is a mechanism thet ensures your application's view 
+(What users see) stays synchronized with your application's state (the data).
+
+// app.component.ts
+@Component({
+  selector: 'app-root',
+  template: `
+    <header>
+      <app-navbar [user]="currentUser"></app-navbar>
+    </header>
+    <main>
+      <app-sidebar></app-sidebar>
+      <app-content>
+        <app-product-list [products]="products"></app-product-list>
+      </app-content>
+    </main>
+  `
+})
+export class AppComponent {
+  currentUser = { name: 'John' };
+  products = [...];
+}
+
+
+component tree : 
+
+AppComponent (Root)
+├── NavbarComponent
+├── SidebarComponent
+└── ContentComponent
+    └── ProductListComponent
+
+so here what happens is : 
+we have the root component AppComponent, this component references other child components : 
+ - NavBarComponent 
+ - SidebarComponent
+ - ContentComponent
+
+ AppComponent declared in its typescript a current USer object and an array of products.
+
+ so the AppComponent passes data to its child components using property binding.
+ meaning whenever we change a property in the parent component it will be changes in the template.
+ and in the template we have selectors for child components that use that bind that variable to theur input properties. 
+
+ number1 ----> 10 (wrong) number1 points to 10
+ number2 ----> 10 number 2 points to another case of 10
+ number1 ----> 20
+
+
+ in objects no, when we create an object and create a handle for it the handle points to the object.
+ and when we assign that handle to another handle it will point on the same object
+
+
+ handle1 -----> { name: 'john' }
+                       ^
+ handle2 = handle1     |
+                       | 
+ handle2 ---------------
+
+ both handle have access to the same object in memory !!!!!!

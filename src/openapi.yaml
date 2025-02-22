@@ -6,36 +6,89 @@ info:
 servers:
   - url: http://localhost:3000/api/v1
 paths:
-  /auth/send-verification-code:
+  /auth/verification-codes:
     post:
-      tags:
-        - auth
-      summary: send a verification code 
-      description: send a verification code to the email in the request body
-      operationId: sendVerificationCode
+      tags: [auth]
+      summary: Request verification code
+      description: |
+        Sends a verification code to the provided email address.
+        - Checks if email is already registered (returns error if exists)
+        - Generates request Id 
+        - Generates verification code
+        - sets an expiration date 15mins
+        - creates a verification entry and stores it in Redis
+        - Sends email with verification code
       requestBody:
+        description: Email address for registration
+        required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/VerificationCodeRequest'
-        required: true
+            example:
+              email: user@example.com
       responses:
-        '200':
-          description: Verification code sent
+        '202':
+          description: |
+             Verification code initiated successfully.
+             The code has been sent to the provided email address
+             and will expire at the specified time.
           content: 
             application/json:
               schema:
                 $ref: '#/components/schemas/VerificationCodeResponse'
+              example:
+                requestId: "550e8400-e29b-41d4-a716-446655440000"
+                message: "Verification code sent to your email"
+                expiryDate: "2023-08-25T15:00:00Z"
         '400':
-          description: Invalid email format
+          description: Invalid request
           content: 
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'         
-  /auth/complete-registration:
+                $ref: '#/components/schemas/ErrorResponse' 
+              example:
+                error: "Invalid email format"
+                details: "Please provide a valid email address"  
+        '409':
+          description: Conflict - Email already registered
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: "Email already registered"
+                details: "This email address is already associated with an account" 
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'   
+
+  /auth/signup:
     post:
-      tags:
-        - auth
+      tags: [auth]
+      summary: Complete user registration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignupRequest'
+      responses:
+        '201':
+          description: User created and authenticated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignupResponse'
+        '400':
+          description: Invalid verification code
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /auth/login:
     post:
       tags:
@@ -52,25 +105,129 @@ components:
         email:
           type: string
           format: email
+          example: user@example.com
+      description: Email address for registration
 
     VerificationCodeResponse:
       type: object
       properties:
         requestId:
-          type: integer
-          format: UUID 
-        message: 
           type: string
-        expiryDate: 
+          format: uuid
+          description: Unique identifier for the verification request
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        message:
+          type: string
+          description: Success message
+          example: "Verification code sent to your email"
+        expiryDate:
           type: string
           format: date-time
+          description: Expiration time of the verification code
+          example: "2023-08-25T15:00:00Z"
+      description: Successful verification code response
+
+    SignupRequest:
+      type: object
+      required: [requestId, code, email, username, password]
+      properties:
+        requestId:
+          type: string
+          format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        code:
+          type: string
+          example: "A1B2C3"
+        email:
+          type: string
+          format: email
+          example: "user@example.com"
+        username:
+          type: string
+          minLength: 3
+          example: "john_doe"
+        password:
+          type: string
+          format: password
+          minLength: 8
+          example: "SecurePass123!"
+        personalInfo:
+          type: object
+          properties:
+            firstName:
+              type: string
+              example: "John"
+            lastName:
+              type: string
+              example: "Doe"
+
+    SignupResponse:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/UserResponse'
+        token:
+          $ref: '#/components/schemas/AuthToken'
+      description: Successful registration response containing user details and authentication token
+    
+    # User Details
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+          description: Unique user identifier
+        email:
+          type: string
+          format: email
+          example: "user@example.com"
+          description: Verified email address
+        username:
+          type: string
+          minLength: 3
+          example: "john_doe"
+          description: Unique username
+        createdAt:
+          type: string
+          format: date-time
+          example: "2023-08-25T15:00:00Z"
+          description: Account creation timestamp
+      required: [id, email, username, createdAt]
+
+    # Authentication Token
+    AuthToken:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+          description: JWT access token for authenticated requests
+        tokenType:
+          type: string
+          enum: [Bearer]
+          example: "Bearer"
+          description: Token type
+        expiresIn:
+          type: integer
+          example: 3600
+          description: Token validity duration in seconds
+      required: [accessToken, tokenType, expiresIn]
+
     ErrorResponse:
       type: object
       properties:
         error:
           type: string
+          description: Error type identifier
+        message:
+          type: string
+          description: Human-readable error message
         details:
           type: string
+          description: Additional error context
+      required: [error, message]
 
   securitySchemes:
     BearerAuth:

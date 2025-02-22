@@ -1,4 +1,5 @@
 <div id="root">
+    <ng-container>
     <div class="sign-in-form" >
         <div class="logo"><img src="assets/images/profile.svg" alt="Logo"><span>Falcon</span></div>
 
@@ -26,12 +27,17 @@
                            placeholder="Code"
                            formControlName="verificationCode">
                 </div>
-                <button type="button" 
+
+                
+                <ng-container *ngIf="buttonState$ | async as state">
+                    <button 
                         class="button"
                         (click)="onSendCode()"
-                        [disabled]="emailCtr.invalid">
-                    Send Code
-                </button>
+                        [disabled]="emailCtr.invalid || state.isLoading">
+                        {{ state.buttonText }}
+                    </button>
+                    <div class="error" *ngIf="(codeRequestError$ | async) as error">{{ error.message }}</div>
+                </ng-container>
             </div>
             <div class="error" *ngIf="verificationCodeCtr.errors && (verificationCodeCtr.dirty || verificationCodeCtr.touched)"> {{getErrorMessage(verificationCodeCtr)}} </div>
 
@@ -112,11 +118,11 @@
             <!-------->
             <!-------->
             <button type="button" 
-                    class="button"
-                    (click)="onSignUp()"
+                        class="button" 
+                        (click)="onSignUp()"
                     [disabled]="this.mainForm.invalid">
                 Sign up
-            </button>
+                </button>
             <div class="error terms-error" *ngIf="mainForm.get('termsAccepted')?.errors?.['requiredTrue'] && mainForm.get('termsAccepted')?.touched">
               You must accept the terms and conditions
             </div>
@@ -127,5 +133,5 @@
             <a class="link" routerLink="/auth/sign-in">Log in</a>
         </div>
     </div>
-
+</ng-container>
 </div>

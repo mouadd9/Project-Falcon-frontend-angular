@@ -1,17 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { faEnvelope, faLock, faEye, faCheck, faUser } from '@fortawesome/free-solid-svg-icons';
 import { VerificationCodeRequest } from '../../../models/verification.model';
 import { SignUpFormValue, SignUpRequest } from '../../../models/sign-up.model';
-import { map, Observable } from 'rxjs';
+import { filter, map, Observable, Subscription, take } from 'rxjs';
 import { confirmEqualValidator } from '../../../validators/confirm-equal.validator';
 import { Store } from '@ngrx/store';
+import { SignUpFormActions } from '../../../state/auth.actions';
+import { selectVerificationCodeButtonState, selectCodeRequestError, selectRequestId } from '../../../state/auth.selectors';
 
 @Component({
   selector: 'app-sign-up',
   standalone: false,
   templateUrl: './sign-up.component.html',
-  styleUrls: ['./sign-up.component.scss']
+  styleUrls: ['./sign-up.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SignUpComponent implements OnInit {
 
@@ -33,6 +36,8 @@ export class SignUpComponent implements OnInit {
   passwordCtr!: FormControl;
   confirmPasswordCtr!: FormControl;
 
+  subscription! : Subscription;
+
   // observable that change the UI state
 
   // this observable will emit a true if the user starts typing in the password input
@@ -42,9 +47,16 @@ export class SignUpComponent implements OnInit {
   // this observable emits true if the confirm password control is invalid (has a password confirmation error)
   showConfirmPasswordError$!: Observable<boolean>;
 
+  buttonState$!: Observable<any>;
+  codeRequestError$!: Observable<any>;
+  requestId$!: Observable<string | null>;
+
   constructor(private fb: FormBuilder, private store: Store) { } // this form builder will be used to create a form group 
 
   ngOnInit(): void {
+    this.buttonState$ = this.store.select(selectVerificationCodeButtonState);
+    this.codeRequestError$ = this.store.select(selectCodeRequestError);
+    this.requestId$ = this.store.select(selectRequestId);
     this.initFormControls();
     this.initMainForm();
     this.initObservables();
@@ -117,7 +129,8 @@ export class SignUpComponent implements OnInit {
       console.log(verificationCodeRequest);
 
       //  Dispatch action with `verificationCodeRequest`
-      // this.store.dispatch(); // this action will change the state to loading 
+      // this.store.dispatch(); // this action will change the state to loading
+      this.store.dispatch(SignUpFormActions.verificationCodeRequestSent({payload: verificationCodeRequest})) 
     } else {
       console.log("email control is invalid");
     }
@@ -127,14 +140,20 @@ export class SignUpComponent implements OnInit {
     if (this.mainForm.valid) {
       const formValue: SignUpFormValue = this.mainForm.value;
       const signUpRequest: SignUpRequest = {
+        code: formValue.verificationCode,
         email: formValue.email,
-        verificationCode: formValue.verificationCode,
-        personalInfo: formValue.personalInfo,
-        loginInfo: formValue.loginInfo,
-        requestId: '4545' // we will retrieve this from the AuthState
+        password: formValue.loginInfo.password,
+        username: formValue.loginInfo.username,
+        personalInfo: formValue.personalInfo
       };
-      console.log('Sign up request:', signUpRequest);
-      // Dispatch sign up action
+      this.requestId$.pipe(
+        take(1)  // Take only the current value
+      ).subscribe(requestId => {
+        if (requestId) {
+          signUpRequest.requestId = requestId;
+          this.store.dispatch(SignUpFormActions.registrationRequestSent({ payload: signUpRequest }));
+        }
+      });
     } else {
       this.markFormGroupTouched(this.mainForm);
     }
