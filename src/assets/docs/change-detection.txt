@@ -19,6 +19,8 @@ Angular's change detection is a mechanism thet ensures your application's view
 export class AppComponent {
   currentUser = { name: 'John' };
   products = [...];
+  voiture = [...];
+  users = [...];
 }
 
 

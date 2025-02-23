@@ -38,7 +38,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/VerificationCodeResponse'
               example:
-                requestId: "550e8400-e29b-41d4-a716-446655440000"
+                requestId: "707e8400-e29b-41d4-a716-446655440000"
                 message: "Verification code sent to your email"
                 expiryDate: "2023-08-25T15:00:00Z"
         '400':
@@ -70,6 +70,23 @@ paths:
     post:
       tags: [auth]
       summary: Complete user registration
+      description: |
+        Completes the user registration process by validating the verification code.
+        
+        Validation Flow:
+        1. Check if requestId exists in Redis:
+           - If not found or expired → REQUEST_EXPIRED error
+        
+        2. If requestId exists, check if email matches:
+           - If email doesn't match the one stored with requestId → EMAIL_MISMATCH error
+        
+        3. If email matches, verify the code:
+           - If code doesn't match the stored code → INVALID_CODE error
+        
+        4. If all validations pass:
+           - Create user account
+           - Generate authentication tokens
+           - Return success response
       requestBody:
         required: true
         content:
@@ -78,23 +95,55 @@ paths:
               $ref: '#/components/schemas/SignupRequest'
       responses:
         '201':
-          description: User created and authenticated successfully
+          description: |
+            User created and authenticated successfully.
+            All validations passed:
+            - RequestId was valid and not expired
+            - Email matched the verification request
+            - Code was correct
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/SignupResponse'
         '400':
-          description: Invalid verification code
+          description: |
+            Request validation failed. The error response will indicate which 
+            validation step failed and what action is required.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                requestExpired:
+                  summary: Request ID not found or expired
+                  value:
+                    error: "REQUEST_EXPIRED"
+                    message: "Verification request has expired"
+                    details: "The verification request was not found in Redis or has expired. Please request a new verification code."
+                emailMismatch:
+                  summary: Email doesn't match verification request
+                  value:
+                    error: "EMAIL_MISMATCH"
+                    message: "Email does not match verification request"
+                    details: "The email provided must match the one used when requesting the verification code. Cannot use a different email address."
+                invalidCode:
+                  summary: Incorrect verification code
+                  value:
+                    error: "INVALID_CODE"
+                    message: "The verification code is invalid"
+                    details: "The provided code does not match the code stored for this verification request. Please check and try again."
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'   
+
   /auth/login:
     post:
       tags:
         - auth
     
-
 
 components:
   schemas:
@@ -234,4 +283,3 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
-

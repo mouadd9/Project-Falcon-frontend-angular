@@ -13,6 +13,23 @@ export const SignUpFormActions = createActionGroup({
    }
 })
 
+
+/*
+const reque : VerificationCodeRequest;
+
+this.store.dispatch()
+
+"Action"
+SignUpFormActions.VerificationCodeRequestSent({ payload: reque  })
+
+
+{
+type : [Sign Up Form] Verification Code Request Sent
+payload : reque
+} : Action
+
+*/
+
 // actions dispatched from the log in form
 export const LogInFormActions = createActionGroup({
    source: 'Log In Form',
@@ -34,9 +51,11 @@ export const AuthApiActions = createActionGroup({
    }
 })
 
-export const TimerActions = createActionGroup({
-    source: 'Auth Timer',
-    events: {
-        'Tick': emptyProps()
-    }
-});
+// auth.actions.ts
+export const AuthActions = createActionGroup({
+   source: 'Auth',
+   events: {
+     'Update Auth State': emptyProps(),
+   },
+ });
+ 

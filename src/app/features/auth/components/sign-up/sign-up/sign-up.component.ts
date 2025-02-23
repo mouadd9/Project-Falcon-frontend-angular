@@ -3,11 +3,11 @@ import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from
 import { faEnvelope, faLock, faEye, faCheck, faUser } from '@fortawesome/free-solid-svg-icons';
 import { VerificationCodeRequest } from '../../../models/verification.model';
 import { SignUpFormValue, SignUpRequest } from '../../../models/sign-up.model';
-import { filter, map, Observable, Subscription, take } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { confirmEqualValidator } from '../../../validators/confirm-equal.validator';
 import { Store } from '@ngrx/store';
 import { SignUpFormActions } from '../../../state/auth.actions';
-import { selectVerificationCodeButtonState, selectCodeRequestError, selectRequestId } from '../../../state/auth.selectors';
+import { selectVerificationCodeButtonState, selectCodeRequestError, selectSignUpButtonState } from '../../../state/auth.selectors';
 
 @Component({
   selector: 'app-sign-up',
@@ -17,7 +17,6 @@ import { selectVerificationCodeButtonState, selectCodeRequestError, selectReques
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SignUpComponent implements OnInit {
-
   faEnvelope = faEnvelope;
   faLock = faLock;
   faEye = faEye;
@@ -30,59 +29,43 @@ export class SignUpComponent implements OnInit {
   loginInfoForm!: FormGroup; // login info form group
 
   // form controls
-  emailCtr!: FormControl;
+  emailCtrl!: FormControl;
   usernameCtrl!: FormControl;
   verificationCodeCtr!: FormControl;
   passwordCtr!: FormControl;
   confirmPasswordCtr!: FormControl;
-
-  subscription! : Subscription;
 
   // observable that change the UI state
 
   // this observable will emit a true if the user starts typing in the password input
   // when it emits true the confirm password is shown
   showConfirmPasswordCtr$!: Observable<boolean>;
-  
+
   // this observable emits true if the confirm password control is invalid (has a password confirmation error)
   showConfirmPasswordError$!: Observable<boolean>;
 
-  buttonState$!: Observable<any>;
+  SendCodebuttonState$!: Observable<any>;
+  SignUpButtonState$!: Observable<any>;
+
   codeRequestError$!: Observable<any>;
-  requestId$!: Observable<string | null>;
 
   constructor(private fb: FormBuilder, private store: Store) { } // this form builder will be used to create a form group 
 
   ngOnInit(): void {
-    this.buttonState$ = this.store.select(selectVerificationCodeButtonState);
-    this.codeRequestError$ = this.store.select(selectCodeRequestError);
-    this.requestId$ = this.store.select(selectRequestId);
-    this.initFormControls();
-    this.initMainForm();
+    this.selectState(); // we select state from the store
+    this.initFormControls(); // we initialize form controls 
+    this.initMainForm(); // we initialize form groups
     this.initObservables();
   }
 
-  private initObservables(): void {
-    this.showConfirmPasswordCtr$ = this.passwordCtr.valueChanges.pipe(map(value => true)); // on value changes will return an observable, this observale emits each value the user puts in
-    this.showConfirmPasswordError$ = this.loginInfoForm.statusChanges.pipe(map(status=>status === 'INVALID' &&
-      this.passwordCtr.value &&
-      this.confirmPasswordCtr.value &&
-      this.loginInfoForm.hasError('confirmEqual')));
+  private selectState(): void {
+    this.SendCodebuttonState$ = this.store.select(selectVerificationCodeButtonState);
+    this.codeRequestError$ = this.store.select(selectCodeRequestError);
+    this.SignUpButtonState$ = this.store.select(selectSignUpButtonState);
   }
-
-  private initMainForm(): void {
-    this.mainForm = this.fb.group({
-      email: this.emailCtr, // this control will be used to determin if the [send code/Sign up] button will be enabled
-      verificationCode: this.verificationCodeCtr,
-      personalInfo: this.personalInfoForm,
-      loginInfo: this.loginInfoForm,
-      termsAccepted: [false, [Validators.requiredTrue]]
-    });
-  }
-
   private initFormControls(): void {
     // verification controls
-    this.emailCtr = this.fb.control('', [
+    this.emailCtrl = this.fb.control('', [
       Validators.required,
       Validators.email
     ]);
@@ -110,6 +93,7 @@ export class SignUpComponent implements OnInit {
       Validators.minLength(8),
       Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$')
     ]);
+
     this.confirmPasswordCtr = this.fb.control('', [Validators.required]);
 
     // login info form group 
@@ -121,22 +105,33 @@ export class SignUpComponent implements OnInit {
       validators: [confirmEqualValidator('password', 'confirmPassword')]
     });
   }
-
-  onSendCode() {
-    if (this.emailCtr?.valid) {
-      const verificationCodeRequest: VerificationCodeRequest = this.emailCtr.value;
-
-      console.log(verificationCodeRequest);
-
-      //  Dispatch action with `verificationCodeRequest`
-      // this.store.dispatch(); // this action will change the state to loading
-      this.store.dispatch(SignUpFormActions.verificationCodeRequestSent({payload: verificationCodeRequest})) 
-    } else {
-      console.log("email control is invalid");
-    }
+  private initMainForm(): void {
+    this.mainForm = this.fb.group({
+      email: this.emailCtrl, // this control will be used to determin if the [send code/Sign up] button will be enabled
+      verificationCode: this.verificationCodeCtr,
+      personalInfo: this.personalInfoForm,
+      loginInfo: this.loginInfoForm,
+      termsAccepted: [false, [Validators.requiredTrue]]
+    });
+  }
+  private initObservables(): void {
+    this.showConfirmPasswordCtr$ = this.passwordCtr.valueChanges.pipe(map(value => true)); // on value changes will return an observable, this observale emits each value the user puts in
+    this.showConfirmPasswordError$ = this.loginInfoForm.statusChanges.pipe(map(status => status === 'INVALID' &&
+      this.passwordCtr.value &&
+      this.confirmPasswordCtr.value &&
+      this.loginInfoForm.hasError('confirmEqual')));
   }
 
-  onSignUp() {
+  public onSendCode() {
+    if (this.emailCtrl?.valid) {
+      const email = this.emailCtrl.value; // console.log(email) ===> "user@gmail.com"
+      const verificationCodeRequest: VerificationCodeRequest = { email };
+      this.store.dispatch(SignUpFormActions.verificationCodeRequestSent({ payload: verificationCodeRequest }))
+    } else {
+      this.emailCtrl.markAsTouched();
+    }
+  }
+  public onSignUp() {
     if (this.mainForm.valid) {
       const formValue: SignUpFormValue = this.mainForm.value;
       const signUpRequest: SignUpRequest = {
@@ -146,21 +141,20 @@ export class SignUpComponent implements OnInit {
         username: formValue.loginInfo.username,
         personalInfo: formValue.personalInfo
       };
-      this.requestId$.pipe(
-        take(1)  // Take only the current value
-      ).subscribe(requestId => {
-        if (requestId) {
-          signUpRequest.requestId = requestId;
-          this.store.dispatch(SignUpFormActions.registrationRequestSent({ payload: signUpRequest }));
-        }
-      });
+
+      // Get requestId from localStorage
+      const requestId = localStorage.getItem('verificationRequestId');
+      if (requestId) {
+        signUpRequest.requestId = requestId;
+        this.store.dispatch(SignUpFormActions.registrationRequestSent({ payload: signUpRequest }));
+      } // else we will show an error message prompting the user to send a code to his email.
     } else {
       this.markFormGroupTouched(this.mainForm);
     }
   }
 
-  // Helper method to get error messages
-  getErrorMessage(control: AbstractControl): string {
+  // Helper method to get error messages, we pass the control and we get its errors
+  public getErrorMessage(control: AbstractControl): string {
     if (control.hasError('required')) {
       return 'This field is required';
     }

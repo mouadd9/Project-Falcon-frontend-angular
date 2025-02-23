@@ -1,4 +1,4 @@
-<app-nav class="navbar" *ngIf="this.showNavBar"></app-nav> <!--here we are referencing the global component nav bar-->
+<app-nav class="navbar" *ngIf="showNavBar$ | async"></app-nav> <!--here we are referencing the global component nav bar-->
 <div class="router-container">
     <router-outlet></router-outlet> <!-- the routed components will be rendered here -->
 </div>

@@ -14,11 +14,16 @@ export class AuthService {
 
     public sendVerificationCode(codeRequest: VerificationCodeRequest): Observable<VerificationCodeResponse> {
         const headers = { 'Content-Type': 'application/json' };
+        console.log(codeRequest);
         return this.http.post<VerificationCodeResponse>(
             `${environment.apiUrl}/auth/verification-codes`, 
-            { email: codeRequest },  // Wrap email in an object
+            codeRequest ,  // Wrap email in an object
             { headers }
         );
+
+        /*
+        { headers } <=>  { "headers": { "Content-Type": "application/json" } }
+        */
     }
 
 
@@ -32,7 +37,8 @@ export class AuthService {
     */
 
     public signUp(request: SignUpRequest): Observable<SignUpResponse> {
-        return this.http.post<SignUpResponse>(`${environment.apiUrl}/auth/signup`, request);
+      const headers = { 'Content-Type': 'application/json' };
+        return this.http.post<SignUpResponse>(`${environment.apiUrl}/auth/signup`, request, {headers});
     }
 
     // we will handle errors in effects.

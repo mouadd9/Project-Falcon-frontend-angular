@@ -1,6 +1,7 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { selectNavBarState } from './features/auth/state/auth.selectors';
 
 @Component({
   selector: 'app-root',
@@ -9,14 +10,12 @@ import { Router } from '@angular/router';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  public showNavBar: boolean = false;
-  private authSubscription: Subscription | undefined;
+  showNavBar$!: Observable<Boolean>;
 
-  constructor(private router: Router) {}
+  constructor(private store : Store) {}
 
   ngOnInit(): void {
-
-
+   this.showNavBar$ = this.store.select(selectNavBarState);
   }
 
 }

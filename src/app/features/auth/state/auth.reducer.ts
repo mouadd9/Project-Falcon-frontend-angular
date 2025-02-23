@@ -1,5 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
-import { AuthApiActions, SignUpFormActions } from './auth.actions';
+import { AuthActions, AuthApiActions, SignUpFormActions } from './auth.actions';
 import { ErrorResponse } from '../models/error-response';
 
 // Define loading status for type safety
@@ -133,12 +133,24 @@ export const authReducer = createReducer(
   })),
   on(AuthApiActions.registrationRequestSentSuccess, (state, { payload }) => ({
     ...state,
-    isLoggedIn: true,
     token: payload.token.accessToken,
     expiresAt: payload.token.expiresIn,
     loadingStates: {
         ...state.loadingStates,
         signUp: 'SUCCESS' as LoadingStatus
+    },
+    errors: {
+        ...state.errors
+    },
+    verificationState: {
+        ...state.verificationState
+    }
+  })),
+  on(AuthActions.updateAuthState,(state)=>({
+    ...state,
+    isLoggedIn: true,
+    loadingStates: {
+        ...state.loadingStates
     },
     errors: {
         ...state.errors

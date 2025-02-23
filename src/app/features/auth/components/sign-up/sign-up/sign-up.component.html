@@ -15,7 +15,7 @@
                          placeholder="Email address"
                          formControlName="email">
               </div>
-              <div class="error" *ngIf="emailCtr.errors && (emailCtr.dirty || emailCtr.touched)"> {{getErrorMessage(emailCtr)}} </div>
+              <div class="error" *ngIf="emailCtrl.errors && (emailCtrl.dirty || emailCtrl.touched)"> {{getErrorMessage(emailCtrl)}} </div>
             </div>
             <div class="input-container">
             <div class="verification-code-field">
@@ -29,11 +29,11 @@
                 </div>
 
                 
-                <ng-container *ngIf="buttonState$ | async as state">
+                <ng-container *ngIf="SendCodebuttonState$ | async as state">
                     <button 
                         class="button"
                         (click)="onSendCode()"
-                        [disabled]="emailCtr.invalid || state.isLoading">
+                        [disabled]="emailCtrl.invalid || state.isLoading">
                         {{ state.buttonText }}
                     </button>
                     <div class="error" *ngIf="(codeRequestError$ | async) as error">{{ error.message }}</div>
@@ -117,12 +117,14 @@
             <!-------->
             <!-------->
             <!-------->
+            <ng-container *ngIf="SignUpButtonState$ | async as state" >
             <button type="button" 
                         class="button" 
                         (click)="onSignUp()"
-                    [disabled]="this.mainForm.invalid">
-                Sign up
+                    [disabled]="this.mainForm.invalid || state.isLoading">
+                {{state.buttonText}}
                 </button>
+            </ng-container>
             <div class="error terms-error" *ngIf="mainForm.get('termsAccepted')?.errors?.['requiredTrue'] && mainForm.get('termsAccepted')?.touched">
               You must accept the terms and conditions
             </div>

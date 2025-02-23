@@ -4,21 +4,20 @@ import { AuthState } from "./auth.reducer";
 // 1. Feature Selector - Gets the feature slice of state
 export const selectAuthState = createFeatureSelector<AuthState>('auth');
 
-// 2. Basic Selector - Gets specific properties from feature state
 export const selectVerificationState = createSelector(
     selectAuthState,
     (state: AuthState) => state.verificationState
 ); // we will use this selector to get an observable that emits new verificationStates
 
-export const selectRequestId = createSelector(
-    selectVerificationState,
-    (state) => state.requestId
-);
-
 export const selectCodeRequestStatus = createSelector(
     selectAuthState,
     (state: AuthState) => state.loadingStates.codeRequest
 );
+
+export const selectSignUpRequestStatus = createSelector(
+    selectAuthState,
+    (state: AuthState) => state.loadingStates.signUp
+)
 
 export const selectCodeRequestError = createSelector(
     selectAuthState,
@@ -32,3 +31,17 @@ export const selectVerificationCodeButtonState = createSelector(
         buttonText: status === 'LOADING' ? 'Sending...' : 'Send Code'
     })
 );
+
+export const selectSignUpButtonState = createSelector(
+    selectSignUpRequestStatus,
+    (status) => ({
+        isLoading: status === 'LOADING',
+        buttonText: status === 'LOADING' ? 'Signing Up...' : 'Sign Up'
+    })
+        
+)
+
+export const selectNavBarState = createSelector(
+    selectAuthState,
+    (state) => state.isLoggedIn
+)
