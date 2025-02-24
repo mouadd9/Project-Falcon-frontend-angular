@@ -92,22 +92,15 @@ export class AuthEffects {
             switchMap((action) => {
                 localStorage.removeItem('verificationRequestId');
                 localStorage.setItem('access-token', action.payload.token.accessToken);
-              return  from(this.router.navigate(['/my-space'])).pipe(
-                tap(() => {this.store.dispatch(AuthActions.updateAuthState())}), 
-                map(() => ({ type: '[Auth] Navigation Completed' }))
-            )})
-           
-            /*map((data) => {
-                // here we should clear the requestId from the local storage 
-                // we should store the jwt
-                // then we should route the user to mySpace 
-                localStorage.removeItem('verificationRequestId');
-                localStorage.setItem('access-token', data.payload.token.accessToken);
-                this.router.navigate(['/my-space']);
-                return AuthActions.updateAuthState();
-            })*/
-        )
-    })
+                // Store expiration time in milliseconds
+                const expiresAt = Date.now() + (action.payload.token.expiresIn * 1000);
+                localStorage.setItem('token-expires-at', expiresAt.toString());
+                return from(this.router.navigate(['/my-space'])).pipe(
+                    map(() => ({ type: '[Auth] Navigation Completed' }))
+                );
+            })
+        );
+    });
 
     // now we need effects that will clear the local storage when the user sign's up
 

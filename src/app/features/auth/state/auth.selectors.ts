@@ -38,10 +38,4 @@ export const selectSignUpButtonState = createSelector(
         isLoading: status === 'LOADING',
         buttonText: status === 'LOADING' ? 'Signing Up...' : 'Sign Up'
     })
-        
-)
-
-export const selectNavBarState = createSelector(
-    selectAuthState,
-    (state) => state.isLoggedIn
 )

@@ -109,7 +109,26 @@
     background-color: var(--nav-bar-hover-background-color);
 }
 
+.logout-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 20px;
+    background-color: #dc3545;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s;
 
+    &:hover {
+        background-color: #c82333;
+    }
+
+    fa-icon {
+        font-size: 0.9rem;
+    }
+}
 
 /* Media Queries */
 @media screen and (max-width: 768px) {

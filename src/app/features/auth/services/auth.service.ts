@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, tap, timeout } from 'rxjs';
 import { VerificationCodeRequest, VerificationCodeResponse } from '../models/verification.model';
@@ -6,42 +6,36 @@ import { environment } from '../../../../environments/environment';
 import { SignUpRequest, SignUpResponse } from '../models/sign-up.model';
 
 @Injectable({
-    providedIn: 'root' // provided at root, the root injector creates a singleton of this service
+   providedIn: 'root' // provided at root, the root injector creates a singleton of this service
 })
 export class AuthService {
 
-    constructor(private http: HttpClient) { }
+   constructor(private http: HttpClient) { }
 
-    public sendVerificationCode(codeRequest: VerificationCodeRequest): Observable<VerificationCodeResponse> {
-        const headers = { 'Content-Type': 'application/json' };
-        console.log(codeRequest);
-        return this.http.post<VerificationCodeResponse>(
-            `${environment.apiUrl}/auth/verification-codes`, 
-            codeRequest ,  // Wrap email in an object
-            { headers }
-        );
+   public sendVerificationCode(codeRequest: VerificationCodeRequest): Observable<VerificationCodeResponse> {
+      // const headers = { 'Content-Type': 'application/json' };
+      const headers = new HttpHeaders()
+                        .set('Content-Type', 'application/json');
+      return this.http.post<VerificationCodeResponse>(`${environment.apiUrl}/auth/verification-codes`, codeRequest, { headers });
+      /*
+      { headers } <=>  { "headers": { "Content-Type": "application/json" } }
+      */
+   }
+   // we send this : {  "email": "mouad@gmail.com"  }
+   /* we get this : 
+   {
+     "requestId": "550e8400-e29b-41d4-a716-446655440000",
+     "message": "Verification code sent to your email",
+     "expiryDate": "2023-08-25T15:00:00Z"
+    } 
+   */
+   public signUp(request: SignUpRequest): Observable<SignUpResponse> {
+      const headers = new HttpHeaders()
+                        .set('Content-Type', 'application/json');
+      return this.http.post<SignUpResponse>(`${environment.apiUrl}/auth/signup`, request, { headers });
+   }
 
-        /*
-        { headers } <=>  { "headers": { "Content-Type": "application/json" } }
-        */
-    }
-
-
-    // we send this : {  "email": "mouad@gmail.com"  }
-    /* we get this : 
-    {
-      "requestId": "550e8400-e29b-41d4-a716-446655440000",
-      "message": "Verification code sent to your email",
-      "expiryDate": "2023-08-25T15:00:00Z"
-     } 
-    */
-
-    public signUp(request: SignUpRequest): Observable<SignUpResponse> {
-      const headers = { 'Content-Type': 'application/json' };
-        return this.http.post<SignUpResponse>(`${environment.apiUrl}/auth/signup`, request, {headers});
-    }
-
-    // we will handle errors in effects.
+   // we will handle errors in effects.
 
 }
 

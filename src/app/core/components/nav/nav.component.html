@@ -13,11 +13,17 @@
             <span>Rooms</span>
         </button>
     </div>
-    <button class="profile-button">
-        <div class="profile-pic-placeholder">
-            <fa-icon [icon]="faUser"></fa-icon>
-        </div>
-        <span class="profile-name">Hello Mouad !</span>
-        <fa-icon [icon]="faChevronDown"></fa-icon>
-    </button>
+    <div class="nav-right">
+        <button class="profile-button">
+            <div class="profile-pic-placeholder">
+                <fa-icon [icon]="faUser"></fa-icon>
+            </div>
+            <span class="profile-name">Hello Mouad !</span>
+            <fa-icon [icon]="faChevronDown"></fa-icon>
+        </button>
+        <button class="logout-button" (click)="onLogout()">
+            <fa-icon [icon]="faSignOutAlt"></fa-icon>
+            <span>Logout</span>
+        </button>
+    </div>
 </div>

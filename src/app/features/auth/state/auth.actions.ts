@@ -1,4 +1,4 @@
-import { createActionGroup, props, emptyProps } from "@ngrx/store";
+import { createActionGroup, props, emptyProps, createAction } from "@ngrx/store";
 import { VerificationCodeRequest, VerificationCodeResponse } from "../models/verification.model";
 import { SignUpRequest, SignUpResponse } from "../models/sign-up.model";
 import { Credentials, logInResponse } from "../models/log-in.model";
@@ -56,6 +56,13 @@ export const AuthActions = createActionGroup({
    source: 'Auth',
    events: {
      'Update Auth State': emptyProps(),
+     'Logout': emptyProps(),
+     'Token Expired': emptyProps()
    },
  });
  
+ // Add this to existing actions
+export const registrationSuccessWithNavigation = createAction(
+   '[Auth] Registration Success With Navigation',
+   props<{ redirectTo: string[] }>()
+ );

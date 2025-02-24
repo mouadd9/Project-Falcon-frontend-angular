@@ -217,6 +217,17 @@ components:
           $ref: '#/components/schemas/UserResponse'
         token:
           $ref: '#/components/schemas/AuthToken'
+      example:
+        user:
+          id: "123e4567-e89b-12d3-a456-426614174000"
+          email: "user@example.com"
+          username: "john_doe"
+          createdAt: "2024-02-24T01:00:00Z"
+          firstName: "John"
+          lastName: "Doe"
+        token:
+          accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          expiresIn: 13  # 1 hour in seconds
       description: Successful registration response containing user details and authentication token
     
     # User Details
@@ -251,18 +262,12 @@ components:
       properties:
         accessToken:
           type: string
-          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
-          description: JWT access token for authenticated requests
-        tokenType:
-          type: string
-          enum: [Bearer]
-          example: "Bearer"
-          description: Token type
+          description: JWT token for authentication
         expiresIn:
           type: integer
-          example: 3600
-          description: Token validity duration in seconds
-      required: [accessToken, tokenType, expiresIn]
+          description: Token expiration time in seconds
+          example: 13  # 1 hour
+      required: [accessToken, expiresIn]
 
     ErrorResponse:
       type: object

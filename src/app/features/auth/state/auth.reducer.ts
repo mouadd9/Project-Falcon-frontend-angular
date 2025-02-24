@@ -1,6 +1,8 @@
 import { createReducer, on } from '@ngrx/store';
 import { AuthActions, AuthApiActions, SignUpFormActions } from './auth.actions';
 import { ErrorResponse } from '../models/error-response';
+import { Router } from '@angular/router';
+import { inject } from '@angular/core';
 
 // Define loading status for type safety
 export type LoadingStatus = 'IDLE' | 'LOADING' | 'SUCCESS' | 'ERROR';
@@ -32,6 +34,7 @@ export interface AuthState {
         requestId: string | null;
         expiryDate: string | null;
         message: string | null;
+        email: string | null;
     };
 }
 
@@ -60,7 +63,8 @@ export const initialAuthState: AuthState = {
     verificationState: {
         requestId: null,
         expiryDate: null,
-        message: null
+        message: null,
+        email: null
     },
 };
 
@@ -133,6 +137,7 @@ export const authReducer = createReducer(
   })),
   on(AuthApiActions.registrationRequestSentSuccess, (state, { payload }) => ({
     ...state,
+    isLoggedIn: true,
     token: payload.token.accessToken,
     expiresAt: payload.token.expiresIn,
     loadingStates: {
@@ -149,6 +154,7 @@ export const authReducer = createReducer(
   on(AuthActions.updateAuthState,(state)=>({
     ...state,
     isLoggedIn: true,
+    token: localStorage.getItem('access-token'),
     loadingStates: {
         ...state.loadingStates
     },
@@ -158,6 +164,12 @@ export const authReducer = createReducer(
     verificationState: {
         ...state.verificationState
     }
+  })),
+  on(AuthActions.logout, (state) => ({
+    ...initialAuthState
+  })),
+  on(AuthActions.tokenExpired, (state) => ({
+    ...initialAuthState
   })),
   on(AuthApiActions.registrationRequestSentFailure, (state, { payload }) => ({
     ...state,
