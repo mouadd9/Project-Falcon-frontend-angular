@@ -1,10 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Observable, Subscription, interval } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import { Observable, Subscription } from 'rxjs';
 import { Router, NavigationEnd, Event as RouterEvent } from '@angular/router';
 import { filter, map } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { AuthActions } from './features/auth/state/auth.actions';
-import { selectAuthState } from './features/auth/state/auth.selectors';
+import { JwtService } from './features/auth/services/jwt.service';
 
 @Component({
   selector: 'app-root',
@@ -12,13 +12,13 @@ import { selectAuthState } from './features/auth/state/auth.selectors';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent implements OnInit/*, OnDestroy*/ {
   showNavBar$!: Observable<boolean>;
-  private tokenCheckSubscription?: Subscription;
-  private authStateSubscription?: Subscription;
+  // private tokenCheckSubscription?: Subscription;
+  // private authStateSubscription?: Subscription;
 
 
-  constructor(private router: Router, private store: Store) {
+  constructor(private router: Router, private store: Store, private jwtService: JwtService) {
     // Set up router event subscription in constructor
     this.showNavBar$ = this.router.events.pipe(
       filter((event: RouterEvent): event is NavigationEnd => event instanceof NavigationEnd),
@@ -29,7 +29,7 @@ export class AppComponent implements OnInit, OnDestroy {
     );
 
     // Listen to auth state changes
-    this.authStateSubscription = this.store.select(selectAuthState)
+    /*this.authStateSubscription = this.store.select(selectAuthState)
       .subscribe(state => {
         if (state.token) {
           console.log('Auth state changed - token present, starting timer');
@@ -38,53 +38,46 @@ export class AppComponent implements OnInit, OnDestroy {
           console.log('Auth state changed - no token, stopping timer');
           this.stopExpirationTimer();
         }
-      });
-
-
-
+      });*/
   }
 
   ngOnInit(): void {
     // Check token and its expiration
-    this.checkTokenAndRestore();
+    this.restoreStateIfTokenStillValid();
   }
 
-  private checkTokenAndRestore(): void {
-    const token = localStorage.getItem('access-token');
-    const expiresAt = localStorage.getItem('token-expires-at');
-
-    if (!token || !expiresAt) {
-      // No token or expiration found, ensure logged out state
-      this.handleTokenExpiration();
-      return;
-    }
-
-    const expirationTime = parseInt(expiresAt, 10);
-    if (Date.now() >= expirationTime) {
-      // Token has expired
+  private restoreStateIfTokenStillValid(): void {
+    const token: any = localStorage.getItem('access-token'); // first retrieve token from local storage
+    if (!token || this.jwtService.isTokenExpired(token)) { // if there is no token or the token is expired then 
       this.handleTokenExpiration();
     } else {
-      // Token is valid, restore auth state and start monitoring
-      this.store.dispatch(AuthActions.updateAuthState());
-      
+      this.store.dispatch(AuthActions.updateAuthState()); // Token is valid, restore auth state
       // If on auth route with valid token, redirect to protected area
       if (this.router.url.includes('/auth')) {
         this.router.navigate(['/my-space']);
       }
-
       // Start monitoring if not already monitoring
-      this.startExpirationTimer();
+      // this.startExpirationTimer();
     }
   }
 
-  ngOnDestroy(): void {
+  private handleTokenExpiration(): void {
+    console.log('Handling token expiration...');
+    // this.stopExpirationTimer(); // Stop the timer
+    localStorage.removeItem('access-token'); // Clear storage
+    // this.store.dispatch(AuthActions.tokenExpired());// Reset state and redirect
+    this.router.navigate(['/auth/login']);
+    console.log('Token expired, user logged out');
+  } 
+
+  /*ngOnDestroy(): void {
     this.stopExpirationTimer();
     if (this.authStateSubscription) {
       this.authStateSubscription.unsubscribe();
     }
-  }
+  }*/
 
-  private startExpirationTimer(): void {
+ /* private startExpirationTimer(): void {
     // Clean up existing subscription if any
     this.stopExpirationTimer();
     
@@ -120,20 +113,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.tokenCheckSubscription = undefined;
     }
   }
-
-  private handleTokenExpiration(): void {
-    console.log('Handling token expiration...');
-    // Stop the timer
-    this.stopExpirationTimer();
-    
-    // Clear storage
-    localStorage.removeItem('access-token');
-    localStorage.removeItem('token-expires-at');
-    
-    // Reset state and redirect
-    this.store.dispatch(AuthActions.tokenExpired());
-    this.router.navigate(['/auth/login']);
-    console.log('Token expired, user logged out');
-  }
+*/
+  
 
 }

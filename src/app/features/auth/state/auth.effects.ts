@@ -6,8 +6,8 @@
 import { inject, Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { AuthService } from "../services/auth.service";
-import { AuthActions, AuthApiActions, SignUpFormActions } from "./auth.actions";
-import { catchError, delay, from, map, mergeMap, Observable, of, switchMap, tap, timeout } from "rxjs";
+import { AuthApiActions, SignUpFormActions } from "./auth.actions";
+import { catchError, delay, from, map, mergeMap, Observable, of, switchMap } from "rxjs";
 import { Action, Store } from "@ngrx/store";
 import { HttpErrorResponse } from "@angular/common/http";
 import { Router } from "@angular/router";
@@ -48,9 +48,10 @@ export class AuthEffects {
                 map((response) => AuthApiActions.verificationCodeRequestSentSuccess({ payload: response })),
                 catchError((error: HttpErrorResponse) => of(AuthApiActions.verificationCodeRequestSentFailure({
                     payload: {
+                        timestamp: error.error.timestamp,
+                        status: error.error.status,
                         error: error.error.error,
-                        message: error.error.message,
-                        details: error.error.details
+                        message: error.error.message
                     }
                 })))
             ))
@@ -77,9 +78,10 @@ export class AuthEffects {
                 map((response) => AuthApiActions.registrationRequestSentSuccess({ payload: response })),
                 catchError((error: HttpErrorResponse) => of(AuthApiActions.registrationRequestSentFailure({
                     payload: {
+                        timestamp: error.error.timestamp,
+                        status: error.error.status,
                         error: error.error.error,
-                        message: error.error.message,
-                        details: error.error.details
+                        message: error.error.message
                     }
                 })))
             ))
@@ -90,11 +92,11 @@ export class AuthEffects {
         return this.actions$.pipe(
             ofType(AuthApiActions.registrationRequestSentSuccess),
             switchMap((action) => {
+                const token = action.payload["access-token"];
+                // we will clear the requestId from the local storage
                 localStorage.removeItem('verificationRequestId');
-                localStorage.setItem('access-token', action.payload.token.accessToken);
-                // Store expiration time in milliseconds
-                const expiresAt = Date.now() + (action.payload.token.expiresIn * 1000);
-                localStorage.setItem('token-expires-at', expiresAt.toString());
+                // we will store the token in the local storage
+                localStorage.setItem('access-token', token); 
                 return from(this.router.navigate(['/my-space'])).pipe(
                     map(() => ({ type: '[Auth] Navigation Completed' }))
                 );

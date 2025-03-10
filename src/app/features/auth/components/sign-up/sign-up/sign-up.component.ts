@@ -24,9 +24,8 @@ export class SignUpComponent implements OnInit {
   faUser = faUser;
 
   mainForm!: FormGroup; // the entire form group
-
-  personalInfoForm!: FormGroup; // personal info form group
   loginInfoForm!: FormGroup; // login info form group
+  // personalInfoForm!: FormGroup; // personal info form group
 
   // form controls
   emailCtrl!: FormControl;
@@ -74,12 +73,6 @@ export class SignUpComponent implements OnInit {
       Validators.pattern('^[0-9]{6}$')
     ]);
 
-    // personal info form group 
-    this.personalInfoForm = this.fb.group({
-      firstName: ['', [Validators.required, Validators.minLength(2)]],
-      lastName: ['', [Validators.required, Validators.minLength(2)]],
-    });
-
     this.usernameCtrl = this.fb.control('', [
       Validators.required,
       Validators.minLength(7),
@@ -104,16 +97,24 @@ export class SignUpComponent implements OnInit {
     }, {
       validators: [confirmEqualValidator('password', 'confirmPassword')]
     });
+
+    // personal info form group 
+    /*this.personalInfoForm = this.fb.group({
+      firstName: ['', [Validators.required, Validators.minLength(2)]],
+      lastName: ['', [Validators.required, Validators.minLength(2)]],
+    }); */
+
   }
   private initMainForm(): void {
     this.mainForm = this.fb.group({
       email: this.emailCtrl, // this control will be used to determin if the [send code/Sign up] button will be enabled
       verificationCode: this.verificationCodeCtr,
-      personalInfo: this.personalInfoForm,
       loginInfo: this.loginInfoForm,
       termsAccepted: [false, [Validators.requiredTrue]]
+      // personalInfo: this.personalInfoForm,
     });
   }
+
   private initObservables(): void {
     this.showConfirmPasswordCtr$ = this.passwordCtr.valueChanges.pipe(map(value => true)); // on value changes will return an observable, this observale emits each value the user puts in
     this.showConfirmPasswordError$ = this.loginInfoForm.statusChanges.pipe(map(status => status === 'INVALID' &&
@@ -124,7 +125,7 @@ export class SignUpComponent implements OnInit {
 
   public onSendCode() {
     if (this.emailCtrl?.valid) {
-      const email = this.emailCtrl.value; // console.log(email) ===> "user@gmail.com"
+      const email = this.emailCtrl.value; 
       const verificationCodeRequest: VerificationCodeRequest = { email };
       this.store.dispatch(SignUpFormActions.verificationCodeRequestSent({ payload: verificationCodeRequest }))
     } else {
@@ -138,8 +139,7 @@ export class SignUpComponent implements OnInit {
         code: formValue.verificationCode,
         email: formValue.email,
         password: formValue.loginInfo.password,
-        username: formValue.loginInfo.username,
-        personalInfo: formValue.personalInfo
+        username: formValue.loginInfo.username
       };
 
       // Get requestId from localStorage

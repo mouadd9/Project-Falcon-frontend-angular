@@ -1,8 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 import { AuthActions, AuthApiActions, SignUpFormActions } from './auth.actions';
 import { ErrorResponse } from '../models/error-response';
-import { Router } from '@angular/router';
-import { inject } from '@angular/core';
 
 // Define loading status for type safety
 export type LoadingStatus = 'IDLE' | 'LOADING' | 'SUCCESS' | 'ERROR';
@@ -13,8 +11,6 @@ export interface AuthState {
     token: string | null;
     isLoggedIn: boolean;
     refreshToken: string | null;
-    expiresAt: number | null;
-
     // Loading states with type safety
     loadingStates: {
         login: LoadingStatus;
@@ -43,8 +39,6 @@ export const initialAuthState: AuthState = {
     token: null,
     isLoggedIn: false,
     refreshToken: null,
-    expiresAt: null,
-
     // Loading states
     loadingStates: {
         login: 'IDLE' as LoadingStatus,
@@ -138,8 +132,7 @@ export const authReducer = createReducer(
   on(AuthApiActions.registrationRequestSentSuccess, (state, { payload }) => ({
     ...state,
     isLoggedIn: true,
-    token: payload.token.accessToken,
-    expiresAt: payload.token.expiresIn,
+    token: payload['access-token'],
     loadingStates: {
         ...state.loadingStates,
         signUp: 'SUCCESS' as LoadingStatus

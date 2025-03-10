@@ -32,6 +32,7 @@ export class AuthService {
    public signUp(request: SignUpRequest): Observable<SignUpResponse> {
       const headers = new HttpHeaders()
                         .set('Content-Type', 'application/json');
+                        
       return this.http.post<SignUpResponse>(`${environment.apiUrl}/auth/signup`, request, { headers });
    }
 

@@ -6,10 +6,10 @@ info:
 servers:
   - url: http://localhost:3000/api/v1
 paths:
+  # endpoint 1 : POST /auth/verification-codes
   /auth/verification-codes:
     post:
-      tags: [auth]
-      summary: Request verification code
+      summary: Request verification code for the email sent in the body
       description: |
         Sends a verification code to the provided email address.
         - Checks if email is already registered (returns error if exists)
@@ -19,8 +19,6 @@ paths:
         - creates a verification entry and stores it in Redis
         - Sends email with verification code
       requestBody:
-        description: Email address for registration
-        required: true
         content:
           application/json:
             schema:
@@ -28,47 +26,49 @@ paths:
             example:
               email: user@example.com
       responses:
-        '202':
-          description: |
-             Verification code initiated successfully.
-             The code has been sent to the provided email address
-             and will expire at the specified time.
-          content: 
+        # 201 CREATED
+        '201':
+          description: The code has been sent to the provided email address and will expire at the specified time.
+          content:
             application/json:
               schema:
                 $ref: '#/components/schemas/VerificationCodeResponse'
               example:
                 requestId: "707e8400-e29b-41d4-a716-446655440000"
-                message: "Verification code sent to your email"
                 expiryDate: "2023-08-25T15:00:00Z"
+        # 400 BAD REQUEST
         '400':
           description: Invalid request
-          content: 
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse' 
-              example:
-                error: "Invalid email format"
-                details: "Please provide a valid email address"  
-        '409':
-          description: Conflict - Email already registered
-          content: 
+          content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               example:
-                error: "Email already registered"
-                details: "This email address is already associated with an account" 
+                timestamp: "2023-08-25T15:00:00Z"
+                error: "Invalid email format"
+                message: "Please provide a valid email address"
+                status: 400
+        # 409 CONFLICT
+        '409':
+          description: Conflict - Account with this email already registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                timestamp: "2023-08-25T15:00:00Z"
+                error: "USER_ALREADY_EXISTS"
+                message: "An account with this email already exists"
+                status: 409
         '500':
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'   
-
+                $ref: '#/components/schemas/ErrorResponse'
+  # endpoint 2 : POST /auth/signup
   /auth/signup:
     post:
-      tags: [auth]
       summary: Complete user registration
       description: |
         Completes the user registration process by validating the verification code.
@@ -88,12 +88,12 @@ paths:
            - Generate authentication tokens
            - Return success response
       requestBody:
-        required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/SignupRequest'
       responses:
+        # 201 CREATED
         '201':
           description: |
             User created and authenticated successfully.
@@ -105,6 +105,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SignupResponse'
+        # 400 BAD REQUEST
         '400':
           description: |
             Request validation failed. The error response will indicate which 
@@ -114,36 +115,85 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
-                requestExpired:
-                  summary: Request ID not found or expired
+                codeExpiredOrWrongRequest:
                   value:
-                    error: "REQUEST_EXPIRED"
-                    message: "Verification request has expired"
-                    details: "The verification request was not found in Redis or has expired. Please request a new verification code."
+                    timestamp: "2023-08-25T15:00:00Z"
+                    error: "CODE_EXPIRED_OR_WRONG_REQUEST"
+                    message: "Code expired or wrong Request id"
+                    status: 400
                 emailMismatch:
                   summary: Email doesn't match verification request
                   value:
-                    error: "EMAIL_MISMATCH"
-                    message: "Email does not match verification request"
-                    details: "The email provided must match the one used when requesting the verification code. Cannot use a different email address."
+                    timestamp: "2023-08-25T15:00:00Z"
+                    error: "EMAIL_REQUEST_MISMATCH"
+                    message: "Email used for sign up not verified or the request id doesn't correspond to the email"
+                    status: 400
                 invalidCode:
                   summary: Incorrect verification code
                   value:
+                    timestamp: "2023-08-25T15:00:00Z"
                     error: "INVALID_CODE"
-                    message: "The verification code is invalid"
-                    details: "The provided code does not match the code stored for this verification request. Please check and try again."
+                    message: "invalid verification code"
+                    status: 400
+        # 401 UNAUTHORIZED
+        '401':
+          description: Unauthorized bad credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                timestamp: "2023-08-25T15:00:00Z"
+                error: "AUTHENTICATION_FAILED"
+                message: "authentication failed"
+                status: 401
         '500':
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'   
+                $ref: '#/components/schemas/ErrorResponse'
 
+  # endpoint 3 : POST /auth/login
   /auth/login:
     post:
-      tags:
-        - auth
-    
+      summary: Login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: authentication successful and access-token issued
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        # 401 UNAUTHORIZED
+        '401':
+          description: Unauthorized bad credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                timestamp: "2023-08-25T15:00:00Z"
+                error: "AUTHENTICATION_FAILED"
+                message: "authentication failed"
+                status: 401
+        # 400 BAD REQUEST
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                timestamp: "2023-08-25T15:00:00Z"
+                error: "Invalid email format"
+                message: "Please provide a valid email address"
+                status: 400
 
 components:
   schemas:
@@ -156,7 +206,6 @@ components:
           format: email
           example: user@example.com
       description: Email address for registration
-
     VerificationCodeResponse:
       type: object
       properties:
@@ -165,10 +214,6 @@ components:
           format: uuid
           description: Unique identifier for the verification request
           example: "550e8400-e29b-41d4-a716-446655440000"
-        message:
-          type: string
-          description: Success message
-          example: "Verification code sent to your email"
         expiryDate:
           type: string
           format: date-time
@@ -200,88 +245,57 @@ components:
           format: password
           minLength: 8
           example: "SecurePass123!"
-        personalInfo:
-          type: object
-          properties:
-            firstName:
-              type: string
-              example: "John"
-            lastName:
-              type: string
-              example: "Doe"
-
     SignupResponse:
       type: object
+      required:
+        - access-token
       properties:
-        user:
-          $ref: '#/components/schemas/UserResponse'
-        token:
-          $ref: '#/components/schemas/AuthToken'
+        access-token:
+          type: string
       example:
-        user:
-          id: "123e4567-e89b-12d3-a456-426614174000"
-          email: "user@example.com"
-          username: "john_doe"
-          createdAt: "2024-02-24T01:00:00Z"
-          firstName: "John"
-          lastName: "Doe"
-        token:
-          accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-          expiresIn: 13  # 1 hour in seconds
-      description: Successful registration response containing user details and authentication token
-    
-    # User Details
-    UserResponse:
+        access-token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+    LoginRequest:
       type: object
+      required: [username, password]
       properties:
-        id:
-          type: string
-          format: uuid
-          example: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-          description: Unique user identifier
-        email:
-          type: string
-          format: email
-          example: "user@example.com"
-          description: Verified email address
         username:
           type: string
           minLength: 3
           example: "john_doe"
-          description: Unique username
-        createdAt:
+        password:
           type: string
-          format: date-time
-          example: "2023-08-25T15:00:00Z"
-          description: Account creation timestamp
-      required: [id, email, username, createdAt]
-
-    # Authentication Token
-    AuthToken:
+          format: password
+          minLength: 8
+          example: "SecurePass123!"
+    LoginResponse:
       type: object
+      required:
+        - access-token
       properties:
-        accessToken:
+        access-token:
           type: string
-          description: JWT token for authentication
-        expiresIn:
-          type: integer
-          description: Token expiration time in seconds
-          example: 13  # 1 hour
-      required: [accessToken, expiresIn]
+      example:
+        access-token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 
     ErrorResponse:
       type: object
       properties:
+        timestamp:
+          type: string
+          format: date-time
+          description: exception generation time
+          example: "2023-08-25T15:00:00Z"
         error:
           type: string
           description: Error type identifier
+          example: "BAD REQUEST"
         message:
           type: string
           description: Human-readable error message
-        details:
-          type: string
-          description: Additional error context
-      required: [error, message]
+        status:
+          type: integer
+          description: status code
 
   securitySchemes:
     BearerAuth:

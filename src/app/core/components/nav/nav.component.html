@@ -1,10 +1,12 @@
+
 <div class="nav-container">
     <div class="logo">
         <img src="assets/images/profile.svg" alt="Logo" class="logo-img">
-        <span>CyberSpace</span>
+        <span>Falcon</span>
     </div>
     <div class="nav-links">
-        <button class="nav-item" routerLink="/my-space" routerLinkActive="active">
+        <button class="nav-item" routerLink="/my-space"
+            routerLinkActive="active">
             <fa-icon [icon]="faCube"></fa-icon>
             <span>My Space</span>
         </button>
@@ -13,17 +15,17 @@
             <span>Rooms</span>
         </button>
     </div>
-    <div class="nav-right">
-        <button class="profile-button">
-            <div class="profile-pic-placeholder">
-                <fa-icon [icon]="faUser"></fa-icon>
-            </div>
-            <span class="profile-name">Hello Mouad !</span>
-            <fa-icon [icon]="faChevronDown"></fa-icon>
-        </button>
-        <button class="logout-button" (click)="onLogout()">
+    <!--<div class="nav-right">-->
+    <button class="profile-button">
+        <div class="profile-pic-placeholder">
+            <fa-icon [icon]="faUser"></fa-icon>
+        </div>
+            <span class="profile-name">Hello {{this.username}} !</span>
+        <fa-icon [icon]="faChevronDown"></fa-icon>
+    </button>
+    <!--<button class="logout-button" (click)="onLogout()">
             <fa-icon [icon]="faSignOutAlt"></fa-icon>
             <span>Logout</span>
-        </button>
-    </div>
+        </button> -->
+    <!--</div>-->
 </div>
