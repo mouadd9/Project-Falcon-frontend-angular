@@ -23,6 +23,8 @@ export class SignUpComponent implements OnInit {
   faCheck = faCheck;
   faUser = faUser;
 
+  showPassword = false;
+
   mainForm!: FormGroup; // the entire form group
   loginInfoForm!: FormGroup; // login info form group
   // personalInfoForm!: FormGroup; // personal info form group
@@ -153,6 +155,9 @@ export class SignUpComponent implements OnInit {
     }
   }
 
+  public togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
   // Helper method to get error messages, we pass the control and we get its errors
   public getErrorMessage(control: AbstractControl): string {
     if (control.hasError('required')) {

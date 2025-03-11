@@ -24,7 +24,7 @@ import { SharedModule } from '../../shared/shared.module';
   imports: [
     CommonModule,
     AuthRoutingModule,
-    ReactiveFormsModule,
+    ReactiveFormsModule, // service , form builder, form group, form control
     SharedModule,
     // Only register effects here, reducer is in root store
     EffectsModule.forFeature([AuthEffects])

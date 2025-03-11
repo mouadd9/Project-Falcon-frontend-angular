@@ -249,3 +249,64 @@ input[type="checkbox"]:checked ~ .checkbox fa-icon {
     color: var(--sign-in-text-muted);
     font-size: var(--sign-in-font-base);
 }
+
+
+.sign-in-form {
+    .button {
+        padding: 0 12px;
+        width: auto;
+        min-width: 100px;
+        background-color: var(--sign-in-primary);
+        color: var(--sign-in-text);
+        border: 1px solid var(--sign-in-input-border);
+        transition: all 400ms ease-in-out;
+        &:enabled {
+            &:hover {
+                background-color: var(--sign-up-code-button-hover-bg);
+                color: var(--sign-up-code-button-hover-text);
+            }
+            &:active {
+                background-color: var(--sign-in-primary);
+                color: var(--sign-up-code-button-text);
+            }
+            border-color: var(--sign-in-primary);
+        }
+        &:disabled {
+            background-color: var(--sign-up-code-button-inactive-bg);
+            color: var(--sign-in-text-muted);
+            cursor: default;
+        }
+    }
+}
+
+
+.button {
+    height: var(--sign-in-input-height);
+    padding: 0 14px;
+    border-radius: 10px;
+    font-size: var(--sign-in-font-base);
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    border: none;
+    width: 100%;
+}
+
+.button fa-icon {
+    font-size: 16px;
+}
+
+.input-container {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    .error {
+        color : var(--sign-in-error);
+        font-size: 0.8rem;
+        margin-left: 5px;
+        
+    }
+}

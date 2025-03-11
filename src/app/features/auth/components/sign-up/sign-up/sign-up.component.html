@@ -59,10 +59,10 @@
                 <div class="input-group">
                     <fa-icon [icon]="faLock"></fa-icon>
                     <input class="input"
-                           type="password" 
+                    [type]="showPassword ? 'text' : 'password'"  
                            placeholder="Password"
                            formControlName="password">
-                    <button type="button" class="toggle-password">
+                    <button type="button" class="toggle-password" (click)="togglePasswordVisibility()">
                         <fa-icon [icon]="faEye"></fa-icon>
                     </button>
                 </div>
@@ -72,10 +72,10 @@
                 <div class="input-group" *ngIf="showConfirmPasswordCtr$ | async">
                     <fa-icon [icon]="faLock"></fa-icon>
                     <input class="input" 
-                           type="password" 
+                    [type]="showPassword ? 'text' : 'password'"  
                            placeholder="Confirm password"
                            formControlName="confirmPassword">
-                    <button type="button" class="toggle-password">
+                    <button type="button" class="toggle-password" (click)="togglePasswordVisibility()">
                         <fa-icon [icon]="faEye"></fa-icon>
                     </button>
                 </div>
