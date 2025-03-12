@@ -6,7 +6,7 @@
 import { inject, Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { AuthService } from "../services/auth.service";
-import { AuthApiActions, SignUpFormActions } from "./auth.actions";
+import { AuthApiActions, LogInFormActions, SignUpFormActions } from "./auth.actions";
 import { catchError, delay, from, map, mergeMap, Observable, of, switchMap } from "rxjs";
 import { Action, Store } from "@ngrx/store";
 import { HttpErrorResponse } from "@angular/common/http";
@@ -104,6 +104,38 @@ export class AuthEffects {
         );
     });
 
-    // now we need effects that will clear the local storage when the user sign's up
+    // this is the stream of the actions that will be dispatched to the store by the effect (either failure or success actions)
+    signInEffect$: Observable<Action> = createEffect(()=>{
+        return this.actions$.pipe( // in order to return a stream of actions of type success or failure we'll need a stream of all dispatched actions so we can filter the LoginActions and then proceed to conduct side effects using an inner observable that will me the Api call for us
+            ofType(LogInFormActions.logInCredentialsSent),
+            mergeMap((action) => this.authService.signIn(action.payload).pipe(// merge map will automatically subscribe to this HttpClient Observale , now for each emission it will be either a success or failure, either ways we need to tranform the data into an Action object so that it can be integrated into the stream of actions that will be dispatched to the store by the Effect
+                map((data)=> AuthApiActions.logInCredentialsSentSuccess({payload: data}) ), // if the auth service observable emits a response other than an error we will transform it into an Action object
+                catchError((error: HttpErrorResponse)=> of(AuthApiActions.logInCredentialsSentFailure({
+                    payload: {
+                        timestamp: error.error.timestamp,
+                        status: error.error.status,
+                        error: error.error.error,
+                        message: error.error.message
+                    }                    
+                })))
+            ),
+            
+            ) 
+
+        )
+    });
+
+    signInSuccessEffect$: Observable<Action> = createEffect(()=>{
+        return this.actions$.pipe(
+            ofType(AuthApiActions.logInCredentialsSentSuccess),
+            switchMap((action) => {
+                const token = action.payload["access-token"];
+                localStorage.setItem('access-token', token); 
+                return from(this.router.navigate(['/my-space'])).pipe(
+                    map(() => ({ type: '[Auth] Navigation Completed' }))
+                );
+            })            
+        )
+    })
 
 }

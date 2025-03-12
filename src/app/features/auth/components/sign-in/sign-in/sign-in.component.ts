@@ -16,6 +16,9 @@ import {
 } from '@angular/forms';
 import { map, Observable, tap } from 'rxjs';
 import { SignInFormValue, SignInRequest } from '../../../models/sign-in.model';
+import { Store } from '@ngrx/store';
+import { LogInFormActions } from '../../../state/auth.actions';
+import { selectSignInButtonState } from '../../../state/auth.selectors';
 
 @Component({
   selector: 'app-sign-in',
@@ -43,15 +46,15 @@ export class SignInComponent implements OnInit {
 
   showPassword = false;
   // isLoading = false;
-  formState$!: Observable<boolean>;
+  SignInButtonState$!: Observable<any>;
 
   // we will inject the router service
-  constructor(private router: Router, private fb: FormBuilder) {}
+  constructor(private store: Store, private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.initializeFormControls();
     this.initializeFormGroup();
-    this.initializeObservables();
+    this.selectState();
   }
 
   private initializeFormControls(): void {
@@ -78,16 +81,11 @@ export class SignInComponent implements OnInit {
     });
   }
 
-  private initializeObservables(): void {
-    this.formState$ = this.signInForm.statusChanges.pipe(
-      map(status => status === 'VALID'),
-      tap(status => console.log('Form status is valid:', status))
-    );
-
-    this.formState$.subscribe();
+  private selectState(): void {
+    this.SignInButtonState$ = this.store.select(selectSignInButtonState);
   }
 
-  togglePasswordVisibility(): void {
+  public togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
   }
 
@@ -126,12 +124,9 @@ export class SignInComponent implements OnInit {
       const formValue: SignInFormValue = this.signInForm.value;
       const signInRequest: SignInRequest = {
         username: formValue.username,
-        password: formValue.password
+        password: formValue.password,
       };
-      
-     // this.isLoading = true;
-      // TODO: Dispatch login action to store
-      console.log('Login request:', signInRequest);
+      this.store.dispatch(LogInFormActions.logInCredentialsSent({payload: signInRequest}));
     } else {
       this.signInForm.markAllAsTouched();
     }

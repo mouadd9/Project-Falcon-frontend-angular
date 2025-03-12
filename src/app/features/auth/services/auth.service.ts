@@ -1,48 +1,55 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, tap, timeout } from 'rxjs';
-import { VerificationCodeRequest, VerificationCodeResponse } from '../models/verification.model';
+import {
+  VerificationCodeRequest,
+  VerificationCodeResponse,
+} from '../models/verification.model';
 import { environment } from '../../../../environments/environment';
 import { SignUpRequest, SignUpResponse } from '../models/sign-up.model';
+import { SignInRequest, SignInResponse } from '../models/sign-in.model';
 
 @Injectable({
-   providedIn: 'root' // provided at root, the root injector creates a singleton of this service
+  providedIn: 'root', // provided at root, the root injector creates a singleton of this service
 })
 export class AuthService {
+  constructor(private http: HttpClient) {}
 
-   constructor(private http: HttpClient) { }
-
-   public sendVerificationCode(codeRequest: VerificationCodeRequest): Observable<VerificationCodeResponse> {
-      // const headers = { 'Content-Type': 'application/json' };
-      const headers = new HttpHeaders()
-                        .set('Content-Type', 'application/json');
-      return this.http.post<VerificationCodeResponse>(`${environment.apiUrl}/auth/verification-codes`, codeRequest, { headers });
-      /*
+  public sendVerificationCode(
+    codeRequest: VerificationCodeRequest
+  ): Observable<VerificationCodeResponse> {
+    // const headers = { 'Content-Type': 'application/json' };
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    return this.http.post<VerificationCodeResponse>(
+      `${environment.apiUrl}/auth/verification-codes`,
+      codeRequest,
+      { headers }
+    );
+    /*
       { headers } <=>  { "headers": { "Content-Type": "application/json" } }
       */
-   }
-   // we send this : {  "email": "mouad@gmail.com"  }
-   /* we get this : 
-   {
-     "requestId": "550e8400-e29b-41d4-a716-446655440000",
-     "message": "Verification code sent to your email",
-     "expiryDate": "2023-08-25T15:00:00Z"
-    } 
-   */
-   public signUp(request: SignUpRequest): Observable<SignUpResponse> {
-      const headers = new HttpHeaders()
-                        .set('Content-Type', 'application/json');
-                        
-      return this.http.post<SignUpResponse>(`${environment.apiUrl}/auth/signup`, request, { headers });
-   }
+  }
 
-   // we will handle errors in effects.
+  public signUp(request: SignUpRequest): Observable<SignUpResponse> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
 
+    return this.http.post<SignUpResponse>(
+      `${environment.apiUrl}/auth/signup`,
+      request,
+      { headers }
+    );
+  }
+
+  public signIn(request: SignInRequest): Observable<SignInResponse> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+
+    return this.http.post<SignInResponse>(
+      `${environment.apiUrl}/auth/login`,
+      request,
+      { headers }
+    );
+  }
 }
-
-
-
-
 
 /*
 State Management Evolution: From Subjects to NgRx
@@ -89,15 +96,6 @@ State Management Evolution: From Subjects to NgRx
    - Reduced boilerplate compared to manual subject management
    - Scalable state management for large applications
 */
-
-
-
-
-
-
-
-
-
 
 /*
 if we are using Subject as service approach we would've implemented Ngrx ourselves: 

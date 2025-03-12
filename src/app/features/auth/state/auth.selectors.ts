@@ -24,6 +24,11 @@ export const selectCodeRequestError = createSelector(
     (state: AuthState) => state.errors.codeRequest
 );
 
+export const selectSignInRequestStatus = createSelector(
+    selectAuthState,
+    (state: AuthState) => state.loadingStates.login
+)
+
 export const selectVerificationCodeButtonState = createSelector(
     selectCodeRequestStatus,
     (status) => ({
@@ -37,5 +42,13 @@ export const selectSignUpButtonState = createSelector(
     (status) => ({
         isLoading: status === 'LOADING',
         buttonText: status === 'LOADING' ? 'Signing Up...' : 'Sign Up'
+    })
+)
+
+export const selectSignInButtonState = createSelector(
+    selectSignInRequestStatus,
+    (status) => ({
+        isLoading: status === 'LOADING',
+        buttonText: status === 'LOADING' ? 'Loging In...' : 'Sign Up'
     })
 )
