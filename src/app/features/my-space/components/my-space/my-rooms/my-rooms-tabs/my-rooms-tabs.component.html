@@ -1,13 +1,19 @@
 <div class="tabs">
-    <button class="tab active">
+    <button class="tab"
+        [class.active]="activeFilter === 'joined'"
+        (click)="setFilter('joined')">
         <fa-icon [icon]="faClock"></fa-icon>
         Recent
     </button>
-    <button class="tab">
+    <button class="tab"
+        [class.active]="activeFilter === 'saved'"
+        (click)="setFilter('saved')">
         <fa-icon [icon]="faBookmark"></fa-icon>
         Saved
     </button>
-    <button class="tab">
+    <button class="tab"
+        [class.active]="activeFilter === 'completed'"
+        (click)="setFilter('completed')">
         <fa-icon [icon]="faCheckCircle"></fa-icon>
         Completed
     </button>

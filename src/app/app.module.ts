@@ -7,6 +7,7 @@ import { StoreModule } from '@ngrx/store';
 import { authReducer } from './features/auth/state/auth.reducer';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { AuthEffects } from './features/auth/state/auth.effects';
 
 // the AppModule should be clean and focused on bootstrapping the application. 
 @NgModule({
@@ -17,7 +18,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
     AppRoutingModule, // this module provides a configured router service and provides directives like router-link and router-outlet that will be used with router service to naviguate between routes 
     // Keep auth reducer in root store since navbar needs it
     StoreModule.forRoot({ auth: authReducer }),  
-    EffectsModule.forRoot([]),
+    EffectsModule.forRoot([AuthEffects]),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() })
     // generally the AppModule doesnt register slices of state that are related to a feature
     // here we registered the auth state !!

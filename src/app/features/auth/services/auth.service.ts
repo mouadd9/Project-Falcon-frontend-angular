@@ -1,10 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, tap, timeout } from 'rxjs';
-import {
-  VerificationCodeRequest,
-  VerificationCodeResponse,
-} from '../models/verification.model';
+import { Observable } from 'rxjs';
+import { VerificationCodeRequest, VerificationCodeResponse } from '../models/verification.model';
 import { environment } from '../../../../environments/environment';
 import { SignUpRequest, SignUpResponse } from '../models/sign-up.model';
 import { SignInRequest, SignInResponse } from '../models/sign-in.model';

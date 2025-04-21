@@ -1,3 +1,12 @@
-
-<app-my-rooms-tabs class="rooms-tabs"></app-my-rooms-tabs>
-<app-my-rooms-grid class="rooms-grid"></app-my-rooms-grid>
+<!--in this template we will subscribe to observables and bind emitions to dumb components 
+by passing emitions to @Input properties -->
+<app-my-rooms-tabs class="rooms-tabs"
+    [activeFilter]="activeFilter$ | async"
+    (filterChanged)="onFilterChanged($event)">
+</app-my-rooms-tabs>
+<!-- we subscribe to the observables -->
+<!-- whenever an emition happens the @Input's reference changes -->
+<app-my-rooms-grid class="rooms-grid" 
+    [rooms]="this.filteredRooms$ | async"
+    [isLoading]="this.isLoading$ | async">
+</app-my-rooms-grid>

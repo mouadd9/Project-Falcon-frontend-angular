@@ -7,6 +7,7 @@ const routes: Routes = [
      loadChildren: () => import('./features/auth/auth.module').then(m => m.AuthModule)
   }, // every URL that starts with auth will load AuthModule, configure the router with child routes and then it will scan the child routes to know which component to render
   { path: 'my-space',
+   // the router lazy-loads your module and automatically connects child routes to the parent path.
      loadChildren: () => import('./features/my-space/my-space.module').then(m => m.MySpaceModule),
      canActivate: [AuthGuard]
   },
@@ -19,6 +20,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
+  // forRoot(): Used once in the application to set up the router service
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })

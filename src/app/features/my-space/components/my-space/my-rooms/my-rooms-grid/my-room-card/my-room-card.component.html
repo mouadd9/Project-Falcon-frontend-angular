@@ -1,21 +1,21 @@
 <div class="room-content">
     <div class="room-header">
-        <h3 class="room-title">Basic Network Enumeration</h3>
-        <p class="room-description">Learn the fundamentals of network discovery and port scanning with basic tools.</p>
+        <h3 class="room-title">{{room.title}}</h3>
+        <p class="room-description">{{room.description}}</p>
     </div>
     <div class="room-footer" >
         <span>
-            <fa-icon [icon]="faLeaf"></fa-icon>
-            Easy
+            <fa-icon [icon]="getComplexityIcon()"></fa-icon>
+            {{ getComplexityText() }}
         </span>
         <span class="time-estimate">
             <fa-icon [icon]="faClock"></fa-icon>
-            1-2 hours
+            {{ room.estimatedTime }} hours
         </span>
         <div class="completion-indicator">
             <svg viewBox="0 0 50 50">
                 <circle cx="25" cy="25" r="20"></circle>
-                <circle cx="25" cy="25" r="20" style="stroke-dashoffset: 94.2"></circle>
+                <circle cx="25" cy="25" r="20" [style.stroke-dashoffset]="calculateDashOffset(room.percentageCompleted)"></circle>
             </svg>
         </div>
     </div>

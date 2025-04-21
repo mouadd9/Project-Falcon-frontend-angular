@@ -1,6 +1,20 @@
 
-<!--this component will use an *ngFor to iterate over an array of rooms-->
-<!--for demonstrational purposes we will hard code the rooms data-->
-<app-my-room-card class="room-card"></app-my-room-card>
-<app-my-room-card class="room-card"></app-my-room-card>   
-<app-my-room-card class="room-card"></app-my-room-card>
+<div *ngIf="isLoading" class="loading-indicator">
+    <p>Loading rooms...</p>
+    <!-- You can add a spinner here -->
+</div>
+
+<!-- Display message when no rooms are available -->
+<div *ngIf="!isLoading && (!rooms || rooms.length === 0)" class="empty-state">
+    <p>No rooms available for this category.</p>
+</div>
+
+<!-- Display rooms when data is loaded -->
+<div *ngIf="!isLoading && rooms && rooms.length > 0" class="rooms-grid">
+    <!-- Use app-room-card component assuming it's defined in SharedModule -->
+    <app-my-room-card
+      *ngFor="let room of rooms" 
+      [room]="room" 
+      class="room-card">
+    </app-my-room-card>
+</div>

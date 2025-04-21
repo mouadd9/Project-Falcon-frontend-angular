@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { MyRoomCardComponent } from './components/my-room-card/my-room-card.component';
 import { ShortenPipe } from './pipes/shorten.pipe';
 import { UsernamePipe } from './pipes/username.pipe';
 import { TimeAgoPipe } from './pipes/time-ago.pipe';
@@ -10,7 +9,6 @@ import { GlowEffectDirective } from './directives/glow-effect.directive';
 
 @NgModule({
   declarations: [
-    MyRoomCardComponent,
     ShortenPipe, // shorten long texts
     UsernamePipe,
     TimeAgoPipe, // to transform dates to descriptif texts 
@@ -23,7 +21,6 @@ import { GlowEffectDirective } from './directives/glow-effect.directive';
   ],
   exports: [
     FontAwesomeModule,
-    MyRoomCardComponent,
     ShortenPipe,
     UsernamePipe,
     TimeAgoPipe,

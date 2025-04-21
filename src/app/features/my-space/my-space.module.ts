@@ -10,24 +10,33 @@ import { MyRoomsTabsComponent } from './components/my-space/my-rooms/my-rooms-ta
 import { MyRoomsGridComponent } from './components/my-space/my-rooms/my-rooms-grid/my-rooms-grid.component';
 import { RightQuickTipsSidebarComponent } from './components/my-space/right-quick-tips-sidebar/right-quick-tips-sidebar.component';
 import { SharedModule } from '../../shared/shared.module';
+import { StoreModule } from '@ngrx/store';
+import { myRoomsReducer } from './state/my-rooms.reducers';
+import { EffectsModule } from '@ngrx/effects';
+import { MyRoomsEffects } from './state/my-rooms.effects';
+import { MyRoomCardComponent } from './components/my-space/my-rooms/my-rooms-grid/my-room-card/my-room-card.component';
 
 
 
 @NgModule({
   declarations: [
-    MySpaceComponent,
-    ProfileBannerComponent,
-    ProfileBannerSubNavComponent,
-    MyRoomsComponent,
+    MySpaceComponent, // Claude we will focus on this
+    ProfileBannerComponent, // Claude we will focus on this
+    ProfileBannerSubNavComponent, // Claude we will focus on this
+    MyRoomsComponent, // Claude we will focus on this
     MyBadgesComponent,
-    MyRoomsTabsComponent,
-    MyRoomsGridComponent,
-    RightQuickTipsSidebarComponent
+    MyRoomsTabsComponent, // Claude we will focus on this
+    MyRoomsGridComponent, // Claude we will focus on this
+    MyRoomCardComponent,
+    RightQuickTipsSidebarComponent // Claude we will focus on this
   ],
   imports: [
     CommonModule, 
-    MySpaceRoutingModule,
-    SharedModule // this will provide us with the icons module and the reusable room card component
+    SharedModule, // this will provide us with the icons module and the reusable room card component
+    MySpaceRoutingModule, // Claude we will focus on this
+    // now when this Module loads, the feature state will be registered to the store, and feature effects will also be registered to the store.
+    StoreModule.forFeature('my-rooms', myRoomsReducer ), // Feature state
+    EffectsModule.forFeature([MyRoomsEffects]), // Feature Effects
   ]
 })
 export class MySpaceModule { }

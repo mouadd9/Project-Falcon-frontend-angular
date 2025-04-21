@@ -4,6 +4,7 @@ import { MySpaceComponent } from './components/my-space/my-space.component';
 import { MyRoomsComponent } from './components/my-space/my-rooms/my-rooms.component';
 import { MyBadgesComponent } from './components/my-space/my-badges/my-badges.component';
 
+// When the router lazy-loads this module, it automatically connects these child routes to the correct parent path.
 const routes: Routes = [
  // Child routes define the content rendered in parent's router-outlet.
     // When navigating to '/my-space/my-rooms':
@@ -23,6 +24,7 @@ const routes: Routes = [
 @NgModule({
   declarations: [],
   imports: [
+    // forChild(): Used in feature modules to add additional routes without creating multiple router services
     RouterModule.forChild(routes)
   ],
   exports : [
