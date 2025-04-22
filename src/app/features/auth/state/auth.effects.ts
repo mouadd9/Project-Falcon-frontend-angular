@@ -104,7 +104,7 @@ export class AuthEffects {
         );
     });
 
-    // this is the stream of the actions that will be dispatched to the store by the effect (either failure or success actions)
+    // this is the stream of actions that will be dispatched to the store by the effect (either failure or success actions)
     signInEffect$: Observable<Action> = createEffect(()=>{
         return this.actions$.pipe( // in order to return a stream of actions of type success or failure we'll need a stream of all dispatched actions so we can filter the LoginActions and then proceed to conduct side effects using an inner observable that will me the Api call for us
             ofType(LogInFormActions.logInCredentialsSent),

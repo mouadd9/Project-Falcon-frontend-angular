@@ -13,6 +13,7 @@ import {
   RoomsFilterActions,
   SavedRoomsActions,
 } from '../../../state/my-rooms.actions';
+import { JwtService } from '../../../../auth/services/jwt.service';
 
 // this component will :
 // Select data from the store
@@ -28,12 +29,20 @@ export class MyRoomsComponent implements OnInit {
   filteredRooms$!: Observable<RoomModel[]>;
   activeFilter$!: Observable<'joined' | 'saved' | 'completed'>;
   isLoading$!: Observable<boolean>;
+  userId!: number ;
 
-  constructor(private store: Store) {}
+  constructor(private store: Store, private jwtService: JwtService) {}
 
   ngOnInit(): void {
+    this.setUserId(); 
     this.selectState(); // select state slices
-    this.dispatchActionsToLoadData(); // dispatch actions to load data (joined, saved and completed rooms)
+    this.dispatchActionsToLoadData(this.userId); // dispatch actions to load data (joined, saved and completed rooms)
+  }
+
+  private setUserId(): void {
+    const token: any = localStorage.getItem('access-token'); // first retrieve token from local storage
+    const decoded: any = this.jwtService.decodeToken(token);
+    this.userId = decoded.userId;
   }
 
   // 1. Select state observables from the store
@@ -46,11 +55,12 @@ export class MyRoomsComponent implements OnInit {
     this.isLoading$ = this.store.select(myRoomsloadingState);
   }
 
+  // here when we dispatch an action to get rooms we should specify the id of the user
   // 2. Dispatch actions to load all room types when component initializes
-  private dispatchActionsToLoadData(): void {
-    this.store.dispatch(JoinedRoomsActions.load());
-    this.store.dispatch(SavedRoomsActions.load());
-    this.store.dispatch(CompletedRoomsActions.load());
+  private dispatchActionsToLoadData(userId: number): void {
+    this.store.dispatch(JoinedRoomsActions.load({userId: userId}));
+    this.store.dispatch(SavedRoomsActions.load({userId: userId}));
+    this.store.dispatch(CompletedRoomsActions.load({userId: userId}));
     // note :
     // the data is relatively static during a user session.
     // It only changes when a user performs actions elsewhere in the app (joining, saving, or completing rooms).

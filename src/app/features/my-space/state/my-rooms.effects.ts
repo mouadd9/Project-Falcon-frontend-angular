@@ -1,65 +1,73 @@
-// rooms.effects.ts
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { MyRoomsService } from '../services/my-rooms.service';
 import {
-    JoinedRoomsActions,
-    SavedRoomsActions,
-    CompletedRoomsActions,
-  } from './my-rooms.actions';
+  JoinedRoomsActions,
+  SavedRoomsActions,
+  CompletedRoomsActions,
+} from './my-rooms.actions';
 
 @Injectable()
 export class MyRoomsEffects {
-  constructor(
-    private actions$: Actions,
-    private myRoomsService: MyRoomsService
-  ) {}
+  private actions$ = inject(Actions);
+  private myRoomsService = inject(MyRoomsService);
 
-  // Assuming you have the userId available from auth state
-  // For simplicity, I'll hardcode a userId here
-  private userId = 1; // Replace with actual user ID from auth state
-
-  loadJoinedRooms$ = createEffect(() => 
-    this.actions$.pipe(
+  // this handles actions of type : [MyRooms/Joined] Load
+  // with a payload
+  // this event is triggered when my rooms component loads
+  loadJoinedRooms$ = createEffect(() => {
+    return this.actions$.pipe(
       ofType(JoinedRoomsActions.load),
-      switchMap(() => 
-        this.myRoomsService.getJoinedRooms(this.userId).pipe(
-          map(rooms => JoinedRoomsActions.loadSuccess({ rooms })),
-          catchError(error => of(JoinedRoomsActions.loadFailure({ 
-            error: error.message || 'Failed to load joined rooms' 
-          })))
+      switchMap((action) =>
+        this.myRoomsService.getJoinedRooms(action.userId).pipe(
+          map((rooms) => JoinedRoomsActions.loadSuccess({ rooms })),
+          catchError((error) =>
+            of(
+              JoinedRoomsActions.loadFailure({
+                error: error.message || 'Failed to load joined rooms',
+              })
+            )
+          )
         )
       )
-    )
-  );
+    );
+  });
 
-  loadSavedRooms$ = createEffect(() => 
-    this.actions$.pipe(
+  loadSavedRooms$ = createEffect(() => {
+    return this.actions$.pipe(
       ofType(SavedRoomsActions.load),
-      switchMap(() => 
-        this.myRoomsService.getSavedRooms(this.userId).pipe(
-          map(rooms => SavedRoomsActions.loadSuccess({ rooms })),
-          catchError(error => of(SavedRoomsActions.loadFailure({ 
-            error: error.message || 'Failed to load saved rooms' 
-          })))
+      switchMap((action) =>
+        this.myRoomsService.getSavedRooms(action.userId).pipe(
+          map((rooms) => SavedRoomsActions.loadSuccess({ rooms })),
+          catchError((error) =>
+            of(
+              SavedRoomsActions.loadFailure({
+                error: error.message || 'Failed to load saved rooms',
+              })
+            )
+          )
         )
       )
-    )
-  );
+    );
+  });
 
-  loadCompletedRooms$ = createEffect(() => 
-    this.actions$.pipe(
+  loadCompletedRooms$ = createEffect(() => {
+    return this.actions$.pipe(
       ofType(CompletedRoomsActions.load),
-      switchMap(() => 
-        this.myRoomsService.getCompletedRooms(this.userId).pipe(
-          map(rooms => CompletedRoomsActions.loadSuccess({ rooms })),
-          catchError(error => of(CompletedRoomsActions.loadFailure({ 
-            error: error.message || 'Failed to load completed rooms' 
-          })))
+      switchMap((action) =>
+        this.myRoomsService.getCompletedRooms(action.userId).pipe(
+          map((rooms) => CompletedRoomsActions.loadSuccess({ rooms })),
+          catchError((error) =>
+            of(
+              CompletedRoomsActions.loadFailure({
+                error: error.message || 'Failed to load completed rooms',
+              })
+            )
+          )
         )
       )
-    )
-  );
+    );
+  });
 }

@@ -46,8 +46,9 @@ export class MyRoomCardComponent {
 
   calculateDashOffset(percentage: number): number {
     // Full circle has a dasharray of 125.6 (from your CSS)
-    // Percentage is between 0 and 1, so multiply by 100
+    // Convert the percentage (0-100) to a fraction (0-1)
     const fullCircle = 125.6;
-    return fullCircle - fullCircle * percentage;
-  }
+    const fraction = percentage / 100;
+    return fullCircle - fullCircle * fraction;
+}
 }
