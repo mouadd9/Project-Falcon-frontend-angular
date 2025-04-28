@@ -20,6 +20,7 @@ import { GlowEffectDirective } from './directives/glow-effect.directive';
     FontAwesomeModule
   ],
   exports: [
+    CommonModule,
     FontAwesomeModule,
     ShortenPipe,
     UsernamePipe,

@@ -49,6 +49,6 @@ export const selectSignInButtonState = createSelector(
     selectSignInRequestStatus,
     (status) => ({
         isLoading: status === 'LOADING',
-        buttonText: status === 'LOADING' ? 'Loging In...' : 'Sign Up'
+        buttonText: status === 'LOADING' ? 'Loging In...' : 'Log In'
     })
 )

@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { NavComponent } from './components/nav/nav.component';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from '../shared/shared.module';
@@ -13,17 +12,15 @@ import { httpInterceptorProviders } from './interceptors';
      NavComponent
   ],
   imports: [
-    CommonModule,
     SharedModule,
     RouterModule, 
-    HttpClientModule,
+    HttpClientModule, // this should be available globally
     BrowserAnimationsModule
   ],
   exports: [
     NavComponent 
   ],
   providers: [
-    // interceptors ...
     httpInterceptorProviders
   ]
 })

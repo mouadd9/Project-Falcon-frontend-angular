@@ -31,7 +31,6 @@ import { MyRoomCardComponent } from './components/my-space/my-rooms/my-rooms-gri
     RightQuickTipsSidebarComponent // Claude we will focus on this
   ],
   imports: [
-    CommonModule, 
     SharedModule, // this will provide us with the icons module and the reusable room card component
     MySpaceRoutingModule, // Claude we will focus on this
     // now when this Module loads, the feature state will be registered to the store, and feature effects will also be registered to the store.

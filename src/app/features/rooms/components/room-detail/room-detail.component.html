@@ -1,0 +1,149 @@
+<div class="room-detail-container">
+    <!-- Loading State -->
+    <div *ngIf="isLoading$ | async" class="loading-state">
+        <div class="spinner"></div>
+        <p>Loading room details...</p>
+    </div>
+    <!-- Error State -->
+    <div *ngIf="error$ | async as error" class="error-state">
+        <div class="error-message">
+            <fa-icon [icon]="faFire" class="error-icon"></fa-icon>
+            <p>{{ error }}</p>
+        </div>
+        <button class="retry-button" (click)="ngOnInit()">Try Again</button>
+    </div>
+
+    <!-- Room Content -->
+    <ng-container *ngIf="(room$ | async) as room">
+        <!--Room Header-->
+        <div class="room-header">
+            <!--Room Title-->
+            <div class="room-title-section">
+
+                <h1 class="room-title">{{ room.title }}</h1>
+
+                <div class="room-metadata">
+
+                    <span class="complexity-badge"
+                        [ngClass]="getComplexityClass(room.complexity)">
+                        <fa-icon
+                            [icon]="getComplexityIcon(room.complexity)"></fa-icon>
+                        {{ room.complexity }}
+                    </span>
+
+                    <span class="time-estimate">
+                        <fa-icon [icon]="faClock"></fa-icon>
+                        {{ room.estimatedTime }} hours
+                    </span>
+
+                    <span class="users-count">
+                        <fa-icon [icon]="faUsers"></fa-icon>
+                        {{ room.totalJoinedUsers }} users
+                    </span>
+                    <!-- Add Running Instances Count -->
+                    <span class="instances-count">
+                        <fa-icon [icon]="faServer"></fa-icon>
+                        {{ room.totalRunningInstances }} active instances
+                    </span>
+                </div>
+            </div>
+            <div class="room-actions">
+                <!-- Join Button (only if not joined) -->
+                <button
+                    *ngIf="!room.isJoined"
+                    (click)="joinRoom()"
+                    class="action-button join-button">
+                    <fa-icon [icon]="faServer"></fa-icon>
+                    Join Room
+                </button>
+
+                <!-- Leave Button (only if joined) -->
+                <button
+                    *ngIf="room.isJoined"
+                    (click)="leaveRoom()"
+                    class="action-button leave-button">
+                    <fa-icon [icon]="faSignOutAlt"></fa-icon>
+                    Leave Room
+                </button>
+
+                <!-- Launch Button (only if joined) -->
+                <button
+                    *ngIf="room.isJoined"
+                    (click)="launchInstance()"
+                    class="action-button launch-button">
+                    <fa-icon [icon]="faPlayCircle"></fa-icon>
+                    Launch Instance
+                </button>
+
+                <!-- Save/Unsave Button -->
+                <button
+                    *ngIf="!room.isSaved"
+                    (click)="saveRoom()"
+                    class="action-button save-button">
+                    <fa-icon [icon]="faBookmarkRegular"></fa-icon>
+                    Save
+                </button>
+                <button
+                    *ngIf="room.isSaved"
+                    (click)="unsaveRoom()"
+                    class="action-button unsave-button">
+                    <fa-icon [icon]="faBookmarkSolid"></fa-icon>
+                    Saved
+                </button>
+            </div>
+        </div>
+
+        <div class="room-content">
+            <!-- Room Image (if available) -->
+            <div *ngIf="room.imageURL" class="room-image"
+                [style.background-image]="'url(' + room.imageURL + ')'">
+            </div>
+
+            <!-- Room Description -->
+            <div class="room-description">
+                <h2>Description</h2>
+                <p>{{ room.description }}</p>
+            </div>
+
+            <div class="challenges-section">
+                <h2>Challenges</h2>
+
+                <div class="challenges-overview">
+                    <!-- If joined, show completed/total challenges -->
+                    <div *ngIf="room.isJoined" class="challenges-progress">
+                        <div class="progress-bar-container">
+                            <div class="progress-bar">
+                                <div class="progress"
+                                    [style.width.%]="room.percentageCompleted"></div>
+                            </div>
+                            <span class="progress-text">
+                                {{ getCompletedChallenges(room) }}/{{
+                                room.totalChallenges }} challenges completed
+                                ({{ room.percentageCompleted }}%)
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- If not joined, show only total challenges -->
+                    <div *ngIf="!room.isJoined" class="challenges-total">
+                        <div class="challenges-icon">
+                            <fa-icon [icon]="faFlag"></fa-icon>
+                        </div>
+                        <p>{{ room.totalChallenges }} total challenges to
+                            complete</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Room Requirements -->
+            <div class="room-requirements">
+                <h2>Requirements</h2>
+                <ul>
+                    <li>Basic knowledge of Linux commands</li>
+                    <li>Understanding of networking concepts</li>
+                    <li>Familiarity with security principles</li>
+                </ul>
+            </div>
+
+        </div>
+    </ng-container>
+</div>

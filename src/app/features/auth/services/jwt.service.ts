@@ -5,6 +5,10 @@ import { jwtDecode } from "jwt-decode";
   providedIn: 'root'
 })
 export class JwtService {
+
+  getTokenFromLocalStorage(): string | null {
+    return localStorage.getItem('access-token');
+  }
   
   // Decode a JWT token and return the payload 
   decodeToken(token: string): any {
@@ -32,5 +36,12 @@ export class JwtService {
   isTokenExpired(token: string): boolean {
     const expiresAt = this.getExpiresAt(token);
     return expiresAt ? Date.now() > expiresAt : true;
+  }
+
+  getUserIdFromToken(): number {
+    const token = localStorage.getItem('access-token');
+    if (!token) return 0;
+    const decoded = this.decodeToken(token);
+    return decoded.userId;
   }
 }

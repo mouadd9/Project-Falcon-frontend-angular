@@ -1,5 +1,8 @@
 .room-content {
     flex: 1;
+    cursor: pointer;
+    user-select: none;
+    touch-action: manipulation;
     padding: 1.2rem;
     position: relative;
     z-index: 2;

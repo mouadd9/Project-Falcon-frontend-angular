@@ -22,7 +22,6 @@ import { SharedModule } from '../../shared/shared.module';
     PassRecoComponent
   ], // these components will be used by the router service so that they can be rendered in AppModule
   imports: [
-    CommonModule,
     AuthRoutingModule,
     ReactiveFormsModule, // service , form builder, form group, form control
     SharedModule
