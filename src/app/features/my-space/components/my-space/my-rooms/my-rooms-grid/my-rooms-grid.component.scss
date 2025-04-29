@@ -7,8 +7,8 @@
     background: var(--my-space-card-background);
     border-radius: 12px;
     overflow: hidden;
-    transition: all 0.5s ease-in-out;
-    border: 1px solid rgba(255, 51, 153, 0.2);
+    transition: all 0.3s ease-in-out;
+    border: 1.4px solid rgba(255, 51, 153, 0.2);
     height: 160px;
     display: flex;
     position: relative;
@@ -17,7 +17,6 @@
 .room-card:hover {
     // transform: translateY(-5px);
     border-color: var(--my-space-primary-color);
-    box-shadow: 0 5px 15px rgba(255, 56, 155, 0.2);
 }
 
 @media (max-width: 768px) {
