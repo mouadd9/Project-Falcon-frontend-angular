@@ -1,8 +1,8 @@
 <!-- Define templates -->
 <ng-template #loadingTemplate>
-    <div class="loading-indicator">
-        <p>Loading rooms...</p>
-    </div>
+    <div class="loading-state">
+        <div class="spinner"></div>
+        <p>Loading your rooms...</p> </div>
 </ng-template>
 
 <ng-template #emptyTemplate>
@@ -28,4 +28,3 @@
 <ng-container *ngIf="isLoading; then loadingTemplate; 
                else isEmptyOrContent">
 </ng-container>
-

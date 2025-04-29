@@ -1,5 +1,29 @@
 
-
+/* Loading State */
+.loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    gap: 1rem;
+    min-height: 50vh;
+  }
+  
+  .spinner {
+    
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(255, 51, 153, 0.2);
+    border-top: 4px solid var(--my-space-primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
 
 .room-card {
     width: 100%;

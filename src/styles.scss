@@ -1,3 +1,6 @@
+/* Import Ubuntu font */
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap');
+
 /* Variables */
 :root {
     --nav-bar-primary-color: #000000;
@@ -56,6 +59,7 @@
     /* Spacing */
     --my-space-spacing: 20px;
 }
+
 /* Reset */
 * {
     margin: 0;
@@ -63,15 +67,86 @@
     box-sizing: border-box;
 }
 
+/* Apply Ubuntu font to the entire application */
 html,
 body {
     height: 100%;
+    font-family: 'Ubuntu', sans-serif !important;
 }
 
 body {
     margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--my-space-background-color);
+    color: var(--my-space-text-color);
 }
 
+/* Button styles */
+.action-button {
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    border-radius: 0.5rem;
+    display: inline-flex;
+    max-width: 100%;
+    cursor: pointer;
+    font-size: 1.4rem;
+    font-family: 'Ubuntu', sans-serif;
+    gap: 0.6rem;
+    height: 3.6rem;
+    transition: 0.2s ease-in-out;
+    text-decoration: none;
+    padding: 0.9rem 1.6rem;
+    pointer-events: initial;
+    border-width: 0.1rem;
+    border-style: solid;
+}
 
-/*body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }*/
+.join-button {
+    background-color: var(--my-space-primary-color);
+    color: white;
+    border-color: var(--my-space-primary-color);
+}
+
+.join-button:hover {
+    opacity: 0.9;
+}
+
+.launch-button {
+    background-color: var(--easy-color);
+    color: white;
+    border-color: var(--easy-color);
+}
+
+.launch-button:hover {
+    opacity: 0.9;
+}
+
+.launch-button.disabled {
+    background-color: rgba(76, 175, 80, 0.2);
+    color: rgba(255, 255, 255, 0.5);
+    border-color: rgba(76, 175, 80, 0.2);
+    cursor: not-allowed;
+}
+
+.leave-button {
+    background-color: rgba(244, 67, 54, 0.1);
+    color: #f44336;
+    border-color: rgba(244, 67, 54, 0.3);
+}
+
+.save-button, .unsave-button {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: var(--my-space-text-color);
+}
+
+/* Input fields with Ubuntu font */
+input, textarea, select, button {
+    font-family: 'Ubuntu', sans-serif;
+}
+
+/* Headings with Ubuntu font */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Ubuntu', sans-serif;
+}

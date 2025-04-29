@@ -1,344 +1,432 @@
-/* src/app/features/rooms/components/room-detail/room-detail.component.scss */
+/* Import Ubuntu font */
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap');
+
 .room-detail-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
-    color: var(--my-space-text-color);
-  }
-  
-  /* Loading State */
-  .loading-state {
-    display: flex;
+  width: 100%;
+  color: var(--my-space-text-color);
+  background-color: var(--my-space-background-color);
+  min-height: calc(100vh - 60px); /* Subtract navbar height */
+  display: flex;
+  flex-direction: column;
+  font-family: 'Ubuntu', sans-serif;
+}
+
+/* Loading State */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  gap: 1rem;
+  min-height: 50vh;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(255, 51, 153, 0.2);
+  border-top: 4px solid var(--my-space-primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Error State */
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  gap: 1.5rem;
+  min-height: 50vh;
+  justify-content: center;
+}
+
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #f44336;
+  font-family: 'Ubuntu', sans-serif;
+}
+
+.error-icon {
+  font-size: 1.5rem;
+}
+
+.retry-button {
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  display: inline-flex;
+  max-width: 100%;
+  cursor: pointer;
+  font-size: 1.4rem;
+  font-family: Ubuntu, sans-serif;
+  gap: 0.6rem;
+  height: 3.6rem;
+  transition: 0.2s ease-in-out;
+  text-decoration: none;
+  padding: 0.9rem 1.6rem;
+  pointer-events: initial;
+  border-width: 0.1rem;
+  border-style: solid;
+  background-color: var(--my-space-primary-color);
+  color: white;
+  border-color: var(--my-space-primary-color);
+}
+
+.retry-button:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+/* Room Top Section */
+.room-top-section {
+  position: relative;
+  background-color: rgba(33, 33, 33, 0.3);
+  overflow: hidden;
+  border-bottom: 1px solid rgba(255, 51, 153, 0.15);
+}
+
+.room-hero {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  z-index: 0;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, rgba(26, 26, 26, 0.8) 0%, rgba(26, 26, 26, 0.95) 100%);
+  z-index: 1;
+}
+
+.room-main-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem 3rem;
+  gap: 1.4rem;
+}
+
+/* Room Header Section */
+.room-header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.room-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 70%;
+}
+
+.room-header-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.room-title {
+  font-size: 2.3rem;
+  font-weight: 600;
+  color: var(--my-space-text-color);
+  margin: 0;
+  font-family: 'Ubuntu', sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.room-description {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--my-space-text-secondary);
+  margin: 0;
+  max-width: 90%;
+  font-family: 'Ubuntu', sans-serif;
+}
+
+/* Room Stats */
+.room-stats {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.complexity-badge, .stat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 400;
+  padding: 0.3rem 0.8rem;
+  border-radius: 4px;
+  font-family: 'Ubuntu', sans-serif;
+}
+
+.complexity-badge fa-icon, .stat-item fa-icon {
+  font-size: 0.9rem;
+}
+
+.complexity-badge.easy {
+  background-color: rgba(76, 175, 80, 0.15);
+  color: var(--easy-color);
+  border: 1px solid rgba(76, 175, 80, 0.2);
+}
+
+.complexity-badge.medium {
+  background-color: rgba(255, 193, 7, 0.15);
+  color: var(--medium-color);
+  border: 1px solid rgba(255, 193, 7, 0.2);
+}
+
+.complexity-badge.hard {
+  background-color: rgba(244, 67, 54, 0.15);
+  color: var(--hard-color);
+  border: 1px solid rgba(244, 67, 54, 0.2);
+}
+
+.stat-item {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--my-space-text-muted);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Progress Indicator */
+.progress-indicator {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  max-width: 350px;
+  margin-top: 1.5rem;
+}
+
+.progress-bar {
+  height: 4px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.progress {
+  height: 100%;
+  background-color: var(--my-space-primary-color);
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  font-size: 0.8rem;
+  color: var(--my-space-text-muted);
+  font-family: 'Ubuntu', sans-serif;
+  text-align: right;
+}
+
+/* Room Actions */
+.room-actions {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  margin-left: auto; /* Push to right side */
+}
+
+.action-button {
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  border-radius: 0.4rem;
+  display: inline-flex;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-family: 'Ubuntu', sans-serif;
+  gap: 0.4rem;
+  height: 2.1rem; /* Reduced height */
+  transition: 0.2s ease-in-out;
+  text-decoration: none;
+  padding: 0 1rem; /* Reduced padding */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-style: solid;
+  min-width: 100px; /* Smaller width */
+  max-width: 135px;
+}
+
+.action-button span {
+  font-weight: 400;
+}
+
+.action-button fa-icon {
+  font-size: 0.9rem;
+}
+
+.join-button {
+  background-color: var(--my-space-primary-color);
+  color: white;
+  border-color: var(--my-space-primary-color);
+}
+
+.join-button:hover {
+  opacity: 0.9;
+}
+
+.launch-button {
+  background-color: var(--easy-color);
+  color: white;
+  border-color: var(--easy-color);
+}
+
+.launch-button:hover {
+  opacity: 0.9;
+}
+
+.launch-button.disabled {
+  background-color: rgba(76, 175, 80, 0.2);
+  color: rgba(255, 255, 255, 0.5);
+  border-color: rgba(76, 175, 80, 0.2);
+  cursor: not-allowed;
+}
+
+.launch-button.disabled:hover {
+  transform: none;
+}
+
+.save-button, .unsave-button {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: var(--my-space-text-color);
+}
+
+.save-button:hover, .unsave-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.leave-button {
+  background-color: rgba(244, 67, 54, 0.1);
+  color: #f44336;
+  border-color: rgba(244, 67, 54, 0.3);
+}
+
+.leave-button:hover {
+  background-color: rgba(244, 67, 54, 0.2);
+}
+
+/* Room Bottom Section - Challenges */
+.room-bottom-section {
+  background-color: rgba(33, 33, 33, 0.2);
+  padding: 2rem 3rem;
+  border-top: 1px solid rgba(255, 51, 153, 0.1);
+  flex: 1; /* Make the challenges section fill remaining vertical space */
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.section-header h2 {
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: var(--my-space-text-color);
+  margin: 0;
+  font-family: 'Ubuntu', sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.challenges-placeholder {
+  min-height: 300px;
+  background-color: rgba(255, 255, 255, 0.02);
+  border-radius: 4px;
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.placeholder-text {
+  color: var(--my-space-text-muted);
+  font-style: italic;
+  font-family: 'Ubuntu', sans-serif;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+  .room-header-container {
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 3rem;
-    gap: 1rem;
-  }
-  
-  .spinner {
-    width: 40px;
-    height: 40px;
-    border: 4px solid rgba(255, 51, 153, 0.2);
-    border-top: 4px solid var(--my-space-primary-color);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-  }
-  
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-  
-  /* Error State */
-  .error-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 2rem;
     gap: 1.5rem;
   }
-  
-  .error-message {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: #f44336;
-  }
-  
-  .error-icon {
-    font-size: 1.5rem;
-  }
-  
-  .retry-button {
-    padding: 0.5rem 1rem;
-    background-color: var(--my-space-primary-color);
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: opacity 0.3s ease;
-  }
-  
-  .retry-button:hover {
-    opacity: 0.9;
-  }
-  
-  /* Room Header */
+
   .room-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 2rem;
-    gap: 2rem;
+    max-width: 100%;
+  }
+
+  .room-actions {
+    margin-left: 0;
     flex-wrap: wrap;
   }
-  
-  .room-title-section {
-    flex: 1;
-    min-width: 300px;
+}
+
+@media (max-width: 768px) {
+  .room-main-content, 
+  .room-bottom-section {
+    padding: 1.5rem;
   }
   
   .room-title {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-    color: var(--my-space-text-color);
-    font-weight: 600;
+    font-size: 1.8rem;
   }
   
-  .room-metadata {
-    display: flex;
-    gap: 1.5rem;
-    flex-wrap: wrap;
-  }
-  
-  .complexity-badge {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.9rem;
-    font-weight: 500;
-    padding: 0.3rem 0.6rem;
-    border-radius: 20px;
-  }
-  
-  .complexity-badge fa-icon {
-    font-size: 0.8rem;
-  }
-  
-  .complexity-badge.easy {
-    background-color: rgba(76, 175, 80, 0.1);
-    color: var(--easy-color);
-  }
-  
-  .complexity-badge.medium {
-    background-color: rgba(255, 193, 7, 0.1);
-    color: var(--medium-color);
-  }
-  
-  .complexity-badge.hard {
-    background-color: rgba(244, 67, 54, 0.1);
-    color: var(--hard-color);
-  }
-  
-  .time-estimate, .users-count {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: var(--my-space-text-muted);
-    font-size: 0.9rem;
-  }
-  
-  /* Room Actions */
   .room-actions {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
+    gap: 0.5rem;
   }
   
   .action-button {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.7rem 1.2rem;
-    border-radius: 8px;
-    border: none;
-    font-size: 0.9rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
+    min-width: auto;
+    flex: 1;
+    padding: 0 0.8rem;
+  }
+  
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .room-stats {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.8rem;
+  }
+  
+  .action-button {
+    min-width: 80px;
+    font-size: 0.8rem;
   }
   
   .action-button fa-icon {
-    font-size: 1rem;
+    font-size: 0.8rem;
   }
-  
-  .join-button {
-    background-color: var(--my-space-primary-color);
-    color: white;
-  }
-  
-  .join-button:hover {
-    opacity: 0.9;
-    transform: translateY(-2px);
-  }
-  
-  .launch-button {
-    background-color: var(--easy-color);
-    color: white;
-  }
-  
-  .launch-button:hover {
-    opacity: 0.9;
-    transform: translateY(-2px);
-  }
-  
-  .save-button, .unsave-button {
-    background-color: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: var(--my-space-text-color);
-  }
-  
-  .save-button:hover, .unsave-button:hover {
-    background-color: rgba(255, 255, 255, 0.05);
-  }
-  
-  /* Room Content */
-  .room-content {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-  }
-  
-  .room-image {
-    height: 300px;
-    border-radius: 12px;
-    background-size: cover;
-    background-position: center;
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .room-description, .progress-section, .room-requirements {
-    background-color: rgba(33, 33, 33, 0.3);
-    border-radius: 12px;
-    padding: 1.5rem;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-  }
-  
-  .room-description h2, .progress-section h2, .room-requirements h2 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-    color: var(--my-space-text-color);
-    font-weight: 500;
-  }
-  
-  .room-description p {
-    font-size: 1rem;
-    line-height: 1.6;
-    color: var(--my-space-text-secondary);
-  }
-  
-  /* Progress Bar */
-  .progress-bar-container {
-    margin-bottom: 1rem;
-  }
-  
-  .progress-bar {
-    height: 8px;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-    overflow: hidden;
-    margin-bottom: 0.5rem;
-  }
-  
-  .progress {
-    height: 100%;
-    background-color: var(--my-space-primary-color);
-  }
-  
-  .progress-text {
-    font-size: 0.9rem;
-    color: var(--my-space-text-muted);
-  }
-  
-  .challenges-overview {
-    margin-top: 1rem;
-    font-size: 0.9rem;
-    color: var(--my-space-text-muted);
-  }
-  
-  /* Room Requirements */
-  .room-requirements ul {
-    padding-left: 1.5rem;
-    margin-top: 0.5rem;
-  }
-  
-  .room-requirements li {
-    margin-bottom: 0.5rem;
-    color: var(--my-space-text-secondary);
-  }
-
-  /* Add to your existing SCSS file */
-
-/* Instances count */
-.instances-count {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: var(--my-space-text-muted);
-    font-size: 0.9rem;
-  }
-  
-  /* Leave button */
-  .leave-button {
-    background-color: rgba(244, 67, 54, 0.1);
-    color: #f44336;
-    border: 1px solid rgba(244, 67, 54, 0.3);
-  }
-  
-  .leave-button:hover {
-    background-color: rgba(244, 67, 54, 0.2);
-  }
-  
-  /* Challenges section */
-  .challenges-section {
-    background-color: rgba(33, 33, 33, 0.3);
-    border-radius: 12px;
-    padding: 1.5rem;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-  }
-  
-  .challenges-section h2 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-    color: var(--my-space-text-color);
-    font-weight: 500;
-  }
-  
-  .challenges-total {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    color: var(--my-space-text-secondary);
-  }
-  
-  .challenges-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.05);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--my-space-primary-color);
-  }
-  
-  .challenges-icon fa-icon {
-    font-size: 1.2rem;
-  }
-  
-  /* Responsive Design */
-  @media (max-width: 768px) {
-    .room-header {
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-    
-    .room-title {
-      font-size: 2rem;
-    }
-    
-    .room-actions {
-      width: 100%;
-    }
-    
-    .action-button {
-      flex: 1;
-      justify-content: center;
-    }
-    
-    .room-image {
-      height: 200px;
-    }
-  }
+}

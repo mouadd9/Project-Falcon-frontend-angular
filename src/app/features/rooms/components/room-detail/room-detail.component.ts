@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { RoomDetailActions } from '../../state/room-detail/room-detail.actions';
@@ -20,6 +20,7 @@ import {
   faUsers,
   faFlag,
   faSignOutAlt,
+  faDoorOpen,
 } from '@fortawesome/free-solid-svg-icons';
 import { faBookmark as faBookmarkRegular } from '@fortawesome/free-regular-svg-icons';
 
@@ -31,7 +32,7 @@ import { faBookmark as faBookmarkRegular } from '@fortawesome/free-regular-svg-i
   templateUrl: './room-detail.component.html',
   styleUrl: './room-detail.component.scss',
 })
-export class RoomDetailComponent implements OnInit {
+export class RoomDetailComponent implements OnInit, OnDestroy {
   room$!: Observable<RoomModel | null>;
   isLoading$!: Observable<boolean>;
   error$!: Observable<string | null>;
@@ -43,6 +44,7 @@ export class RoomDetailComponent implements OnInit {
   faCube = faCube;
   faFire = faFire;
   faServer = faServer;
+  faDoorOpen = faDoorOpen;
   faUsers = faUsers;
   faFlag = faFlag;
   faBookmarkSolid = faBookmarkSolid;
@@ -53,6 +55,7 @@ export class RoomDetailComponent implements OnInit {
   constructor(private route: ActivatedRoute, private store: Store) {}
 
   ngOnInit(): void {
+    window.scrollTo(0, 0);
     this.selectState(); // we select state
     this.getRoomDetails(); // we dispatch an action to get a room
   }
@@ -124,5 +127,10 @@ export class RoomDetailComponent implements OnInit {
   public getCompletedChallenges(room: RoomModel): number {
     if (!room.totalChallenges) return 0;
     return Math.round((room.percentageCompleted / 100) * room.totalChallenges);
+  }
+
+  ngOnDestroy(): void {
+    // Clear room detail state when leaving the component
+    this.store.dispatch(RoomDetailActions.clearRoomDetail());
   }
 }

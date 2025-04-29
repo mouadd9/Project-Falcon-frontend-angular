@@ -19,5 +19,8 @@ export const roomDetailReducer = createReducer(
     ...state,
     error,
     isLoading: false,
+  })),
+  on(RoomDetailActions.clearRoomDetail, () => ({
+    ...initialRoomDetailState
   }))
 );
