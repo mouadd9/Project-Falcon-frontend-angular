@@ -1,10 +1,10 @@
 // Interface matching backend RoomDTO
 // when room data comes from the backend it will be in this form
 export interface RoomModel {
-    id: number;
-    amiId: string;
-    title: string;
-    description: string;
+    id?: number;
+    amiId?: string;
+    title?: string;
+    description?: string;
     complexity: 'EASY' | 'MEDIUM' | 'HARD' ;
     imageURL: string;
     estimatedTime: number;

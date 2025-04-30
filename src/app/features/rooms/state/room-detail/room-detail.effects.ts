@@ -1,16 +1,17 @@
-import { inject, Injectable } from '@angular/core';
+import { effect, inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { RoomService } from '../../services/room.service';
 import {
   catchError,
+  exhaustMap,
   map,
   Observable,
   of,
   switchMap,
   tap
 } from 'rxjs';
-import { Action, Store } from '@ngrx/store';
-import { RoomDetailActions } from '../room-detail/room-detail.actions';
+import { Action } from '@ngrx/store';
+import { JoinRoomActions, RoomDetailActions, SaveRoomActions } from '../room-detail/room-detail.actions';
 import { JwtService } from '../../../auth/services/jwt.service';
 
 @Injectable()
@@ -97,4 +98,29 @@ export class RoomDetailEffects {
       })
     );
   });
+
+  // claude here !!!
+  joinRoom$: Observable<Action> = createEffect(() => {
+    return this.actions$.pipe( // effects subscribes to the actions observable
+      ofType(JoinRoomActions.joinRoom),
+      exhaustMap((action) => {
+        return this.roomService.joinRoom(action.userId, action.roomId).pipe(
+          map(() => JoinRoomActions.joinRoomSuccess()), 
+          catchError((error) => of(JoinRoomActions.joinRoomFailure({error: error.message || 'Failed to load room details'})))
+        )  
+      })
+    ) 
+  })
+
+  saveRoom$: Observable<Action> = createEffect(() => {
+    return this.actions$.pipe( // effects subscribes to the actions observable
+      ofType(SaveRoomActions.saveRoom),
+      exhaustMap((action) => {
+        return this.roomService.saveRoom(action.userId, action.roomId).pipe(
+          map(() => SaveRoomActions.saveRoomSuccess()), 
+          catchError((error) => of(SaveRoomActions.saveRoomFailure({error: error.message || 'Failed to load room details'})))
+        )  
+      })
+    ) 
+  })
 }

@@ -10,7 +10,7 @@ import { SignInRequest, SignInResponse } from '../models/sign-in.model';
   providedIn: 'root', // provided at root, the root injector creates a singleton of this service
 })
 export class AuthService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {} 
 
   public sendVerificationCode(
     codeRequest: VerificationCodeRequest

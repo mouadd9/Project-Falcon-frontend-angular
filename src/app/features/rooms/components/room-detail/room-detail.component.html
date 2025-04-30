@@ -19,7 +19,8 @@
         <!-- Top Section - Room Info and Controls -->
         <div class="room-top-section">
             <!-- Room background image with overlay -->
-            <div class="room-hero" [style.background-image]="'url(' + (room.imageURL || '../assets/network-enum-bg.jpg') + ')'">
+            <div class="room-hero"
+                [style.background-image]="'url(' + (room.imageURL || '../assets/network-enum-bg.jpg') + ')'">
                 <div class="hero-overlay"></div>
             </div>
 
@@ -29,11 +30,13 @@
                     <div class="room-header">
                         <h1 class="room-title">{{ room.title }}</h1>
                         <p class="room-description">{{ room.description }}</p>
-                        
+
                         <!-- Room Statistics -->
                         <div class="room-stats">
-                            <span class="complexity-badge" [ngClass]="getComplexityClass(room.complexity)">
-                                <fa-icon [icon]="getComplexityIcon(room.complexity)"></fa-icon>
+                            <span class="complexity-badge"
+                                [ngClass]="getComplexityClass(room.complexity)">
+                                <fa-icon
+                                    [icon]="getComplexityIcon(room.complexity)"></fa-icon>
                                 {{ room.complexity }}
                             </span>
 
@@ -46,53 +49,84 @@
                                 <fa-icon [icon]="faUsers"></fa-icon>
                                 {{ room.totalJoinedUsers }} users
                             </span>
-                            
+
                             <span class="stat-item">
                                 <fa-icon [icon]="faFlag"></fa-icon>
-                                {{ getCompletedChallenges(room) }}/{{ room.totalChallenges }} challenges
+                                {{ getCompletedChallenges(room) }}/{{
+                                room.totalChallenges }} challenges
                             </span>
                         </div>
                     </div>
-                    
+
                     <!-- Room Actions - Now in top right -->
                     <div class="room-actions">
-                        <!-- Join Button (only if not joined) -->
-                        <button *ngIf="!room.isJoined" (click)="joinRoom()" class="action-button join-button">
-                            <fa-icon [icon]="faDoorOpen"></fa-icon>
-                            <span>Join</span>
-                        </button>
+                        <!-- Join/Leave Button Section -->
+                        <ng-container
+                            *ngIf="joinButtonState$ | async as joinState">
+                            <!-- Show Join button when state indicates we can join -->
+                            <button
+                                *ngIf="joinState === 'join' || joinState === 'joining...'"
+                                (click)="joinRoom()"
+                                class="action-button join-button"
+                                [disabled]="joinState === 'joining...'">
+                                <fa-icon [icon]="faDoorOpen"></fa-icon>
+                                <span>{{ joinState }}</span>
+                            </button>
 
-                        <!-- Leave Button (only if joined) -->
-                        <button *ngIf="room.isJoined" (click)="leaveRoom()" class="action-button leave-button">
-                            <fa-icon [icon]="faSignOutAlt"></fa-icon>
-                            <span>Leave</span>
-                        </button>
+                            <!-- Show Leave button when state indicates we can leave -->
+                            <button
+                                *ngIf="joinState === 'leave' || joinState === 'leaving...'"
+                                (click)="leaveRoom()"
+                                class="action-button leave-button"
+                                [disabled]="joinState === 'leaving...'">
+                                <fa-icon [icon]="faSignOutAlt"></fa-icon>
+                                <span>{{ joinState }}</span>
+                            </button>
+                        </ng-container>
 
                         <!-- Launch Button (always visible but disabled if not joined) -->
-                        <button [disabled]="!room.isJoined" (click)="launchInstance()" 
-                                class="action-button launch-button" [class.disabled]="!room.isJoined">
+                        <button [disabled]="!room.isJoined"
+                            (click)="launchInstance()"
+                            class="action-button launch-button"
+                            [class.disabled]="!room.isJoined">
                             <fa-icon [icon]="faPlayCircle"></fa-icon>
-                            <span>Launch</span>
+                            <span>launch</span>
                         </button>
+                        
+                        <!-- Save/Unsave Button Section -->
+                        <ng-container
+                            *ngIf="saveButtonState$ | async as saveState">
+                            <!-- Show Save button when state indicates we can save -->
+                            <button
+                                *ngIf="saveState === 'save' || saveState === 'saving...'"
+                                (click)="saveRoom()"
+                                class="action-button save-button"
+                                [disabled]="saveState === 'saving...'">
+                                <fa-icon [icon]="faBookmarkRegular"></fa-icon>
+                                <span>{{ saveState }}</span>
+                            </button>
 
-                        <!-- Save/Unsave Button -->
-                        <button *ngIf="!room.isSaved" (click)="saveRoom()" class="action-button save-button">
-                            <fa-icon [icon]="faBookmarkRegular"></fa-icon>
-                            <span>Save</span>
-                        </button>
-                        <button *ngIf="room.isSaved" (click)="unsaveRoom()" class="action-button unsave-button">
-                            <fa-icon [icon]="faBookmarkSolid"></fa-icon>
-                            <span>Saved</span>
-                        </button>
+                            <!-- Show Unsave button when state indicates we can unsave -->
+                            <button
+                                *ngIf="saveState === 'unsave' || saveState === 'unsaving...'"
+                                (click)="unsaveRoom()"
+                                class="action-button unsave-button"
+                                [disabled]="saveState === 'unsaving...'">
+                                <fa-icon [icon]="faBookmarkSolid"></fa-icon>
+                                <span>{{ saveState }}</span>
+                            </button>
+                        </ng-container>
                     </div>
                 </div>
 
                 <!-- Progress indicator (moved below room info) -->
                 <div class="progress-indicator" *ngIf="room.isJoined">
                     <div class="progress-bar">
-                        <div class="progress" [style.width.%]="room.percentageCompleted"></div>
+                        <div class="progress"
+                            [style.width.%]="room.percentageCompleted"></div>
                     </div>
-                    <span class="progress-text">{{ room.percentageCompleted }}% Complete</span>
+                    <span class="progress-text">{{ room.percentageCompleted }}%
+                        Complete</span>
                 </div>
             </div>
         </div>
@@ -106,7 +140,8 @@
             <!-- Placeholder for RoomChallengesComponent -->
             <div class="challenges-placeholder">
                 <!-- <app-room-challenges [roomId]="room.id" [isJoined]="room.isJoined"></app-room-challenges> -->
-                <p class="placeholder-text">Challenge list will be displayed here</p>
+                <p class="placeholder-text">Challenge list will be displayed
+                    here</p>
             </div>
         </div>
     </ng-container>

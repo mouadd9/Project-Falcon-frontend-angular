@@ -1,125 +1,146 @@
 <div id="root">
     <ng-container>
-    <div class="sign-in-form" >
-        <div class="logo"><img src="assets/images/profile.svg" alt="Logo"><span>Falcon</span></div>
+        <div class="sign-in-form">
+            <div class="logo"><img src="assets/images/profile.svg"
+                    alt="Logo"><span>Falcon</span></div>
 
-        <form [formGroup]="mainForm" class="sign-in-form">  <!--(ngSubmit)="onSubmit()"-->
-            
-            <span class="checkbox-label">Step 1 : Email verification process</span>
+            <form [formGroup]="mainForm" class="sign-in-form">
+              <!--  <div class="error-message" *ngIf="errorMessage">{{ errorMessage }}</div> -->
+                <!--(ngSubmit)="onSubmit()"-->
+                <span class="checkbox-label">Step 1 : Email verification
+                    process</span>
 
-            <div class="input-container">
-             <div class="input-group">
-                  <fa-icon [icon]="faEnvelope"></fa-icon>
-                  <input class="input" 
-                         type="text" 
-                         placeholder="Email address"
-                         formControlName="email">
-              </div>
-              <div class="error" *ngIf="emailCtrl.errors && (emailCtrl.dirty || emailCtrl.touched)"> {{getErrorMessage(emailCtrl)}} </div>
-            </div>
-            <div class="input-container">
-            <div class="verification-code-field">
-                
-                <div class="input-group">
-                    <fa-icon [icon]="faEnvelope"></fa-icon>
-                    <input class="input"
-                           type="text" 
-                           placeholder="Code"
-                           formControlName="verificationCode">
+                <div class="input-container">
+                    <div class="input-group">
+                        <fa-icon [icon]="faEnvelope"></fa-icon>
+                        <input class="input"
+                            type="text"
+                            placeholder="Email address"
+                            formControlName="email">
+                    </div>
+                    <div class="error"
+                        *ngIf="emailCtrl.errors && (emailCtrl.dirty || emailCtrl.touched)">
+                        {{getErrorMessage(emailCtrl)}} </div>
+                </div>
+                <div class="input-container">
+                    <div class="verification-code-field">
+
+                        <div class="input-group">
+                            <fa-icon [icon]="faEnvelope"></fa-icon>
+                            <input class="input"
+                                type="text"
+                                placeholder="Code"
+                                formControlName="verificationCode">
+                        </div>
+
+                        <ng-container
+                            *ngIf="SendCodebuttonState$ | async as state">
+                            <button
+                                class="button"
+                                (click)="onSendCode()"
+                                [disabled]="emailCtrl.invalid || state.isLoading">
+                                {{ state.buttonText }}
+                            </button>
+                            <div class="error"
+                                *ngIf="(codeRequestError$ | async) as error">{{
+                                error.message }}</div>
+                        </ng-container>
+                    </div>
+                    <div class="error"
+                        *ngIf="verificationCodeCtr.errors && (verificationCodeCtr.dirty || verificationCodeCtr.touched)">
+                        {{getErrorMessage(verificationCodeCtr)}} </div>
+
                 </div>
 
-                
-                <ng-container *ngIf="SendCodebuttonState$ | async as state">
-                    <button 
+                <span class="checkbox-label">Step 3 : Login Info </span>
+                <div formGroupName="loginInfo" class="sign-in-form">
+                    <div class="input-container">
+                        <div class="input-group">
+                            <fa-icon [icon]="faUser"></fa-icon>
+                            <input class="input"
+                                type="text"
+                                placeholder="Username"
+                                formControlName="username">
+                        </div>
+                        <div class="error"
+                            *ngIf="usernameCtrl.errors && ( usernameCtrl.dirty || usernameCtrl.touched)">
+                            {{getErrorMessage(usernameCtrl)}} </div>
+                    </div>
+                    <div class="input-container">
+                        <div class="input-group">
+                            <fa-icon [icon]="faLock"></fa-icon>
+                            <input class="input"
+                                [type]="showPassword ? 'text' : 'password'"
+                                placeholder="Password"
+                                formControlName="password">
+                            <button type="button" class="toggle-password"
+                                (click)="togglePasswordVisibility()">
+                                <fa-icon [icon]="faEye"></fa-icon>
+                            </button>
+                        </div>
+                        <div class="error"
+                            *ngIf="passwordCtr.errors && passwordCtr.dirty">
+                            {{getErrorMessage(passwordCtr)}} </div>
+                    </div>
+                    <div class="input-container">
+                        <div class="input-group"
+                            *ngIf="showConfirmPasswordCtr$ | async">
+                            <fa-icon [icon]="faLock"></fa-icon>
+                            <input class="input"
+                                [type]="showPassword ? 'text' : 'password'"
+                                placeholder="Confirm password"
+                                formControlName="confirmPassword">
+                            <button type="button" class="toggle-password"
+                                (click)="togglePasswordVisibility()">
+                                <fa-icon [icon]="faEye"></fa-icon>
+                            </button>
+                        </div>
+                        <div class="error"
+                            *ngIf="showConfirmPasswordError$ | async">Passwords
+                            do not match</div>
+                    </div>
+                </div>
+                <!-------->
+                <!-------->
+                <!-------->
+                <div class="checkbox-wrapper">
+                    <label class="checkbox-container">
+                        <input type="checkbox"
+                            formControlName="termsAccepted">
+                        <span class="checkbox">
+                            <fa-icon [icon]="faCheck"></fa-icon>
+                        </span>
+                        <span class="checkbox-label">I confirm that I have read,
+                            consent and agree to Falcon's
+                            <a href="#" class="link">Terms of Use</a> and <a
+                                href="#" class="link">Privacy Policy</a></span>
+                    </label>
+                </div>
+                <!-------->
+                <!-------->
+                <!-------->
+                <ng-container *ngIf="SignUpButtonState$ | async as state">
+                    <button type="button"
                         class="button"
-                        (click)="onSendCode()"
-                        [disabled]="emailCtrl.invalid || state.isLoading">
-                        {{ state.buttonText }}
-                    </button>
-                    <div class="error" *ngIf="(codeRequestError$ | async) as error">{{ error.message }}</div>
-                </ng-container>
-            </div>
-            <div class="error" *ngIf="verificationCodeCtr.errors && (verificationCodeCtr.dirty || verificationCodeCtr.touched)"> {{getErrorMessage(verificationCodeCtr)}} </div>
-
-        </div>
-
-            <span class="checkbox-label">Step 3 : Login Info </span>
-            <div formGroupName="loginInfo" class="sign-in-form">
-                <div class="input-container">
-                <div class="input-group">
-                    <fa-icon [icon]="faUser"></fa-icon>
-                    <input class="input" 
-                           type="text" 
-                           placeholder="Username"
-                           formControlName="username">
-                </div>
-                <div class="error" *ngIf="usernameCtrl.errors && ( usernameCtrl.dirty || usernameCtrl.touched)"> {{getErrorMessage(usernameCtrl)}}  </div>
-                </div>
-                <div class="input-container">
-                <div class="input-group">
-                    <fa-icon [icon]="faLock"></fa-icon>
-                    <input class="input"
-                    [type]="showPassword ? 'text' : 'password'"  
-                           placeholder="Password"
-                           formControlName="password">
-                    <button type="button" class="toggle-password" (click)="togglePasswordVisibility()">
-                        <fa-icon [icon]="faEye"></fa-icon>
-                    </button>
-                </div>
-                <div class="error" *ngIf="passwordCtr.errors && passwordCtr.dirty"> {{getErrorMessage(passwordCtr)}} </div>
-                </div>
-                <div class="input-container">
-                <div class="input-group" *ngIf="showConfirmPasswordCtr$ | async">
-                    <fa-icon [icon]="faLock"></fa-icon>
-                    <input class="input" 
-                    [type]="showPassword ? 'text' : 'password'"  
-                           placeholder="Confirm password"
-                           formControlName="confirmPassword">
-                    <button type="button" class="toggle-password" (click)="togglePasswordVisibility()">
-                        <fa-icon [icon]="faEye"></fa-icon>
-                    </button>
-                </div>
-                <div class="error" *ngIf="showConfirmPasswordError$ | async">Passwords do not match</div>
-                </div>
-            </div>
-            <!-------->
-            <!-------->
-            <!-------->
-            <div class="checkbox-wrapper">
-                <label class="checkbox-container">
-                    <input type="checkbox"
-                    formControlName="termsAccepted">
-                    <span class="checkbox">
-                        <fa-icon [icon]="faCheck"></fa-icon>
-                    </span>
-                    <span class="checkbox-label">I confirm that I have read, consent and agree to Falcon's 
-                        <a href="#"class="link">Terms of Use</a> and <a href="#" class="link">Privacy Policy</a></span>
-                </label>
-            </div>
-            <!-------->
-            <!-------->
-            <!-------->
-            <ng-container *ngIf="SignUpButtonState$ | async as state" >
-            <button type="button" 
-                        class="button" 
                         (click)="onSignUp()"
-                    [disabled]="this.mainForm.invalid || state.isLoading">
-                {{state.buttonText}}
-                </button>
-            </ng-container>
-            <div class="error terms-error" *ngIf="mainForm.get('termsAccepted')?.errors?.['requiredTrue'] && mainForm.get('termsAccepted')?.touched">
-              You must accept the terms and conditions
+                        [disabled]="this.mainForm.invalid || state.isLoading">
+                        {{state.buttonText}}
+                    </button>
+                </ng-container>
+                <div class="error terms-error"
+                    *ngIf="mainForm.get('termsAccepted')?.errors?.['requiredTrue'] && mainForm.get('termsAccepted')?.touched">
+                    You must accept the terms and conditions
+                </div>
+            </form>
+
+            <div class="form-footer">
+                <a class="link" routerLink="/auth/forgot-password">Forgot
+                    password?</a>
+                <a class="link" routerLink="/auth/sign-in">Log in</a>
             </div>
-        </form>
-
-        <div class="form-footer">
-            <a class="link" routerLink="/auth/forgot-password">Forgot password?</a>
-            <a class="link" routerLink="/auth/sign-in">Log in</a>
         </div>
-    </div>
-</ng-container>
+    </ng-container>
 </div>
-
 
 <!--
 

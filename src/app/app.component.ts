@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Router, NavigationEnd, Event as RouterEvent } from '@angular/router';
 import { filter, map } from 'rxjs/operators';
 import { Store } from '@ngrx/store';

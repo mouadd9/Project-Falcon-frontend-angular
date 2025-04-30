@@ -1,10 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { RoomDetailActions } from '../../state/room-detail/room-detail.actions';
+import { JoinRoomActions, RoomDetailActions, SaveRoomActions } from '../../state/room-detail/room-detail.actions';
 import { Observable } from 'rxjs';
 import { RoomModel } from '../../../my-space/models/room.model';
 import {
+  joiningButtonState,
+  savingButtonState,
   selectCurrentRoom,
   selectRoomDetailError,
   selectRoomDetailLoading,
@@ -23,6 +25,7 @@ import {
   faDoorOpen,
 } from '@fortawesome/free-solid-svg-icons';
 import { faBookmark as faBookmarkRegular } from '@fortawesome/free-regular-svg-icons';
+import { JwtService } from '../../../auth/services/jwt.service';
 
 // The RoomDetailComponent's purpose is to display detailed information about a specific room
 // with the ID coming from the URL parameter.
@@ -36,6 +39,9 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
   room$!: Observable<RoomModel | null>;
   isLoading$!: Observable<boolean>;
   error$!: Observable<string | null>;
+
+  joinButtonState$!: Observable<string | undefined>;
+  saveButtonState$!: Observable<string | undefined>;
 
   // font awesome
   // Font Awesome icons
@@ -52,7 +58,7 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
   faPlayCircle = faPlayCircle;
   faSignOutAlt = faSignOutAlt;
 
-  constructor(private route: ActivatedRoute, private store: Store) {}
+  constructor(private route: ActivatedRoute, private store: Store, private jwtService: JwtService) {}
 
   ngOnInit(): void {
     window.scrollTo(0, 0);
@@ -64,6 +70,8 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
     this.room$ = this.store.select(selectCurrentRoom);
     this.isLoading$ = this.store.select(selectRoomDetailLoading);
     this.error$ = this.store.select(selectRoomDetailError);
+    this.joinButtonState$ = this.store.select(joiningButtonState);
+    this.saveButtonState$ = this.store.select(savingButtonState);
   }
 
   private getRoomDetails(): void {
@@ -111,13 +119,19 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
     throw new Error('Method not implemented.');
   }
   saveRoom() {
-    throw new Error('Method not implemented.');
+    const userId = this.jwtService.getUserIdFromToken();
+    const roomId = +this.route.snapshot.params['id'];
+    
+    this.store.dispatch(SaveRoomActions.saveRoom({ userId, roomId }));
   }
   launchInstance() {
     throw new Error('Method not implemented.');
   }
   joinRoom() {
-    throw new Error('Method not implemented.');
+    const userId = this.jwtService.getUserIdFromToken();
+    const roomId = +this.route.snapshot.params['id'];
+    
+    this.store.dispatch(JoinRoomActions.joinRoom({ userId, roomId }));
   }
   leaveRoom() {
     throw new Error('Method not implemented.');

@@ -19,3 +19,45 @@ export const selectRoomDetailError = createSelector(
     (state) => state.error // projector function (receives the emitted values originating from the source)
 )
 
+// UI-friendly derived selectors
+export const savingButtonState = createSelector(
+    selectRoomDetailState,
+    (state): string => {
+        if (state.isSaving) {
+            return "saving...";
+        } else if (state.isUnsaving) {
+            return "unsaving...";
+        } else if (!state.isSaving && state.currentRoom?.isSaved) {
+            return "unsave";
+        } else {
+            return "save";
+        }
+    }
+);
+
+export const joiningButtonState = createSelector(
+    selectRoomDetailState,
+    (state): string => {
+        if (state.isJoining) {
+            return "joining...";
+        } else if (state.isLeaving) {
+            return "leaving...";
+        } else if (!state.isJoining && state.currentRoom?.isJoined) {
+            return "leave";
+        } else {
+            return "join";
+        }
+    }
+);
+
+// Disabled state selectors for buttons
+export const isSaveButtonDisabled = createSelector(
+    selectRoomDetailState,
+    (state) => state.isSaving || state.isUnsaving
+);
+
+export const isJoinButtonDisabled = createSelector(
+    selectRoomDetailState,
+    (state) => state.isJoining || state.isLeaving
+);
+
