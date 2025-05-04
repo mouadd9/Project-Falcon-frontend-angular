@@ -11,6 +11,10 @@ export class RoomService {
 
   constructor(private http: HttpClient) { }
 
+  getAllRooms(userId: number): Observable<RoomModel[]> {
+    return this.http.get<RoomModel[]>(`${environment.apiUrl}/api/users/${userId}/rooms`);
+  } 
+
   // these two methods will be called, to get information about a room.
   // this information should be displayed in the RoomComponent.
   // when a user clicks a room card we will call one of these to get data

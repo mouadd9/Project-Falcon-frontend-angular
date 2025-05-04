@@ -1,1 +1,30 @@
-<p>rooms-list works!</p>
+<!-- templates definition -->
+<ng-template #loadingTemplate>
+    <div class="loading-state">
+        <div class="spinner"></div>
+        <p>Loading your rooms...</p> </div>
+</ng-template>
+
+<ng-template #emptyTemplate>
+    <div class="empty-state"><p>No rooms available.</p></div>
+</ng-template>
+
+<ng-template #contentTemplate>
+    <app-room
+        *ngFor="let room of rooms"
+        [room]="room"
+        class="room-card">
+    </app-room>
+</ng-template>
+
+<ng-template #isEmptyOrContent>
+    <ng-container *ngIf="!rooms || rooms.length === 0; 
+                   then emptyTemplate; 
+                   else contentTemplate">
+    </ng-container>
+</ng-template>
+
+<!-- Choose which template to display -->
+<ng-container *ngIf="isLoading; then loadingTemplate; 
+               else isEmptyOrContent">
+</ng-container>

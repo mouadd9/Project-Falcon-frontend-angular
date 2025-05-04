@@ -1,4 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { RoomModel } from '../../../my-space/models/room.model';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-rooms',

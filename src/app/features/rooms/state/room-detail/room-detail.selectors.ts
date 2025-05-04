@@ -2,7 +2,7 @@ import { createFeatureSelector, createSelector } from "@ngrx/store";
 import { RoomDetailState } from "../room-detail/room-detail.state";
 
 // this selector selects the entire feature state, we usually do not use this directly in components !!!
-export const selectRoomDetailState = createFeatureSelector<RoomDetailState>('roomDetail'); 
+export const selectRoomDetailState = createFeatureSelector<RoomDetailState>('room-detail'); 
 
 export const selectCurrentRoom = createSelector(
     selectRoomDetailState, // source

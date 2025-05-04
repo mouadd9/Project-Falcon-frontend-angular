@@ -1,6 +1,6 @@
 // rooms.reducer.ts
 import { createReducer, on } from '@ngrx/store';
-import { initialRoomsState } from './my-rooms.state';
+import { initialMyRoomsState } from './my-rooms.state';
 import {
   JoinedRoomsActions,
   SavedRoomsActions,
@@ -9,7 +9,7 @@ import {
 } from './my-rooms.actions';
 
 export const myRoomsReducer = createReducer(
-  initialRoomsState,
+  initialMyRoomsState,
   // on get Joined Rooms
   on(JoinedRoomsActions.load, (state) => ({
     ...state,

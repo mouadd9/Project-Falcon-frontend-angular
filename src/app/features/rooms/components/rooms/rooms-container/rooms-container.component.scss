@@ -1,0 +1,85 @@
+/*#################################------TOOLBAR-CONTAINER*/
+.toolbar-container {
+    width: 100%;
+}
+
+@media (max-width: 1024px) {
+    .rooms-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/*#################################------ROOMS-GRID*/
+.rooms-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 1800px;
+    margin: 0 auto;
+}
+
+/* Responsive grid adjustments */
+@media (min-width: 1400px) {
+    .rooms-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 1399px) and (min-width: 1080px) {
+    .rooms-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 1079px) and (min-width: 768px) {
+    .rooms-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 767px) {
+    .rooms-grid {
+        grid-template-columns: 1fr;
+        padding: 0.5rem;
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .rooms-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/*#################################------RESPONSIVE*/
+@media (min-width: 1400px) {
+    .rooms-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 1399px) and (min-width: 1080px) {
+    .rooms-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 1079px) and (min-width: 768px) {
+    .rooms-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 767px) {
+    .rooms-grid {
+        grid-template-columns: 1fr;
+        padding: 0.5rem;
+    }
+}
+
+@media (max-width: 1024px) {
+    .rooms-grid {
+        grid-template-columns: 1fr;
+    }
+}

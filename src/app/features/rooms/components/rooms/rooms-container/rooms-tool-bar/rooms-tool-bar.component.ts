@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-rooms-tool-bar',
-  imports: [],
+  standalone: false,
   templateUrl: './rooms-tool-bar.component.html',
   styleUrl: './rooms-tool-bar.component.scss'
 })

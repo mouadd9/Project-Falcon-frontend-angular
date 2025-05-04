@@ -10,7 +10,7 @@ export interface MyRoomsState {
     error: string | null;
   }
   
-  export const initialRoomsState: MyRoomsState = {
+  export const initialMyRoomsState: MyRoomsState = {
     joined: [],
     saved: [],
     completed: [],

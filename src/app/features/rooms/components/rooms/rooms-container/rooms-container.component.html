@@ -1,1 +1,8 @@
-<p>rooms-container works!</p>
+<!-- room tool-bar -->
+<app-rooms-tool-bar class="toolbar-container"></app-rooms-tool-bar>
+<!-- rooms grid -->
+<app-rooms-list
+    [rooms]="this.rooms$ | async"
+    [isLoading]="this.isLoading$ | async"
+    class="rooms-grid">
+</app-rooms-list>

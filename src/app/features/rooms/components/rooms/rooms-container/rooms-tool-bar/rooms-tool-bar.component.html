@@ -1,1 +1,39 @@
-<p>rooms-tool-bar works!</p>
+<div class="rooms-toolbar">
+    <div class="toolbar-filters">
+        <select id="sort-select" class="toolbar-select" title="Sort by">
+            <option value="" disabled selected>Sort by</option>
+            <option value="newest">Newest</option>
+            <option value="most-users">Most Users</option>
+            <option value="most-difficult">Most Difficult</option>
+        </select>
+
+        <select id="complexity-select" class="toolbar-select" title="Complexity">
+            <option value="" disabled selected>Complexity</option>
+            <option value="all">All Levels</option>
+            <option value="beginner">Beginner Friendly</option>
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+        </select>
+
+        <select id="enrollment-select" class="toolbar-select" title="Status">
+            <option value="" disabled selected>Status</option>
+            <option value="all">All Rooms</option>
+            <option value="enrolled">Enrolled</option>
+            <option value="not-enrolled">Not Enrolled</option>
+        </select>
+
+        <select id="completion-select" class="toolbar-select" title="Progress">
+            <option value="" disabled selected>Progress</option>
+            <option value="all">All Progress</option>
+            <option value="completed">Completed</option>
+            <option value="in-progress">In Progress</option>
+            <option value="not-started">Not Started</option>
+        </select>
+    </div>
+
+    <div class="search-bar">
+        <input type="text" placeholder="Search rooms...">
+        <i class="fas fa-search"></i>
+    </div>
+</div>

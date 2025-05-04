@@ -8,6 +8,11 @@ import { StoreModule } from '@ngrx/store';
 import { roomDetailReducer } from './state/room-detail/room-detail.reducer';
 import { EffectsModule } from '@ngrx/effects';
 import { RoomDetailEffects } from './state/room-detail/room-detail.effects';
+import { RoomsContainerComponent } from './components/rooms/rooms-container/rooms-container.component';
+import { RoomsToolBarComponent } from './components/rooms/rooms-container/rooms-tool-bar/rooms-tool-bar.component';
+import { RoomsListComponent } from './components/rooms/rooms-container/rooms-list/rooms-list.component';
+import { RoomComponent } from './components/rooms/rooms-container/rooms-list/room/room.component';
+import { roomsReducer } from './state/rooms/rooms.reducer';
 
 
 
@@ -15,12 +20,17 @@ import { RoomDetailEffects } from './state/room-detail/room-detail.effects';
   declarations: [
     RoomsComponent,
     RoomsBannerComponent,
+    RoomsContainerComponent,
+    RoomsToolBarComponent,
+    RoomsListComponent,
+    RoomComponent,
     RoomDetailComponent
   ],
   imports: [
     RoomsRoutingModule,
     SharedModule, // this will provide us with the icons module and the reusable room card component
-    StoreModule.forFeature('roomDetail', roomDetailReducer), // when this module loads we provide the store with this feature and the initial state.
+    StoreModule.forFeature('room-detail', roomDetailReducer), // when this module loads we provide the store with this feature and the initial state.
+    StoreModule.forFeature('rooms', roomsReducer),
     EffectsModule.forFeature([RoomDetailEffects])
   ]
 })

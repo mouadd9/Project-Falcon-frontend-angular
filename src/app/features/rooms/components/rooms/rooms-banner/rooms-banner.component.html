@@ -1,1 +1,68 @@
-<p>rooms-banner works!</p>
+<div class="profile-info">
+    <img src="assets/images/profile.svg" alt="User Profile"
+        class="profile-picture">
+    <div class="profile-text">
+        <h2>Searching for new Rooms?</h2>
+        <p>Go check out our rooms and enroll now!</p>
+    </div>
+</div>
+<div class="metrics-cards">
+    <!-- Total Rooms Progress Card -->
+    <div class="metric-card total">
+        <div class="stat-left">
+            <fa-icon [icon]="faDoorOpen"></fa-icon>
+            <span class="stat-label">Total Rooms</span>
+        </div>
+        <div class="stat-right">
+            <span class="stat-number">0/20</span>
+            <div class="progress-bar">
+                <div class="progress" style="width: 20%"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Difficulty Level Cards Container -->
+    <div class="difficulty-metrics">
+        <!-- Easy Machines Card -->
+        <div class="metric-card easy">
+            <div class="stat-left">
+                <fa-icon [icon]="faLeaf"></fa-icon>
+                <span class="stat-label">Easy</span>
+            </div>
+            <div class="stat-right">
+                <span class="stat-number">0/8</span>
+                <div class="progress-bar">
+                    <div class="progress" style="width: 50%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Medium Machines Card -->
+        <div class="metric-card medium">
+            <div class="stat-left">
+                <fa-icon [icon]="faCube"></fa-icon>
+                <span class="stat-label">Medium</span>
+            </div>
+            <div class="stat-right">
+                <span class="stat-number">0/7</span>
+                <div class="progress-bar">
+                    <div class="progress" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hard Machines Card -->
+        <div class="metric-card hard">
+            <div class="stat-left">
+                <fa-icon [icon]="faFire"></fa-icon>
+                <span class="stat-label">Hard</span>
+            </div>
+            <div class="stat-right">
+                <span class="stat-number">0/5</span>
+                <div class="progress-bar">
+                    <div class="progress" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
