@@ -10,11 +10,13 @@
 </ng-template>
 
 <ng-template #contentTemplate>
-    <app-room
-        *ngFor="let room of rooms"
-        [room]="room"
-        class="room-card">
-    </app-room>
+    <div class="rooms-grid">
+        <app-room
+            *ngFor="let room of rooms"
+            [room]="room"
+            class="room-card">
+        </app-room>
+    </div>
 </ng-template>
 
 <ng-template #isEmptyOrContent>

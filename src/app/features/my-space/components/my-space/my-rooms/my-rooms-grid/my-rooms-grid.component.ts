@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { RoomModel } from '../../../../models/room.model';
 
 // dumb component
@@ -6,7 +6,8 @@ import { RoomModel } from '../../../../models/room.model';
   selector: 'app-my-rooms-grid',
   standalone: false,
   templateUrl: './my-rooms-grid.component.html',
-  styleUrl: './my-rooms-grid.component.scss'
+  styleUrl: './my-rooms-grid.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MyRoomsGridComponent {
   // Receive rooms and loading state from parent

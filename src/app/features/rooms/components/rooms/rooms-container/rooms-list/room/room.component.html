@@ -1,4 +1,22 @@
 <div class="room-content" (click)="navigateToRoomDetail()">
+    <div class="room-status-badges">
+        <span class="stat-item joined" *ngIf="room.isJoined">
+            <fa-icon [icon]="faCheck"></fa-icon>
+            Joined
+        </span>
+        <span class="stat-item join" *ngIf="!room.isJoined">
+            <fa-icon [icon]="faPlus"></fa-icon>
+            Join
+        </span>
+        <span class="stat-item saved" *ngIf="room.isSaved">
+            <fa-icon [icon]="faBookmark"></fa-icon>
+            Saved
+        </span>
+        <span class="stat-item completed" *ngIf="room.percentageCompleted === 100">
+            <fa-icon [icon]="faTrophy"></fa-icon>
+            Completed
+        </span>
+    </div>
     <div class="room-header">
         <h3 class="room-title">{{room.title}}</h3>
         <p class="room-description">{{room.description}}</p>

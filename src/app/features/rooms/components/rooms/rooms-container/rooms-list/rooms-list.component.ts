@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { RoomModel } from '../../../../../my-space/models/room.model';
 
 @Component({
@@ -6,6 +6,7 @@ import { RoomModel } from '../../../../../my-space/models/room.model';
   standalone: false,
   templateUrl: './rooms-list.component.html',
   styleUrl: './rooms-list.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RoomsListComponent {
   // Receive rooms and loading state from parent

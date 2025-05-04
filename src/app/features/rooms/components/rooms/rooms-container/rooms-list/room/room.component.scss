@@ -19,7 +19,6 @@
 }
 
 .room-header {
-    margin-bottom: auto;
     min-width: 0;
 }
 
@@ -35,14 +34,15 @@
 
 .room-description {
     color: var(--my-space-text-secondary);
+    margin-top: 5px;
     margin: 0;
     font-size: 0.85rem;
     opacity: 0.8;
     max-width: 80%;
     line-height: 1.4;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
+    -webkit-line-clamp: 3;  
+    line-clamp: 3;       
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
@@ -124,5 +124,68 @@
         height: 120px;
         mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0));
         -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0));
+    }
+}
+
+/* New styles for status badges */
+.room-status-badges {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    z-index: 3;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    font-family: 'Ubuntu', sans-serif;
+    transition: all 0.2s ease;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.stat-item fa-icon {
+    font-size: 0.75rem;
+}
+
+.stat-item.joined {
+    background-color: rgba(46, 213, 115, 0.2);
+    border-color: rgba(46, 213, 115, 0.5);
+    color: rgba(46, 213, 115, 0.9);
+}
+
+.stat-item.join {
+    background-color: rgba(83, 124, 215, 0.2);
+    border-color: rgba(83, 124, 215, 0.5);
+    color: rgba(83, 124, 215, 0.9);
+    cursor: pointer;
+}
+
+.stat-item.saved {
+    background-color: rgba(255, 184, 0, 0.2);
+    border-color: rgba(255, 184, 0, 0.5);
+    color: rgba(255, 184, 0, 0.9);
+}
+
+.stat-item.completed {
+    background-color: rgba(255, 51, 153, 0.2);
+    border-color: rgba(255, 51, 153, 0.5);
+    color: rgba(255, 51, 153, 0.9);
+}
+
+@media (max-width: 768px) {
+    .room-status-badges {
+        flex-direction: row;
+        top: 70px;
     }
 }

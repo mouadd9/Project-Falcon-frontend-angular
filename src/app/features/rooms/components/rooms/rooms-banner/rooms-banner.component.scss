@@ -64,7 +64,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border: 1px solid rgba(255, 51, 153, 0.2);
+    border: 1.35px solid rgba(255, 51, 153, 0.2);
     backdrop-filter: blur(5px);
     transition: transform 0.3s ease, border-color 0.3s ease;
     min-height: 90px;
@@ -82,27 +82,30 @@
     border-color: rgba(255, 0, 0, 0.238);
 }
 
+/*style for total metric*/
+.metric-card.total {
+    border-color: rgba(160, 160, 160, 0.614);
+    min-height: 100px;  /* Slightly taller for total card */
+}
+
+
 .metric-card.total:hover {
-    transform: translateY(-3px);
-    border-color: var(--primary-color);
+    transform: translateY(-2px);
+    border-color: white;
 }
 .metric-card.easy:hover {
-    transform: translateY(-3px);
+    transform: translateY(-2px);
     border-color: var(--easy-color);
 }
 .metric-card.medium:hover {
-    transform: translateY(-3px);
+    transform: translateY(-2px);
     border-color: var(--medium-color);
 }
 .metric-card.hard:hover {
-    transform: translateY(-3px);
+    transform: translateY(-2px);
     border-color: var(--hard-color);
 }
 
-/*style for total metric*/
-.metric-card.total {
-    min-height: 100px;  /* Slightly taller for total card */
-}
 
 /*flex layout style for difficulty metrics*/
 .difficulty-metrics {

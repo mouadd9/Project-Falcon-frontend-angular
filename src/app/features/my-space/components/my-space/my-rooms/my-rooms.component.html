@@ -6,7 +6,7 @@ by passing emitions to @Input properties -->
 </app-my-rooms-tabs>
 <!-- we subscribe to the observables -->
 <!-- whenever an emition happens the @Input's reference changes -->
-<app-my-rooms-grid class="rooms-grid" 
+<app-my-rooms-grid 
     [rooms]="this.filteredRooms$ | async"
     [isLoading]="this.isLoading$ | async">
 </app-my-rooms-grid>

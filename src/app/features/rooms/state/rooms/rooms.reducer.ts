@@ -12,7 +12,7 @@ export const roomsReducer = createReducer(
   })),
   on(RoomsActions.loadSuccess, (state, { rooms }) => ({
     ...state,
-    joined: rooms,
+    rooms: rooms,
     isLoading: false,
   })),
   on(RoomsActions.loadFailure, (state, { error }) => ({

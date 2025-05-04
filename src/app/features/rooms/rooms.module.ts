@@ -13,6 +13,7 @@ import { RoomsToolBarComponent } from './components/rooms/rooms-container/rooms-
 import { RoomsListComponent } from './components/rooms/rooms-container/rooms-list/rooms-list.component';
 import { RoomComponent } from './components/rooms/rooms-container/rooms-list/room/room.component';
 import { roomsReducer } from './state/rooms/rooms.reducer';
+import { RoomsEffects } from './state/rooms/rooms.effects';
 
 
 
@@ -31,7 +32,8 @@ import { roomsReducer } from './state/rooms/rooms.reducer';
     SharedModule, // this will provide us with the icons module and the reusable room card component
     StoreModule.forFeature('room-detail', roomDetailReducer), // when this module loads we provide the store with this feature and the initial state.
     StoreModule.forFeature('rooms', roomsReducer),
-    EffectsModule.forFeature([RoomDetailEffects])
+    EffectsModule.forFeature([RoomDetailEffects]),
+    EffectsModule.forFeature([RoomsEffects])
   ]
 })
 export class RoomsModule { }

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import {
   faLeaf,
   faClock,
@@ -13,6 +13,7 @@ import { Router } from '@angular/router';
   standalone: false,
   templateUrl: './my-room-card.component.html',
   styleUrl: './my-room-card.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MyRoomCardComponent {
   @Input() room!: RoomModel;

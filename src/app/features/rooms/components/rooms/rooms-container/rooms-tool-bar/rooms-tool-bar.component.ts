@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-rooms-tool-bar',
@@ -7,5 +8,5 @@ import { Component } from '@angular/core';
   styleUrl: './rooms-tool-bar.component.scss'
 })
 export class RoomsToolBarComponent {
-
+  faSearch = faSearch;
 }
