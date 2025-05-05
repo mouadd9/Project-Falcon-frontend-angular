@@ -1,4 +1,3 @@
-// src/app/features/rooms/state/room-detail.actions.ts
 import { createActionGroup, props, emptyProps } from '@ngrx/store';
 import { RoomModel } from '../../../my-space/models/room.model';
 
@@ -17,7 +16,6 @@ export const RoomDetailActions = createActionGroup({
   },
 });
 
-// claude this part !!!!!!!!!!
 export const JoinRoomActions = createActionGroup({
   source: 'Join Room',
   events: {

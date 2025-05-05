@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { JoinRoomActions, RoomDetailActions, SaveRoomActions } from '../../state/room-detail/room-detail.actions';
+import { JoinRoomActions, LeaveRoomActions, RoomDetailActions, SaveRoomActions, UnsaveRoomActions } from '../../state/room-detail/room-detail.actions';
 import { Observable } from 'rxjs';
 import { RoomModel } from '../../../my-space/models/room.model';
 import {
@@ -36,9 +36,14 @@ import { JwtService } from '../../../auth/services/jwt.service';
   styleUrl: './room-detail.component.scss',
 })
 export class RoomDetailComponent implements OnInit, OnDestroy {
-  room$!: Observable<RoomModel | null>;
-  isLoading$!: Observable<boolean>;
-  error$!: Observable<string | null>;
+  public room$!: Observable<RoomModel | null>;
+  public isLoading$!: Observable<boolean>;
+  public error$!: Observable<string | null>;
+
+  // when this components loads we will get the userId and roomId and store them here.
+  // then we will be using it each time wa do an action on the room
+  private userId!: number;
+  private roomId!: number; 
 
   joinButtonState$!: Observable<string | undefined>;
   saveButtonState$!: Observable<string | undefined>;
@@ -62,8 +67,14 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     window.scrollTo(0, 0);
+    this.getUserIdAndRoomId();
     this.selectState(); // we select state
     this.getRoomDetails(); // we dispatch an action to get a room
+  }
+
+  private getUserIdAndRoomId(): void {
+    this.userId = this.jwtService.getUserIdFromToken();
+    this.roomId = +this.route.snapshot.params['id'];
   }
 
   private selectState(): void {
@@ -115,25 +126,23 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
     }
   }
 
-  unsaveRoom() {
-    throw new Error('Method not implemented.');
+  public saveRoom() {
+    this.store.dispatch(SaveRoomActions.saveRoom({ userId: this.userId, roomId: this.roomId }));
   }
-  saveRoom() {
-    const userId = this.jwtService.getUserIdFromToken();
-    const roomId = +this.route.snapshot.params['id'];
-    
-    this.store.dispatch(SaveRoomActions.saveRoom({ userId, roomId }));
+
+  public unsaveRoom() {  
+    this.store.dispatch(UnsaveRoomActions.unsaveRoom({ userId: this.userId, roomId: this.roomId }))
   }
-  launchInstance() {
-    throw new Error('Method not implemented.');
+
+  public joinRoom() {
+    this.store.dispatch(JoinRoomActions.joinRoom({ userId: this.userId, roomId: this.roomId }));
   }
-  joinRoom() {
-    const userId = this.jwtService.getUserIdFromToken();
-    const roomId = +this.route.snapshot.params['id'];
-    
-    this.store.dispatch(JoinRoomActions.joinRoom({ userId, roomId }));
+
+  public leaveRoom() {
+    this.store.dispatch(LeaveRoomActions.leaveRoom({ userId: this.userId, roomId: this.roomId }))
   }
-  leaveRoom() {
+
+  public launchInstance() {
     throw new Error('Method not implemented.');
   }
 
@@ -144,7 +153,6 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // Clear room detail state when leaving the component
-    this.store.dispatch(RoomDetailActions.clearRoomDetail());
+    this.store.dispatch(RoomDetailActions.clearRoomDetail()); // Clear room detail state when leaving the component
   }
 }

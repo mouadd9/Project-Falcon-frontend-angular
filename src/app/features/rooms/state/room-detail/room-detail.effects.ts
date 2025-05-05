@@ -1,4 +1,4 @@
-import { effect, inject, Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { RoomService } from '../../services/room.service';
 import {
@@ -11,7 +11,7 @@ import {
   tap
 } from 'rxjs';
 import { Action } from '@ngrx/store';
-import { JoinRoomActions, RoomDetailActions, SaveRoomActions } from '../room-detail/room-detail.actions';
+import { JoinRoomActions, LeaveRoomActions, RoomDetailActions, SaveRoomActions, UnsaveRoomActions } from '../room-detail/room-detail.actions';
 import { JwtService } from '../../../auth/services/jwt.service';
 
 @Injectable()
@@ -99,7 +99,6 @@ export class RoomDetailEffects {
     );
   });
 
-  // claude here !!!
   joinRoom$: Observable<Action> = createEffect(() => {
     return this.actions$.pipe( // effects subscribes to the actions observable
       ofType(JoinRoomActions.joinRoom),
@@ -112,6 +111,18 @@ export class RoomDetailEffects {
     ) 
   })
 
+  leaveRoom$: Observable<Action> = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(LeaveRoomActions.leaveRoom),
+      exhaustMap((action) => {
+        return this.roomService.leaveRoom(action.userId, action.roomId).pipe(
+          map(() => LeaveRoomActions.leaveRoomSuccess()), 
+          catchError((error) => of(LeaveRoomActions.leaveRoomFailure({error: error.message || 'Failed to load room details'})))
+        )  
+      })
+    ) 
+  })
+
   saveRoom$: Observable<Action> = createEffect(() => {
     return this.actions$.pipe( // effects subscribes to the actions observable
       ofType(SaveRoomActions.saveRoom),
@@ -119,6 +130,18 @@ export class RoomDetailEffects {
         return this.roomService.saveRoom(action.userId, action.roomId).pipe(
           map(() => SaveRoomActions.saveRoomSuccess()), 
           catchError((error) => of(SaveRoomActions.saveRoomFailure({error: error.message || 'Failed to load room details'})))
+        )  
+      })
+    ) 
+  })
+
+  unSaveRoom$: Observable<Action> = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(UnsaveRoomActions.unsaveRoom),
+      exhaustMap((action) => {
+        return this.roomService.unsaveRoom(action.userId, action.roomId).pipe(
+          map(() => UnsaveRoomActions.unsaveRoomSuccess()), 
+          catchError((error) => of(UnsaveRoomActions.unsaveRoomFailure({error: error.message || 'Failed to load room details'})))
         )  
       })
     ) 
