@@ -86,18 +86,7 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
   }
 
   private getRoomDetails(): void {
-    const roomId = +this.route.snapshot.params['id']; // retrieve the id of the selected room
-    // Extract status from URL query parameters
-    const isJoined = this.route.snapshot.queryParams['isJoined'] === 'true';
-    const isSaved = this.route.snapshot.queryParams['isSaved'] === 'true';
-    console.log('we reloaded the page !!');
-    console.log(roomId);
-    console.log('is joined:' + isJoined);
-    console.log('is saved:' + isSaved);
-
-    this.store.dispatch(
-      RoomDetailActions.loadRoomDetail({ roomId, isJoined, isSaved })
-    ); // dispatch an action, to load room details
+    this.store.dispatch( RoomDetailActions.loadRoomDetail({ roomId: this.roomId }) ); // dispatch an action, to load room details
   }
 
   public getComplexityIcon(complexity: string) {

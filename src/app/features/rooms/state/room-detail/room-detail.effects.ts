@@ -8,10 +8,16 @@ import {
   Observable,
   of,
   switchMap,
-  tap
+  tap,
 } from 'rxjs';
 import { Action } from '@ngrx/store';
-import { JoinRoomActions, LeaveRoomActions, RoomDetailActions, SaveRoomActions, UnsaveRoomActions } from '../room-detail/room-detail.actions';
+import {
+  JoinRoomActions,
+  LeaveRoomActions,
+  RoomDetailActions,
+  SaveRoomActions,
+  UnsaveRoomActions,
+} from '../room-detail/room-detail.actions';
 import { JwtService } from '../../../auth/services/jwt.service';
 
 @Injectable()
@@ -35,115 +41,114 @@ export class RoomDetailEffects {
         const roomId = action.roomId; // we first get the room id
         const userId = this.jwtService.getUserIdFromToken();
 
-        // Use the status from the action to determine which API to call
-        if (action.isJoined) {
-          return this.roomService.getJoinedRoom(userId, roomId).pipe(
-            tap((room) => {
-              console.log(
-                'the room with the id : ' + roomId + 'is joined by this user'
-              );
-              console.log('Room details returned : ');
-              console.log(room);
-            }),
-            // switchMap subscribes
-            map((room) => RoomDetailActions.loadRoomDetailSuccess({ room })), // we map the returned into an Action object
-            catchError((error) =>
-              of(
-                RoomDetailActions.loadRoomDetailFailure({
-                  error: error.message || 'Failed to load room details',
-                })
-              )
-            )
-          );
-        } else {
-          return this.roomService.getRoomById(roomId).pipe(
-            tap((room) => {
-              console.log(
-                'the room with the id : ' +
-                  roomId +
-                  'is not joined by this user'
-              );
-              console.log('Room details returned : ');
-              console.log(room);
-            }),
-            map((room) => {
-              console.log('Checking if the user has saved this room : ');
-              // If the room is in the saved list, ensure saved status is true
-              if (action.isSaved) {
-                console.log('its saved ... !!');
-                return {
+        // switchMap will subscribe to this observable and this observable will emit the proper action
+        return this.roomService.checkRoomStatus(userId, roomId).pipe(
+
+          // this switch Map will return an emission that has a room with correct status
+          switchMap((status) => {
+            // Based on actual status from backend, choose which API to call
+            if (status.isJoined) {
+              // User has joined this room, get detailed view
+              // Switch Map will subscribe to this observable and pass the emission
+              return this.roomService.getJoinedRoom(userId, roomId);
+            } else {
+              // User hasn't joined, get basic view
+              // Switch Map will subscribe to this observable and pass the emission
+              return this.roomService.getRoomById(roomId).pipe(
+                map((room) => ({
                   ...room,
-                  isSaved: true, // this will help us to distinguish saved but not joined rooms
-                };
-              }
-              return room;
-            }),
-            tap((room) => {
-              console.log(
-                'the room with the id : ' + roomId + 'is saved by this user'
+                  isSaved: status.isSaved, // Set saved status from backend
+                }))
               );
-              console.log('Room details returned : ');
-              console.log(room);
-            }),
-            map((room) => RoomDetailActions.loadRoomDetailSuccess({ room })),
-            catchError((error) =>
-              of(
-                RoomDetailActions.loadRoomDetailFailure({
-                  error: error.message || 'Failed to load room details',
-                })
-              )
+            }
+          }),
+          // we map the result to an action
+          map((room) => RoomDetailActions.loadRoomDetailSuccess({ room })),
+          catchError((error) =>
+            of(
+              RoomDetailActions.loadRoomDetailFailure({
+                error: error.message || 'Failed to load room details',
+              })
             )
-          );
-        }
+          )
+        );
+
+        
       })
     );
   });
 
   joinRoom$: Observable<Action> = createEffect(() => {
-    return this.actions$.pipe( // effects subscribes to the actions observable
+    return this.actions$.pipe(
+      // effects subscribes to the actions observable
       ofType(JoinRoomActions.joinRoom),
       exhaustMap((action) => {
         return this.roomService.joinRoom(action.userId, action.roomId).pipe(
-          map(() => JoinRoomActions.joinRoomSuccess()), 
-          catchError((error) => of(JoinRoomActions.joinRoomFailure({error: error.message || 'Failed to load room details'})))
-        )  
+          map(() => JoinRoomActions.joinRoomSuccess()),
+          catchError((error) =>
+            of(
+              JoinRoomActions.joinRoomFailure({
+                error: error.message || 'Failed to load room details',
+              })
+            )
+          )
+        );
       })
-    ) 
-  })
+    );
+  });
 
   leaveRoom$: Observable<Action> = createEffect(() => {
     return this.actions$.pipe(
       ofType(LeaveRoomActions.leaveRoom),
       exhaustMap((action) => {
         return this.roomService.leaveRoom(action.userId, action.roomId).pipe(
-          map(() => LeaveRoomActions.leaveRoomSuccess()), 
-          catchError((error) => of(LeaveRoomActions.leaveRoomFailure({error: error.message || 'Failed to load room details'})))
-        )  
+          map(() => LeaveRoomActions.leaveRoomSuccess()),
+          catchError((error) =>
+            of(
+              LeaveRoomActions.leaveRoomFailure({
+                error: error.message || 'Failed to load room details',
+              })
+            )
+          )
+        );
       })
-    ) 
-  })
+    );
+  });
 
   saveRoom$: Observable<Action> = createEffect(() => {
-    return this.actions$.pipe( // effects subscribes to the actions observable
+    return this.actions$.pipe(
+      // effects subscribes to the actions observable
       ofType(SaveRoomActions.saveRoom),
       exhaustMap((action) => {
         return this.roomService.saveRoom(action.userId, action.roomId).pipe(
-          map(() => SaveRoomActions.saveRoomSuccess()), 
-          catchError((error) => of(SaveRoomActions.saveRoomFailure({error: error.message || 'Failed to load room details'})))
-        )  
+          map(() => SaveRoomActions.saveRoomSuccess()),
+          catchError((error) =>
+            of(
+              SaveRoomActions.saveRoomFailure({
+                error: error.message || 'Failed to load room details',
+              })
+            )
+          )
+        );
       })
-    ) 
-  })
+    );
+  });
 
   unSaveRoom$: Observable<Action> = createEffect(() => {
     return this.actions$.pipe(
       ofType(UnsaveRoomActions.unsaveRoom),
       exhaustMap((action) => {
         return this.roomService.unsaveRoom(action.userId, action.roomId).pipe(
-          map(() => UnsaveRoomActions.unsaveRoomSuccess()), 
-          catchError((error) => of(UnsaveRoomActions.unsaveRoomFailure({error: error.message || 'Failed to load room details'})))
-        )  
+          map(() => UnsaveRoomActions.unsaveRoomSuccess()),
+          catchError((error) =>
+            of(
+              UnsaveRoomActions.unsaveRoomFailure({
+                error: error.message || 'Failed to load room details',
+              })
+            )
+          )
+        );
       })
-    ) 
-  })
+    );
+  });
 }

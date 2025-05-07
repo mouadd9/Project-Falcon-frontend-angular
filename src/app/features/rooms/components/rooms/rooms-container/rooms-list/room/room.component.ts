@@ -69,11 +69,6 @@ export class RoomComponent {
   }
 
   public navigateToRoomDetail() {
-    this.router.navigate(['/rooms', this.room.id], {
-      queryParams: {
-        isJoined: this.room.isJoined,
-        isSaved: this.room.isSaved,
-      },
-    });
+    this.router.navigate(['/rooms', this.room.id]);
   }
 }
