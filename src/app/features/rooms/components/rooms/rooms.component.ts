@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { RoomModel } from '../../../my-space/models/room.model';
+import { RoomModel } from '../../../../core/models/room.model';
 import { Store } from '@ngrx/store';
 
 @Component({

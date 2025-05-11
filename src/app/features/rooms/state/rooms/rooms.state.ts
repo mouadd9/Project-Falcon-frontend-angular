@@ -1,4 +1,4 @@
-import { RoomModel } from '../../../my-space/models/room.model';
+import { RoomModel } from '../../../../core/models/room.model';
 
 export interface RoomsState {
   rooms: RoomModel[];

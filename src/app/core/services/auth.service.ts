@@ -1,10 +1,11 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { VerificationCodeRequest, VerificationCodeResponse } from '../models/verification.model';
-import { environment } from '../../../../environments/environment';
-import { SignUpRequest, SignUpResponse } from '../models/sign-up.model';
-import { SignInRequest, SignInResponse } from '../models/sign-in.model';
+import { environment } from '../../../environments/environment';
+import { VerificationCodeRequest, VerificationCodeResponse } from '../../features/auth/models/verification.model';
+import { SignUpRequest, SignUpResponse } from '../../features/auth/models/sign-up.model';
+import { SignInRequest, SignInResponse } from '../../features/auth/models/sign-in.model';
+
 
 @Injectable({
   providedIn: 'root', // provided at root, the root injector creates a singleton of this service

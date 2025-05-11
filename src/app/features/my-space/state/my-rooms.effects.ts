@@ -2,12 +2,13 @@ import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { catchError, delay, map, switchMap } from 'rxjs/operators';
-import { MyRoomsService } from '../services/my-rooms.service';
 import {
   JoinedRoomsActions,
   SavedRoomsActions,
   CompletedRoomsActions,
 } from './my-rooms.actions';
+
+import { MyRoomsService } from '../../../core/services/my-rooms.service';
 
 @Injectable()
 export class MyRoomsEffects {

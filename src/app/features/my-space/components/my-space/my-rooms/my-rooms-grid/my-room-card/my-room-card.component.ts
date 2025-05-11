@@ -5,7 +5,7 @@ import {
   faCube,
   faFire,
 } from '@fortawesome/free-solid-svg-icons';
-import { RoomModel } from '../../../../../models/room.model';
+import { RoomModel } from '../../../../../../../core/models/room.model';
 import { Router } from '@angular/router';
 
 @Component({

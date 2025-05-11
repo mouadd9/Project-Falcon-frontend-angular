@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { RoomService } from '../../services/room.service';
+
 import {
   catchError,
   exhaustMap,
@@ -18,7 +18,8 @@ import {
   SaveRoomActions,
   UnsaveRoomActions,
 } from '../room-detail/room-detail.actions';
-import { JwtService } from '../../../auth/services/jwt.service';
+import { JwtService } from '../../../../core/services/jwt.service';
+import { RoomService } from '../../../../core/services/room.service';
 
 @Injectable()
 export class RoomDetailEffects {
@@ -72,8 +73,6 @@ export class RoomDetailEffects {
             )
           )
         );
-
-        
       })
     );
   });

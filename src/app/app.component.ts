@@ -4,7 +4,7 @@ import { Router, NavigationEnd, Event as RouterEvent } from '@angular/router';
 import { filter, map } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { AuthActions } from './features/auth/state/auth.actions';
-import { JwtService } from './features/auth/services/jwt.service';
+import { JwtService } from './core/services/jwt.service';
 
 @Component({
   selector: 'app-root',

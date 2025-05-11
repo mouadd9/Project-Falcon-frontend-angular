@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { RoomModel } from '../../../../my-space/models/room.model';
+import { RoomModel } from '../../../../../core/models/room.model';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { JwtService } from '../../../../auth/services/jwt.service';
+import { JwtService } from '../../../../../core/services/jwt.service';
 import {
   selectRooms,
   selectRoomsloadingState,

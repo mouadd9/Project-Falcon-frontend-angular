@@ -1,5 +1,5 @@
 import { createActionGroup, props } from '@ngrx/store';
-import { RoomModel } from '../models/room.model';
+import { RoomModel } from '../../../core/models/room.model';
 
 // these are groups of actions related to joined rooms
 export const JoinedRoomsActions = createActionGroup({

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { RoomModel } from '../../../../../my-space/models/room.model';
+import { RoomModel } from '../../../../../../core/models/room.model';
 
 @Component({
   selector: 'app-rooms-list',

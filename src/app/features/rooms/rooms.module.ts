@@ -14,6 +14,7 @@ import { RoomsListComponent } from './components/rooms/rooms-container/rooms-lis
 import { RoomComponent } from './components/rooms/rooms-container/rooms-list/room/room.component';
 import { roomsReducer } from './state/rooms/rooms.reducer';
 import { RoomsEffects } from './state/rooms/rooms.effects';
+import { ChallengesComponent } from './components/room-detail/challenges/challenges.component';
 
 
 
@@ -25,7 +26,8 @@ import { RoomsEffects } from './state/rooms/rooms.effects';
     RoomsToolBarComponent,
     RoomsListComponent,
     RoomComponent,
-    RoomDetailComponent
+    RoomDetailComponent,
+    ChallengesComponent
   ],
   imports: [
     RoomsRoutingModule,

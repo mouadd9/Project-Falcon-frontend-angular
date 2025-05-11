@@ -1,4 +1,4 @@
-import { RoomModel } from "../models/room.model";
+import { RoomModel } from "../../../core/models/room.model";
 
 // rooms.state.ts
 export interface MyRoomsState {

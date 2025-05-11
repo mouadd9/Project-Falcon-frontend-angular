@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { JoinRoomActions, LeaveRoomActions, RoomDetailActions, SaveRoomActions, UnsaveRoomActions } from '../../state/room-detail/room-detail.actions';
 import { Observable } from 'rxjs';
-import { RoomModel } from '../../../my-space/models/room.model';
+import { RoomModel } from '../../../../core/models/room.model';
 import {
   joiningButtonState,
   savingButtonState,
@@ -25,7 +25,7 @@ import {
   faDoorOpen,
 } from '@fortawesome/free-solid-svg-icons';
 import { faBookmark as faBookmarkRegular } from '@fortawesome/free-regular-svg-icons';
-import { JwtService } from '../../../auth/services/jwt.service';
+import { JwtService } from '../../../../core/services/jwt.service';
 
 // The RoomDetailComponent's purpose is to display detailed information about a specific room
 // with the ID coming from the URL parameter.

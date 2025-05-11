@@ -1,0 +1,54 @@
+<div class="section-header">
+  <h2>Challenges</h2>
+</div>
+<div class="challenges-container">
+    <div *ngIf="!isJoined" class="join-notice">
+    <fa-icon [icon]="faLock"></fa-icon>
+    <p>Join this room to submit flag answers and track your progress</p>
+  </div>
+  <div *ngFor="let challenge of challenges; let i = index" class="challenge-card">
+    <!-- Challenge Header -->
+    <div class="challenge-header" (click)="toggleChallenge(challenge.id)">
+      <div class="task-info">
+        <span class="task-number">Task {{ i + 1 }}</span>
+        <div class="completion-indicator" [class.completed]="challenge.isCompleted">
+          <div class="circle-inner"></div>
+        </div>
+        <span class="task-title">{{ challenge.title }}</span>
+      </div>
+
+      <div class="challenge-controls">
+        <button class="toggle-button">
+          <fa-icon [icon]="isExpanded(challenge.id) ? faChevronUp : faChevronDown"></fa-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- Challenge Content (expanded) -->
+    <div class="challenge-content" *ngIf="isExpanded(challenge.id)">
+      <div class="content-wrapper">
+        <p>{{ challenge.description }}</p>
+
+        <!-- Challenge instructions/content -->
+        <div class="challenge-instructions" [innerHTML]="challenge.instructions"></div>
+
+        <!-- Answer section -->
+        <div class="answer-section">
+          <p class="answer-prompt">Answer the questions below</p>
+
+          <div class="input-row">
+            <input type="text" class="flag-input" placeholder="Login to answer..." #flagInput [disabled]="!isJoined">
+            <button class="submit-button" [disabled]="!isJoined"
+              (click)="submitFlag(challenge.id, flagInput.value); flagInput.value = ''">
+              Login to answer...
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!challenges || challenges.length === 0" class="no-challenges">
+    <p>No challenges available for this room yet.</p>
+  </div>
+</div>

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { RoomModel } from '../../../../models/room.model';
+import { RoomModel } from '../../../../../../core/models/room.model';
 
 // dumb component
 @Component({

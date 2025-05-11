@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
-import { RoomModel } from '../../../../../../my-space/models/room.model';
+import { RoomModel } from '../../../../../../../core/models/room.model';
 import {
   faLeaf,
   faClock,

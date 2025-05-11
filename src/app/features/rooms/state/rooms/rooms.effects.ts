@@ -2,8 +2,8 @@ import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { catchError, map, switchMap, delay } from 'rxjs/operators';
-import { RoomService } from '../../services/room.service';
 import { RoomsActions } from './rooms.actions';
+import { RoomService } from '../../../../core/services/room.service';
 
 
 

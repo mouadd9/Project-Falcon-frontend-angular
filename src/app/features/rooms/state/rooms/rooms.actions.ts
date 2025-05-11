@@ -1,5 +1,5 @@
 import { createActionGroup, props } from "@ngrx/store";
-import { RoomModel } from "../../../my-space/models/room.model";
+import { RoomModel } from "../../../../core/models/room.model";
 
 
 // these are groups of actions related to joined rooms

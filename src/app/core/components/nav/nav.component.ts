@@ -5,7 +5,7 @@ import { AuthActions } from '../../../features/auth/state/auth.actions';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { selectAuthState } from '../../../features/auth/state/auth.selectors';
-import { JwtService } from '../../../features/auth/services/jwt.service';
+import { JwtService } from '../../services/jwt.service';
 
 @Component({
   selector: 'app-nav',

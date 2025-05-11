@@ -1,9 +1,9 @@
   // Challenge model
   export interface Challenge {
     id: number;
+    name: string;
     title: string;
     description: string;
-    points: number;
+    instructions: string;
     isCompleted: boolean;
-    // Add other challenge properties as needed
   }

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { RoomModel } from '../../../models/room.model';
+import { RoomModel } from '../../../../../core/models/room.model';
 import {
   myRoomsloadingState,
   selectActiveFilter,
@@ -13,7 +13,7 @@ import {
   RoomsFilterActions,
   SavedRoomsActions,
 } from '../../../state/my-rooms.actions';
-import { JwtService } from '../../../../auth/services/jwt.service';
+import { JwtService } from '../../../../../core/services/jwt.service';
 
 // this component will :
 // Select data from the store

@@ -5,12 +5,12 @@
 
 import { inject, Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { AuthService } from "../services/auth.service";
 import { AuthApiActions, LogInFormActions, SignUpFormActions } from "./auth.actions";
 import { catchError, delay, from, map, mergeMap, Observable, of, switchMap } from "rxjs";
 import { Action, Store } from "@ngrx/store";
 import { HttpErrorResponse } from "@angular/common/http";
 import { Router } from "@angular/router";
+import { AuthService } from "../../../core/services/auth.service";
 
 // - isolate side effects from components
 // - listen to an observable of every action dispatched from the Store
