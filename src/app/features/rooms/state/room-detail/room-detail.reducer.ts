@@ -1,6 +1,13 @@
 import { createReducer, on } from '@ngrx/store';
 import { initialRoomDetailState } from './room-detail.state';
-import { JoinRoomActions, LeaveRoomActions, RoomDetailActions, SaveRoomActions, UnsaveRoomActions } from './room-detail.actions';
+import {
+  FlagSubmissionActions,
+  JoinRoomActions,
+  LeaveRoomActions,
+  RoomDetailActions,
+  SaveRoomActions,
+  UnsaveRoomActions,
+} from './room-detail.actions';
 import { JoinedRoomsActions } from '../../../my-space/state/my-rooms.actions';
 
 export const roomDetailReducer = createReducer(
@@ -26,8 +33,8 @@ export const roomDetailReducer = createReducer(
   })),
   // when a user clicks to join a room, we should show a spinner in the join Room button
 
-   // Join room
-   on(JoinRoomActions.joinRoom, (state) => ({
+  // Join room
+  on(JoinRoomActions.joinRoom, (state) => ({
     ...state,
     isJoining: true,
     error: null,
@@ -47,7 +54,7 @@ export const roomDetailReducer = createReducer(
     error,
     isJoining: false,
   })),
-  
+
   // Leave room
   on(LeaveRoomActions.leaveRoom, (state) => ({
     ...state,
@@ -69,7 +76,7 @@ export const roomDetailReducer = createReducer(
     error,
     isLeaving: false,
   })),
-  
+
   // Save room
   on(SaveRoomActions.saveRoom, (state) => ({
     ...state,
@@ -91,7 +98,7 @@ export const roomDetailReducer = createReducer(
     error,
     isSaving: false,
   })),
-  
+
   // Unsave room
   on(UnsaveRoomActions.unsaveRoom, (state) => ({
     ...state,
@@ -112,5 +119,62 @@ export const roomDetailReducer = createReducer(
     ...state,
     error,
     isUnsaving: false,
+  })),
+  on(FlagSubmissionActions.submitFlag, (state, { challengeId }) => ({
+    ...state,
+    flagSubmission: {
+      ...state.flagSubmission,
+      isSubmitting: true,
+      submittingChallengeId: challengeId,
+      error: null,
+    }
+  })),
+  on(FlagSubmissionActions.submitFlagSuccess, (state, { challengeId, correct }) => {
+      // If the submission was correct, update the current room's challenges
+      let updatedRoom = state.currentRoom;
+
+      if (correct && updatedRoom) {
+        // Find the challenge and mark it as completed
+        const updatedChallenges = updatedRoom.challenges.map((challenge) =>
+          challenge.id === challengeId
+            ? { ...challenge, isCompleted: true }
+            : challenge
+        );
+
+        // Calculate new completion percentage
+        const totalChallenges = updatedRoom.totalChallenges || updatedChallenges.length;
+        const completedChallenges = updatedChallenges.filter((c) => c.isCompleted).length;
+        const percentageCompleted = totalChallenges > 0
+            ? Math.round((completedChallenges / totalChallenges) * 100)
+            : 0;
+
+        updatedRoom = {
+          ...updatedRoom,
+          challenges: updatedChallenges,
+          percentageCompleted,
+        };
+      }
+
+      return {
+        ...state,
+        currentRoom: updatedRoom,
+        flagSubmission: {
+          isSubmitting: false,
+          submittingChallengeId: null,
+          lastSubmittedChallengeId: challengeId,
+          lastSubmissionCorrect: correct,
+          error: null,
+        },
+      };
+    }
+  ),
+  on(FlagSubmissionActions.submitFlagFailure, (state, { error }) => ({
+    ...state,
+    flagSubmission: {
+      ...state.flagSubmission,
+      isSubmitting: false,
+      submittingChallengeId: null,
+      error,
+    },
   }))
 );

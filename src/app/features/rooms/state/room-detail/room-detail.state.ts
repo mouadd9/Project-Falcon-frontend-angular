@@ -12,6 +12,14 @@ export interface RoomDetailState {
   isUnsaving: boolean; // Unsaving a room
   // error state
   error: string | null;
+
+  flagSubmission: {
+    isSubmitting: boolean;
+    submittingChallengeId: number | null;
+    lastSubmittedChallengeId: number | null;
+    lastSubmissionCorrect: boolean | null;
+    error: string | null;
+  };
 }
 
 export const initialRoomDetailState: RoomDetailState = {
@@ -22,4 +30,12 @@ export const initialRoomDetailState: RoomDetailState = {
   isUnsaving: false,
   isSaving: false,
   error: null,
+
+  flagSubmission: {
+    isSubmitting: false,
+    submittingChallengeId: null,
+    lastSubmittedChallengeId: null,
+    lastSubmissionCorrect: null,
+    error: null,
+  },
 };

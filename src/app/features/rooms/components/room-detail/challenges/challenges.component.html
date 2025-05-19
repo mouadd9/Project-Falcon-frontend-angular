@@ -4,7 +4,7 @@
 <div class="challenges-container">
     <div *ngIf="!isJoined" class="join-notice">
     <fa-icon [icon]="faLock"></fa-icon>
-    <p>Join this room to submit flag answers and track your progress</p>
+    <p>Join this room to launch its virtual machine, submit flags and track your progress.</p>
   </div>
   <div *ngFor="let challenge of challenges; let i = index" class="challenge-card">
     <!-- Challenge Header -->
@@ -34,15 +34,54 @@
 
         <!-- Answer section -->
         <div class="answer-section">
-          <p class="answer-prompt">Answer the questions below</p>
+          <p class="answer-prompt">Enter your answer below</p>
 
+          <!-- Flag submission form -->
           <div class="input-row">
-            <input type="text" class="flag-input" placeholder="Login to answer..." #flagInput [disabled]="!isJoined">
-            <button class="submit-button" [disabled]="!isJoined"
-              (click)="submitFlag(challenge.id, flagInput.value); flagInput.value = ''">
-              Login to answer...
-            </button>
+            <input type="text" class="flag-input" placeholder="Enter flag..." #flagInput 
+                  [disabled]="!isJoined || challenge.isCompleted || ((submittingChallengeId$ | async) === challenge.id)">
+
+            <ng-container *ngIf="challenge.isCompleted; else submitButton">
+              <button class="submit-button completed">
+                <fa-icon [icon]="faCheck"></fa-icon>
+                Completed
+              </button>
+            </ng-container>
+            
+            <ng-template #submitButton>
+              <button class="submit-button" 
+                     [disabled]="!isJoined || (isSubmitting$ | async)"
+                     [class.loading]="(submittingChallengeId$ | async) === challenge.id"
+                     (click)="submitFlag(challenge.id, flagInput.value); flagInput.value = ''">
+                <ng-container *ngIf="(submittingChallengeId$ | async) === challenge.id; else readyState">
+                  <span class="spinner-inline"></span>
+                  Checking...
+                </ng-container>
+                <ng-template #readyState>
+                  Submit
+                </ng-template>
+              </button>
+            </ng-template>
           </div>
+          
+          <!-- Submission feedback messages -->
+          <ng-container *ngIf="lastSubmission$ | async as submission">
+            <div *ngIf="submission.challengeId === challenge.id" 
+                 [class.success-message]="submission.correct" 
+                 [class.error-message]="submission.correct === false"
+                 class="submission-message">
+              <fa-icon [icon]="submission.correct ? faCheck : faTimes"></fa-icon>
+              <span *ngIf="submission.correct">Correct! Challenge completed.</span>
+              <span *ngIf="submission.correct === false">Incorrect flag. Try again!</span>
+            </div>
+          </ng-container>
+          
+          <!-- Error message if API call failed -->
+          <div *ngIf="submissionError$ | async as error" class="error-message">
+            <fa-icon [icon]="faExclamationTriangle"></fa-icon>
+            <span>Error: {{ error }}</span>
+          </div>
+
         </div>
       </div>
     </div>

@@ -47,3 +47,11 @@ export const UnsaveRoomActions = createActionGroup({
   }
 });
 
+export const FlagSubmissionActions = createActionGroup({
+  source: 'Flag Submission',
+  events: {
+    'Submit Flag': props<{ userId: number, challengeId: number, flag: string }>(),
+    'Submit Flag Success': props<{ challengeId: number, correct: boolean }>(), // this action is dispatched when a flag is sublitted succesfully, we will use the payload to know if the flag is correct or no.
+    'Submit Flag Failure': props<{ error: string }>()
+  }
+});

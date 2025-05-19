@@ -12,6 +12,7 @@ import {
 } from 'rxjs';
 import { Action } from '@ngrx/store';
 import {
+  FlagSubmissionActions,
   JoinRoomActions,
   LeaveRoomActions,
   RoomDetailActions,
@@ -20,11 +21,13 @@ import {
 } from '../room-detail/room-detail.actions';
 import { JwtService } from '../../../../core/services/jwt.service';
 import { RoomService } from '../../../../core/services/room.service';
+import { FlagSubmissionService } from '../../../../core/services/flag-submission.service';
 
 @Injectable()
 export class RoomDetailEffects {
   private actions$ = inject(Actions);
   private roomService = inject(RoomService);
+  private flagSubmissionService = inject(FlagSubmissionService);
   private jwtService = inject(JwtService);
 
   // we need to create an effect that will do the following
@@ -44,7 +47,6 @@ export class RoomDetailEffects {
 
         // switchMap will subscribe to this observable and this observable will emit the proper action
         return this.roomService.checkRoomStatus(userId, roomId).pipe(
-
           // this switch Map will return an emission that has a room with correct status
           switchMap((status) => {
             // Based on actual status from backend, choose which API to call
@@ -148,6 +150,29 @@ export class RoomDetailEffects {
           )
         );
       })
+    );
+  });
+
+  submitFlag$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(FlagSubmissionActions.submitFlag),
+      exhaustMap(({ userId, challengeId, flag }) =>
+        this.flagSubmissionService.submitFlag(userId, challengeId, flag).pipe(
+          map((response) =>
+            FlagSubmissionActions.submitFlagSuccess({
+              challengeId,
+              correct: response.correct,
+            })
+          ),
+          catchError((error) =>
+            of(
+              FlagSubmissionActions.submitFlagFailure({
+                error: error.message || 'Failed to submit flag',
+              })
+            )
+          )
+        )
+      )
     );
   });
 }

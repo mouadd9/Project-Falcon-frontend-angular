@@ -61,3 +61,47 @@ export const isJoinButtonDisabled = createSelector(
     (state) => state.isJoining || state.isLeaving
 );
 
+// Add these selectors to the existing file room-detail.selectors.ts
+
+// this selects flagSubmission state from the room detail state
+/**
+   flagSubmission: {
+    isSubmitting: false,
+    submittingChallengeId: null,
+    lastSubmittedChallengeId: null,
+    lastSubmissionCorrect: null,
+    error: null,
+  }
+ */
+export const selectFlagSubmissionState = createSelector(
+  selectRoomDetailState,
+  (state) => state.flagSubmission
+);
+
+// this selects loading state for flag submission
+/**
+    isSubmitting: false
+ */
+export const selectIsSubmittingFlag = createSelector(
+  selectFlagSubmissionState,
+  (state) => state.isSubmitting
+);
+
+// this selects the challengeId that is being submitted
+export const selectSubmittingChallengeId = createSelector(
+  selectFlagSubmissionState,
+  (state) => state.submittingChallengeId
+);
+
+export const selectLastSubmissionResult = createSelector(
+  selectFlagSubmissionState,
+  (state) => ({
+    challengeId: state.lastSubmittedChallengeId,
+    correct: state.lastSubmissionCorrect
+  })
+);
+
+export const selectFlagSubmissionError = createSelector(
+  selectFlagSubmissionState,
+  (state) => state.error
+);
