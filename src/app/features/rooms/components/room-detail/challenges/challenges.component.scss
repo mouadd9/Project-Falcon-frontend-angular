@@ -141,7 +141,7 @@
 }
 
 .answer-prompt {
-  color: #8A7BFF; // Lavender color
+  color: #8A7BFF;
   font-weight: 500;
   margin-bottom: 15px;
 }
@@ -149,6 +149,7 @@
 .input-row {
   display: flex;
   gap: 10px;
+  margin-bottom: 15px;
 }
 
 .flag-input {
@@ -171,13 +172,19 @@
 
 .submit-button {
   padding: 8px 12px;
-  background-color: #8A7BFF; // Lavender color
+  background-color: #8A7BFF;
   color: white;
   border: none;
   border-radius: 4px;
   font-size: 14px;
+  min-width: 100px;
   white-space: nowrap;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: background-color 0.2s ease;
   
   &:hover:not(:disabled) {
     background-color: darken(#8A7BFF, 5%);
@@ -187,6 +194,73 @@
     background-color: #CCCCCC;
     cursor: not-allowed;
   }
+  
+  &.loading {
+    background-color: #6c63cf;
+    cursor: wait;
+  }
+  
+  &.completed {
+    background-color: #4CAF50;
+    cursor: default;
+  }
+}
+
+.spinner-inline {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 0.8s linear infinite;
+  margin-right: 6px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.submission-message {
+  margin-top: 10px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  animation: fadeIn 0.3s ease-in-out;
+  
+  &.success-message {
+    background-color: rgba(76, 175, 80, 0.1);
+    color: #4CAF50;
+    border: 1px solid rgba(76, 175, 80, 0.2);
+  }
+  
+  &.error-message {
+    background-color: rgba(244, 67, 54, 0.1);
+    color: #F44336;
+    border: 1px solid rgba(244, 67, 54, 0.2);
+  }
+}
+
+.error-message {
+  margin-top: 10px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  background-color: rgba(244, 67, 54, 0.1);
+  color: #F44336;
+  border: 1px solid rgba(244, 67, 54, 0.2);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .no-challenges {

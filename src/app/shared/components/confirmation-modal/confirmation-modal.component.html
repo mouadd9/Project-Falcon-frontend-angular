@@ -1,0 +1,22 @@
+<div class="modal-backdrop" *ngIf="isOpen">
+  <div class="modal-container">
+    <div class="modal-header">
+      <h2 class="modal-title">{{ title }}</h2>
+      <button class="close-button" (click)="onCancel()" aria-label="Close">
+        <fa-icon [icon]="faTimes"></fa-icon>
+      </button>
+    </div>
+    
+    <div class="modal-body">
+      <div class="warning-icon">
+        <fa-icon [icon]="faExclamationTriangle"></fa-icon>
+      </div>
+      <p class="modal-message">{{ message }}</p>
+    </div>
+    
+    <div class="modal-footer">
+      <button class="cancel-button" (click)="onCancel()">{{ cancelButtonText }}</button>
+      <button class="confirm-button" (click)="onConfirm()">{{ confirmButtonText }}</button>
+    </div>
+  </div>
+</div>

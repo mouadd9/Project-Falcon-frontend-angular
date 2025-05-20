@@ -1,7 +1,7 @@
 
 <div class="nav-container">
     <div class="logo">
-        <img src="assets/images/profile.svg" alt="Logo" class="logo-img">
+        <img src="assets/images/profile.svg" alt="Falcon" class="logo-img">
         <span>Falcon</span>
     </div>
     <div class="nav-links">
@@ -15,17 +15,20 @@
             <span>Rooms</span>
         </button>
     </div>
-    <!--<div class="nav-right">-->
-    <button class="profile-button">
-        <div class="profile-pic-placeholder">
-            <fa-icon [icon]="faUser"></fa-icon>
+    <div class="profile-container">
+        <button class="profile-button" [class.active]="showProfileMenu" (click)="toggleProfileMenu()">
+            <div class="profile-pic-placeholder">
+                <fa-icon [icon]="faUser"></fa-icon>
+            </div>
+            <span class="profile-name">{{ username }}</span>
+            <fa-icon [icon]="faChevronDown" [class.rotate-chevron]="showProfileMenu"></fa-icon>
+        </button>
+        
+        <div class="profile-dropdown" *ngIf="showProfileMenu">
+            <button class="dropdown-item logout-button" (click)="onLogout()">
+                <fa-icon [icon]="faSignOutAlt"></fa-icon>
+                <span>Logout</span>
+            </button>
         </div>
-            <span class="profile-name">Hello {{this.username}} !</span>
-        <fa-icon [icon]="faChevronDown"></fa-icon>
-    </button>
-    <!--<button class="logout-button" (click)="onLogout()">
-            <fa-icon [icon]="faSignOutAlt"></fa-icon>
-            <span>Logout</span>
-        </button> -->
-    <!--</div>-->
+    </div>
 </div>

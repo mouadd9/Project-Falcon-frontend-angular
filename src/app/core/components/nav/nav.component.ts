@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { faCube, faDoorOpen, faUser, faChevronDown, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { Store } from '@ngrx/store';
 import { AuthActions } from '../../../features/auth/state/auth.actions';
@@ -22,13 +22,34 @@ export class NavComponent implements OnInit {
   faSignOutAlt = faSignOutAlt;
 
   username: string = '';
+  showProfileMenu: boolean = false;
 
   constructor(private store: Store, private router: Router, private jwtService: JwtService) {}
 
   ngOnInit(): void {
-    const token: any = localStorage.getItem('access-token');
-    const decoded: any = this.jwtService.decodeToken(token);
-    this.username = decoded.sub;
+    this.initializeUserData();
+  }
+  
+  private initializeUserData(): void {
+    const token = localStorage.getItem('access-token');
+    if (token) {
+      const decoded = this.jwtService.decodeToken(token);
+      this.username = decoded.sub;
+    }
+  }
+  
+  @HostListener('document:click', ['$event'])
+  handleClickOutside(event: Event) {
+    const target = event.target as HTMLElement;
+    // Close the profile menu if clicking outside the profile container
+    if (this.showProfileMenu && !target.closest('.profile-container')) {
+      this.showProfileMenu = false;
+    }
+  }
+
+  toggleProfileMenu(): void {
+    this.showProfileMenu = !this.showProfileMenu;
+    // Future implementation: show dropdown with logout option
   }
 
   onLogout(): void {

@@ -11,7 +11,7 @@
     <div class="challenge-header" (click)="toggleChallenge(challenge.id)">
       <div class="task-info">
         <span class="task-number">Task {{ i + 1 }}</span>
-        <div class="completion-indicator" [class.completed]="challenge.isCompleted">
+        <div class="completion-indicator" [class.completed]="challenge.completed">
           <div class="circle-inner"></div>
         </div>
         <span class="task-title">{{ challenge.title }}</span>
@@ -39,9 +39,9 @@
           <!-- Flag submission form -->
           <div class="input-row">
             <input type="text" class="flag-input" placeholder="Enter flag..." #flagInput 
-                  [disabled]="!isJoined || challenge.isCompleted || ((submittingChallengeId$ | async) === challenge.id)">
+                  [disabled]="!isJoined || challenge.completed || ((submittingChallengeId$ | async) === challenge.id)">
 
-            <ng-container *ngIf="challenge.isCompleted; else submitButton">
+            <ng-container *ngIf="challenge.completed; else submitButton">
               <button class="submit-button completed">
                 <fa-icon [icon]="faCheck"></fa-icon>
                 Completed

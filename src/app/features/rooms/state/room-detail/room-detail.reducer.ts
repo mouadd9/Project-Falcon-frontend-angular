@@ -61,16 +61,35 @@ export const roomDetailReducer = createReducer(
     isLeaving: true,
     error: null,
   })),
-  on(LeaveRoomActions.leaveRoomSuccess, (state) => ({
-    ...state,
-    currentRoom: state.currentRoom
-      ? {
-          ...state.currentRoom,
-          isJoined: false,
-        }
-      : null,
-    isLeaving: false,
-  })),
+  on(LeaveRoomActions.leaveRoomSuccess, (state) => {
+    // state.currentRoom shouldnt be modified directly !!!
+
+    let updatedRoom = state.currentRoom; 
+
+    // If there's a current room, update it
+    if (updatedRoom) {
+      // Reset all challenges to not completed
+      const updatedChallenges = updatedRoom.challenges.map((challenge) => ({
+        ...challenge,
+        completed: false,
+      }));
+
+      // we create a new object to avoid mutating the original state
+      // Update room with challenges reset and isJoined set to false
+      updatedRoom = {
+        ...updatedRoom,
+        isJoined: false,
+        percentageCompleted: 0, // Reset completion percentage
+        challenges: updatedChallenges,
+      };
+    }
+
+    return {
+      ...state,
+      currentRoom: updatedRoom,
+      isLeaving: false,
+    };
+  }),
   on(LeaveRoomActions.leaveRoomFailure, (state, { error }) => ({
     ...state,
     error,
@@ -127,9 +146,11 @@ export const roomDetailReducer = createReducer(
       isSubmitting: true,
       submittingChallengeId: challengeId,
       error: null,
-    }
+    },
   })),
-  on(FlagSubmissionActions.submitFlagSuccess, (state, { challengeId, correct }) => {
+  on(
+    FlagSubmissionActions.submitFlagSuccess,
+    (state, { challengeId, correct }) => {
       // If the submission was correct, update the current room's challenges
       let updatedRoom = state.currentRoom;
 
@@ -137,14 +158,18 @@ export const roomDetailReducer = createReducer(
         // Find the challenge and mark it as completed
         const updatedChallenges = updatedRoom.challenges.map((challenge) =>
           challenge.id === challengeId
-            ? { ...challenge, isCompleted: true }
+            ? { ...challenge, completed: true }
             : challenge
         );
 
         // Calculate new completion percentage
-        const totalChallenges = updatedRoom.totalChallenges || updatedChallenges.length;
-        const completedChallenges = updatedChallenges.filter((c) => c.isCompleted).length;
-        const percentageCompleted = totalChallenges > 0
+        const totalChallenges =
+          updatedRoom.totalChallenges || updatedChallenges.length;
+        const completedChallenges = updatedChallenges.filter(
+          (c) => c.completed
+        ).length;
+        const percentageCompleted =
+          totalChallenges > 0
             ? Math.round((completedChallenges / totalChallenges) * 100)
             : 0;
 

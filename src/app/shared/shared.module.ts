@@ -6,6 +6,7 @@ import { UsernamePipe } from './pipes/username.pipe';
 import { TimeAgoPipe } from './pipes/time-ago.pipe';
 import { HighlightDirective } from './directives/highlight.directive';
 import { GlowEffectDirective } from './directives/glow-effect.directive';
+import { ConfirmationModalComponent } from './components/confirmation-modal/confirmation-modal.component';
 
 @NgModule({
   declarations: [
@@ -13,7 +14,8 @@ import { GlowEffectDirective } from './directives/glow-effect.directive';
     UsernamePipe,
     TimeAgoPipe, // to transform dates to descriptif texts 
     HighlightDirective,
-    GlowEffectDirective
+    GlowEffectDirective,
+    ConfirmationModalComponent
   ],
   imports: [
     CommonModule,
@@ -26,7 +28,8 @@ import { GlowEffectDirective } from './directives/glow-effect.directive';
     UsernamePipe,
     TimeAgoPipe,
     HighlightDirective,
-    GlowEffectDirective
+    GlowEffectDirective,
+    ConfirmationModalComponent
   ]
 // in a lot of times this module will be used to only export Modules without impoting them !!
 // When you export a module directly without importing it, you’re essentially saying:

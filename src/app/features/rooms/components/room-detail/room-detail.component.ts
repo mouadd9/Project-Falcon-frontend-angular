@@ -39,11 +39,13 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
   public room$!: Observable<RoomModel | null>;
   public isLoading$!: Observable<boolean>;
   public error$!: Observable<string | null>;
-
   // when this components loads we will get the userId and roomId and store them here.
   // then we will be using it each time wa do an action on the room
-  private userId!: number;
-  private roomId!: number; 
+  userId!: number;
+  private roomId!: number;
+
+  // Modal state
+  showLeaveConfirmModal: boolean = false;
 
   joinButtonState$!: Observable<string | undefined>;
   saveButtonState$!: Observable<string | undefined>;
@@ -122,13 +124,25 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
   public unsaveRoom() {  
     this.store.dispatch(UnsaveRoomActions.unsaveRoom({ userId: this.userId, roomId: this.roomId }))
   }
-
   public joinRoom() {
     this.store.dispatch(JoinRoomActions.joinRoom({ userId: this.userId, roomId: this.roomId }));
   }
 
   public leaveRoom() {
-    this.store.dispatch(LeaveRoomActions.leaveRoom({ userId: this.userId, roomId: this.roomId }))
+    // Show the confirmation modal instead of immediately leaving
+    this.showLeaveConfirmModal = true;
+  }
+
+  public confirmLeaveRoom() {
+    // Close the modal
+    this.showLeaveConfirmModal = false;
+    // Dispatch the leave room action
+    this.store.dispatch(LeaveRoomActions.leaveRoom({ userId: this.userId, roomId: this.roomId }));
+  }
+
+  public cancelLeaveRoom() {
+    // Just close the modal without taking any action
+    this.showLeaveConfirmModal = false;
   }
 
   public launchInstance() {

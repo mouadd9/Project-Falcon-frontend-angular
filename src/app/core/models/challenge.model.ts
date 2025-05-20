@@ -5,5 +5,5 @@
     title: string;
     description: string;
     instructions: string;
-    isCompleted: boolean;
+    completed: boolean;
   }

@@ -34,11 +34,14 @@
 /* Navbar Styles */
 .navbar {
     background-color: var(--nav-bar-background-color);
-    height: 60px;
+    height: 54px; /* Reduced from 60px to match nav-container */
     display: flex;
     align-items: center;
-    overflow: hidden;
+    overflow: visible; /* Changed from hidden to allow dropdown to be visible */
     flex-shrink: 0; // Prevents navbar from shrinking when content grows
+    position: relative;
+    z-index: 1050; /* Set high z-index for the navbar */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* Subtle shadow for depth */
 }
 
 /* Router container styles

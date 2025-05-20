@@ -121,4 +121,15 @@
 
         </div>
     </ng-container>
+
+    <!-- Leave Room Confirmation Modal -->
+    <app-confirmation-modal
+        [isOpen]="showLeaveConfirmModal"
+        title="Leave Room Confirmation"
+        message="Are you sure you want to leave this room? Your progress will be reset and you'll need to start over if you join again."
+        confirmButtonText="Leave Room"
+        cancelButtonText="Cancel"
+        (confirm)="confirmLeaveRoom()"
+        (cancel)="cancelLeaveRoom()">
+    </app-confirmation-modal>
 </div>
