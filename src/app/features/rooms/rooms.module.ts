@@ -15,6 +15,9 @@ import { RoomComponent } from './components/rooms/rooms-container/rooms-list/roo
 import { roomsReducer } from './state/rooms/rooms.reducer';
 import { RoomsEffects } from './state/rooms/rooms.effects';
 import { ChallengesComponent } from './components/room-detail/challenges/challenges.component';
+import { InstanceEffects } from './state/instance/instance.effects';
+import { instanceReducer } from './state/instance/instance.reducer';
+import { ClipboardModule } from '@angular/cdk/clipboard';
 
 
 
@@ -35,7 +38,10 @@ import { ChallengesComponent } from './components/room-detail/challenges/challen
     StoreModule.forFeature('room-detail', roomDetailReducer), // when this module loads we provide the store with this feature and the initial state.
     StoreModule.forFeature('rooms', roomsReducer),
     EffectsModule.forFeature([RoomDetailEffects]),
-    EffectsModule.forFeature([RoomsEffects])
+    EffectsModule.forFeature([RoomsEffects]),
+    StoreModule.forFeature('instance', instanceReducer),
+    EffectsModule.forFeature([InstanceEffects]),
+    ClipboardModule,
   ]
 })
 export class RoomsModule { }

@@ -1,126 +1,219 @@
 <div class="room-detail-container">
-    <!-- Loading State -->
-    <div *ngIf="isLoading$ | async" class="loading-state">
+    <!-- Loading State for Room Details -->
+    <div *ngIf="isLoadingRoom$ | async" class="loading-state">
         <div class="spinner"></div>
         <p>Loading room details...</p>
     </div>
 
-    <!-- Error State -->
-    <div *ngIf="error$ | async as error" class="error-state">
+    <!-- Error State for Room Details -->
+    <div *ngIf="roomError$ | async as error" class="error-state">
         <div class="error-message">
             <fa-icon [icon]="faFire" class="error-icon"></fa-icon>
             <p>{{ error }}</p>
         </div>
-        <button class="retry-button" (click)="ngOnInit()">Try Again</button>
+        <button class="retry-button" (click)="loadRoomAndInstanceDetails()">Try Again</button>
     </div>
 
     <!-- Room Content -->
-    <ng-container *ngIf="(room$ | async) as room">
+    <ng-container *ngIf="(room$ | async) as room; else noRoomData">
         <!-- Top Section - Room Info and Controls -->
         <div class="room-top-section">
-            <!-- Room background image with overlay -->
-            <div class="room-hero"
-                [style.background-image]="'url(' + (room.imageURL || '../assets/network-enum-bg.jpg') + ')'">
+            <div class="room-hero" [style.background-image]="'url(' + (room.imageURL || '../assets/network-enum-bg.jpg') + ')'">
                 <div class="hero-overlay"></div>
             </div>
 
             <div class="room-main-content">
                 <div class="room-header-container">
-                    <!-- Room Header -->
                     <div class="room-header">
                         <h1 class="room-title">{{ room.title }}</h1>
                         <p class="room-description">{{ room.description }}</p>
-
-                        <!-- Room Statistics -->
                         <div class="room-stats">
                             <span class="complexity-badge" [ngClass]="getComplexityClass(room.complexity)">
-                                <fa-icon [icon]="getComplexityIcon(room.complexity)"></fa-icon>
-                                {{ room.complexity }}
+                                <fa-icon [icon]="getComplexityIcon(room.complexity)"></fa-icon> {{ room.complexity }}
                             </span>
-
-                            <span class="stat-item">
-                                <fa-icon [icon]="faClock"></fa-icon>
-                                {{ room.estimatedTime }} hours
-                            </span>
-
-                            <span class="stat-item">
-                                <fa-icon [icon]="faUsers"></fa-icon>
-                                {{ room.totalJoinedUsers }} users
-                            </span>
-
-                            <span class="stat-item">
-                                <fa-icon [icon]="faFlag"></fa-icon>
-                                {{ getCompletedChallenges(room) }}/{{
-                                room.totalChallenges }} challenges
-                            </span>
+                            <span class="stat-item"><fa-icon [icon]="faClock"></fa-icon> {{ room.estimatedTime }} hours</span>
+                            <span class="stat-item"><fa-icon [icon]="faUsers"></fa-icon> {{ room.totalJoinedUsers }} users</span>
+                            <span class="stat-item"><fa-icon [icon]="faFlag"></fa-icon> {{ getCompletedChallenges(room) }}/{{ room.totalChallenges }} challenges</span>
                         </div>
                     </div>
 
-                    <!-- Room Actions - Now in top right -->
                     <div class="room-actions">
-                        <!-- Join/Leave Button Section -->
                         <ng-container *ngIf="joinButtonState$ | async as joinState">
-                            <!-- Show Join button when state indicates we can join -->
-                            <button *ngIf="joinState === 'join' || joinState === 'joining...'" (click)="joinRoom()"
-                                class="action-button join-button" [disabled]="joinState === 'joining...'">
-                                <fa-icon [icon]="faDoorOpen"></fa-icon>
+                            <button *ngIf="joinState === 'join' || joinState === 'joining...'" (click)="joinRoom()" class="action-button join-button" [disabled]="joinState === 'joining...'">
+                                <ng-container *ngIf="joinState === 'joining...'; else joinIcon">
+                                    <div class="btn-spinner"></div>
+                                </ng-container>
+                                <ng-template #joinIcon>
+                                    <fa-icon [icon]="faDoorOpen"></fa-icon>
+                                </ng-template>
                                 <span>{{ joinState }}</span>
                             </button>
-
-                            <!-- Show Leave button when state indicates we can leave -->
-                            <button *ngIf="joinState === 'leave' || joinState === 'leaving...'" (click)="leaveRoom()"
-                                class="action-button leave-button" [disabled]="joinState === 'leaving...'">
-                                <fa-icon [icon]="faSignOutAlt"></fa-icon>
+                            
+                            <!-- FIXED: Separate the visibility condition from the disabled condition -->
+                            <button 
+                                *ngIf="joinState === 'leave' || joinState === 'leaving...'" 
+                                (click)="leaveRoom()" 
+                                class="action-button leave-button" 
+                                [disabled]="joinState === 'leaving...' || (leaveButtonDisabled$ | async)"
+                                
+                                >
+                                
+                                <ng-container *ngIf="joinState === 'leaving...'; else leaveIcon">
+                                    <div class="btn-spinner"></div>
+                                </ng-container>
+                                <ng-template #leaveIcon>
+                                    <fa-icon [icon]="faSignOutAlt"></fa-icon>
+                                </ng-template>
                                 <span>{{ joinState }}</span>
                             </button>
                         </ng-container>
-
-                        <!-- Launch Button (always visible but disabled if not joined) -->
-                        <button [disabled]="!room.isJoined" (click)="launchInstance()"
-                            class="action-button launch-button" [class.disabled]="!room.isJoined">
-                            <fa-icon [icon]="faPlayCircle"></fa-icon>
-                            <span>launch</span>
-                        </button>
-
-                        <!-- Save/Unsave Button Section -->
                         <ng-container *ngIf="saveButtonState$ | async as saveState">
-                            <!-- Show Save button when state indicates we can save -->
-                            <button *ngIf="saveState === 'save' || saveState === 'saving...'" (click)="saveRoom()"
-                                class="action-button save-button" [disabled]="saveState === 'saving...'">
-                                <fa-icon [icon]="faBookmarkRegular"></fa-icon>
+                            <button *ngIf="saveState === 'save' || saveState === 'saving...'" (click)="saveRoom()" class="action-button save-button" [disabled]="saveState === 'saving...'">
+                                <ng-container *ngIf="saveState === 'saving...'; else saveIcon">
+                                    <div class="btn-spinner"></div>
+                                </ng-container>
+                                <ng-template #saveIcon>
+                                    <fa-icon [icon]="faBookmarkRegular"></fa-icon>
+                                </ng-template>
                                 <span>{{ saveState }}</span>
                             </button>
-
-                            <!-- Show Unsave button when state indicates we can unsave -->
-                            <button *ngIf="saveState === 'unsave' || saveState === 'unsaving...'" (click)="unsaveRoom()"
-                                class="action-button unsave-button" [disabled]="saveState === 'unsaving...'">
-                                <fa-icon [icon]="faBookmarkSolid"></fa-icon>
+                            <button *ngIf="saveState === 'unsave' || saveState === 'unsaving...'" (click)="unsaveRoom()" class="action-button unsave-button" [disabled]="saveState === 'unsaving...'">
+                                <ng-container *ngIf="saveState === 'unsaving...'; else unsaveIcon">
+                                    <div class="btn-spinner"></div>
+                                </ng-container>
+                                <ng-template #unsaveIcon>
+                                    <fa-icon [icon]="faBookmarkSolid"></fa-icon>
+                                </ng-template>
                                 <span>{{ saveState }}</span>
                             </button>
                         </ng-container>
                     </div>
                 </div>
 
-                <!-- Progress indicator (moved below room info) -->
                 <div class="progress-indicator" *ngIf="room.isJoined">
                     <div class="progress-bar">
                         <div class="progress" [style.width.%]="room.percentageCompleted"></div>
                     </div>
-                    <span class="progress-text">{{ room.percentageCompleted }}%
-                        Complete</span>
+                    <span class="progress-text">{{ room.percentageCompleted }}% Complete</span>
+                </div>                <!-- Instance Controls Section - Professional Redesign -->
+                <div class="instance-controls-modern" *ngIf="room.isJoined">
+                    
+                    <!-- Horizontal Layout: Buttons on Left, Message on Right -->
+                    <div class="controls-layout">
+                        
+                        <!-- Buttons Container -->
+                        <div class="buttons-container">
+                            <!-- Primary Action Button -->
+                            <ng-container *ngIf="primaryActionButton$ | async as primaryBtn">
+                                <button 
+                                    class="instance-btn primary-btn" 
+                                    [class]="'variant-' + primaryBtn.variant"
+                                    [disabled]="primaryBtn.disabled"
+                                    (click)="handlePrimaryAction(primaryBtn.variant)">
+                                    
+                                    <!-- Loading spinner for active operations -->
+                                    <ng-container *ngIf="primaryBtn.variant === 'launching' || primaryBtn.variant === 'starting'; else primaryIcon">
+                                        <div class="btn-spinner"></div>
+                                    </ng-container>
+                                    
+                                    <!-- Static icon for stable states -->
+                                    <ng-template #primaryIcon>
+                                        <fa-icon [icon]="faPlayCircle"></fa-icon>
+                                    </ng-template>
+                                    
+                                    <span>{{ primaryBtn.text }}</span>
+                                </button>
+                            </ng-container>
+
+                            <!-- Small Action Buttons - Icon Only -->
+                            <ng-container *ngIf="smallActionButtons$ | async as smallBtns">
+                                
+                                <!-- Pause Button - Icon Only -->
+                                <button 
+                                    *ngIf="smallBtns.pause"
+                                    class="instance-btn small-btn pause-btn"
+                                    [disabled]="smallBtns.pause.disabled"
+                                    (click)="handlePauseInstance()"
+                                    [title]="smallBtns.pause.text">
+                                    
+                                    <ng-container *ngIf="smallBtns.pause.disabled && smallBtns.pause.text.includes('...'); else pauseIcon">
+                                        <div class="btn-spinner"></div>
+                                    </ng-container>
+                                    <ng-template #pauseIcon>
+                                        <fa-icon [icon]="faStopCircle"></fa-icon>
+                                    </ng-template>
+                                </button>
+
+                                <!-- Terminate Button - Icon Only -->
+                                <button 
+                                    *ngIf="smallBtns.terminate"
+                                    class="instance-btn small-btn terminate-btn"
+                                    [disabled]="smallBtns.terminate.disabled"
+                                    (click)="handleTerminateInstanceAction()"
+                                    [title]="smallBtns.terminate.text">
+                                    
+                                    <ng-container *ngIf="smallBtns.terminate.disabled && smallBtns.terminate.text.includes('...'); else terminateIcon">
+                                        <div class="btn-spinner"></div>
+                                    </ng-container>
+                                    <ng-template #terminateIcon>
+                                        <fa-icon [icon]="faTrashAlt"></fa-icon>
+                                    </ng-template>
+                                </button>
+                                
+                            </ng-container>
+                        </div>
+
+                        <!-- Status Message and Progress -->
+                        <div class="message-container">
+                            <!-- Small Progress Bar -->
+                            <ng-container *ngIf="progressBar$ | async as progressInfo">
+                                <div 
+                                    *ngIf="progressInfo.show" 
+                                    class="mini-progress-bar"
+                                    [class]="'progress-' + progressInfo.variant">
+                                    <div 
+                                        class="progress-fill" 
+                                        [style.width.%]="progressInfo.progress">
+                                    </div>
+                                </div>
+                            </ng-container>
+
+                            <!-- Status Message -->
+                            <ng-container *ngIf="statusMessage$ | async as statusMsg">
+                                <div class="status-message">
+                                    <span class="message-text">{{ statusMsg.message }}</span>
+                                    <!-- IP Address Display -->
+                                    <div *ngIf="statusMsg.ipAddress" class="ip-display">
+                                        <span class="ip-address">{{ statusMsg.ipAddress }}</span>
+                                        <button 
+                                            class="copy-ip-modern" 
+                                            (click)="copyIpAddress(statusMsg.ipAddress)"
+                                            title="Copy IP Address">
+                                            <fa-icon [icon]="faCopy"></fa-icon>
+                                        </button>
+                                    </div>
+                                    
+                                </div>
+                            </ng-container>
+                        </div>
+                        
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Bottom Section - Challenges -->
         <div class="room-bottom-section">
-
-            <!-- Placeholder for RoomChallengesComponent -->
-
             <app-challenges [challenges]="room.challenges" [isJoined]="room.isJoined"></app-challenges>
-
         </div>
     </ng-container>
+
+    <ng-template #noRoomData>
+        <div *ngIf="!(isLoadingRoom$ | async) && !(roomError$ | async)" class="loading-state">
+             <p>No room data available.</p>
+        </div>
+    </ng-template>
+
 
     <!-- Leave Room Confirmation Modal -->
     <app-confirmation-modal

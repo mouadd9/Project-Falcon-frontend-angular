@@ -59,6 +59,10 @@
     /* Spacing */
     --my-space-spacing: 20px;
 
+    // --my-space-primary-color: #5a4fcf; // or whatever your primary color is
+    // --my-space-primary-color-light: #6c63ff; // 15% lighter version
+    // --my-space-primary-color-lighter: #7d74ff; // even lighter if needed
+    // --my-space-primary-color-dark: #4a3fb8; // darker version
     
 }
 
@@ -102,6 +106,7 @@ body {
     pointer-events: initial;
     border-width: 0.1rem;
     border-style: solid;
+
 }
 
 .join-button {

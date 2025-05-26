@@ -8,7 +8,7 @@ import {
   SaveRoomActions,
   UnsaveRoomActions,
 } from './room-detail.actions';
-import { JoinedRoomsActions } from '../../../my-space/state/my-rooms.actions';
+import { InstanceActions } from '../instance/instance.actions'; // Add this import
 
 export const roomDetailReducer = createReducer(
   initialRoomDetailState,
@@ -61,6 +61,11 @@ export const roomDetailReducer = createReducer(
     isLeaving: true,
     error: null,
   })),
+  on(InstanceActions.terminateInstanceBeforeLeave, (state) => ({
+    ...state,
+    isLeaving: true, // This will trigger "leaving..." state
+    error: null,
+  })),
   on(LeaveRoomActions.leaveRoomSuccess, (state) => {
     // state.currentRoom shouldnt be modified directly !!!
 
@@ -87,13 +92,13 @@ export const roomDetailReducer = createReducer(
     return {
       ...state,
       currentRoom: updatedRoom,
-      isLeaving: false,
+      isLeaving: false, // Reset leaving state
     };
   }),
   on(LeaveRoomActions.leaveRoomFailure, (state, { error }) => ({
     ...state,
     error,
-    isLeaving: false,
+    isLeaving: false, // Reset leaving state on failure
   })),
 
   // Save room

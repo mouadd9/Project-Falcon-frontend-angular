@@ -1,5 +1,6 @@
 import { createFeatureSelector, createSelector } from "@ngrx/store";
 import { RoomDetailState } from "../room-detail/room-detail.state";
+import { selectShouldBlockLeaving } from '../instance/instance.selectors'; // Add this import
 
 // this selector selects the entire feature state, we usually do not use this directly in components !!!
 export const selectRoomDetailState = createFeatureSelector<RoomDetailState>('room-detail'); 
@@ -36,18 +37,14 @@ export const savingButtonState = createSelector(
 );
 
 export const joiningButtonState = createSelector(
-    selectRoomDetailState,
-    (state): string => {
-        if (state.isJoining) {
-            return "joining...";
-        } else if (state.isLeaving) {
-            return "leaving...";
-        } else if (!state.isJoining && state.currentRoom?.isJoined) {
-            return "leave";
-        } else {
-            return "join";
-        }
-    }
+  selectRoomDetailState,
+  (state): string | undefined => {
+    if (state.isJoining) return 'joining...';
+    if (state.isLeaving) return 'leaving...';
+
+    if (state.currentRoom?.isJoined) return 'leave';
+    return 'join';
+  }
 );
 
 // Disabled state selectors for buttons
@@ -104,4 +101,14 @@ export const selectLastSubmissionResult = createSelector(
 export const selectFlagSubmissionError = createSelector(
   selectFlagSubmissionState,
   (state) => state.error
+);
+
+// Or create a separate selector for the disabled state
+export const selectLeaveButtonDisabled = createSelector(
+  selectRoomDetailState,
+  selectShouldBlockLeaving,
+  (state, shouldBlockLeaving): boolean => {
+    // Disable if already leaving or if instance operations are blocking
+    return state.isLeaving || shouldBlockLeaving;
+  }
 );
