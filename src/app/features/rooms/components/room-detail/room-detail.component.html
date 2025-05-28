@@ -95,110 +95,152 @@
                         <div class="progress" [style.width.%]="room.percentageCompleted"></div>
                     </div>
                     <span class="progress-text">{{ room.percentageCompleted }}% Complete</span>
-                </div>                <!-- Instance Controls Section - Professional Redesign -->
-                <div class="instance-controls-modern" *ngIf="room.isJoined">
+                </div>                <!-- Split Controls Layout: Instance Controls (65%) + VPN Section (35%) -->
+                <div class="split-controls-container" *ngIf="room.isJoined">
                     
-                    <!-- Horizontal Layout: Buttons on Left, Message on Right -->
-                    <div class="controls-layout">
-                        
-                        <!-- Buttons Container -->
-                        <div class="buttons-container">
-                            <!-- Primary Action Button -->
-                            <ng-container *ngIf="primaryActionButton$ | async as primaryBtn">
-                                <button 
-                                    class="instance-btn primary-btn" 
-                                    [class]="'variant-' + primaryBtn.variant"
-                                    [disabled]="primaryBtn.disabled"
-                                    (click)="handlePrimaryAction(primaryBtn.variant)">
-                                    
-                                    <!-- Loading spinner for active operations -->
-                                    <ng-container *ngIf="primaryBtn.variant === 'launching' || primaryBtn.variant === 'starting'; else primaryIcon">
-                                        <div class="btn-spinner"></div>
-                                    </ng-container>
-                                    
-                                    <!-- Static icon for stable states -->
-                                    <ng-template #primaryIcon>
-                                        <fa-icon [icon]="faPlayCircle"></fa-icon>
-                                    </ng-template>
-                                    
-                                    <span>{{ primaryBtn.text }}</span>
-                                </button>
-                            </ng-container>
-
-                            <!-- Small Action Buttons - Icon Only -->
-                            <ng-container *ngIf="smallActionButtons$ | async as smallBtns">
+                    <!-- Left Side: Instance Controls (65%) -->
+                    <div class="instance-controls-section">
+                        <div class="instance-controls-modern">
+                            <!-- Horizontal Layout: Buttons on Left, Message on Right -->
+                            <div class="controls-layout">
                                 
-                                <!-- Pause Button - Icon Only -->
-                                <button 
-                                    *ngIf="smallBtns.pause"
-                                    class="instance-btn small-btn pause-btn"
-                                    [disabled]="smallBtns.pause.disabled"
-                                    (click)="handlePauseInstance()"
-                                    [title]="smallBtns.pause.text">
-                                    
-                                    <ng-container *ngIf="smallBtns.pause.disabled && smallBtns.pause.text.includes('...'); else pauseIcon">
-                                        <div class="btn-spinner"></div>
-                                    </ng-container>
-                                    <ng-template #pauseIcon>
-                                        <fa-icon [icon]="faStopCircle"></fa-icon>
-                                    </ng-template>
-                                </button>
-
-                                <!-- Terminate Button - Icon Only -->
-                                <button 
-                                    *ngIf="smallBtns.terminate"
-                                    class="instance-btn small-btn terminate-btn"
-                                    [disabled]="smallBtns.terminate.disabled"
-                                    (click)="handleTerminateInstanceAction()"
-                                    [title]="smallBtns.terminate.text">
-                                    
-                                    <ng-container *ngIf="smallBtns.terminate.disabled && smallBtns.terminate.text.includes('...'); else terminateIcon">
-                                        <div class="btn-spinner"></div>
-                                    </ng-container>
-                                    <ng-template #terminateIcon>
-                                        <fa-icon [icon]="faTrashAlt"></fa-icon>
-                                    </ng-template>
-                                </button>
-                                
-                            </ng-container>
-                        </div>
-
-                        <!-- Status Message and Progress -->
-                        <div class="message-container">
-                            <!-- Small Progress Bar -->
-                            <ng-container *ngIf="progressBar$ | async as progressInfo">
-                                <div 
-                                    *ngIf="progressInfo.show" 
-                                    class="mini-progress-bar"
-                                    [class]="'progress-' + progressInfo.variant">
-                                    <div 
-                                        class="progress-fill" 
-                                        [style.width.%]="progressInfo.progress">
-                                    </div>
-                                </div>
-                            </ng-container>
-
-                            <!-- Status Message -->
-                            <ng-container *ngIf="statusMessage$ | async as statusMsg">
-                                <div class="status-message">
-                                    <span class="message-text">{{ statusMsg.message }}</span>
-                                    <!-- IP Address Display -->
-                                    <div *ngIf="statusMsg.ipAddress" class="ip-display">
-                                        <span class="ip-address">{{ statusMsg.ipAddress }}</span>
+                                <!-- Buttons Container -->
+                                <div class="buttons-container">
+                                    <!-- Primary Action Button -->
+                                    <ng-container *ngIf="primaryActionButton$ | async as primaryBtn">
                                         <button 
-                                            class="copy-ip-modern" 
-                                            (click)="copyIpAddress(statusMsg.ipAddress)"
-                                            title="Copy IP Address">
-                                            <fa-icon [icon]="faCopy"></fa-icon>
+                                            class="instance-btn primary-btn" 
+                                            [class]="'variant-' + primaryBtn.variant"
+                                            [disabled]="primaryBtn.disabled"
+                                            (click)="handlePrimaryAction(primaryBtn.variant)">
+                                            
+                                            <!-- Loading spinner for active operations -->
+                                            <ng-container *ngIf="primaryBtn.variant === 'launching' || primaryBtn.variant === 'starting'; else primaryIcon">
+                                                <div class="btn-spinner"></div>
+                                            </ng-container>
+                                            
+                                            <!-- Static icon for stable states -->
+                                            <ng-template #primaryIcon>
+                                                <fa-icon [icon]="faPlayCircle"></fa-icon>
+                                            </ng-template>
+                                            
+                                            <span>{{ primaryBtn.text }}</span>
                                         </button>
-                                    </div>
-                                    
+                                    </ng-container>
+
+                                    <!-- Small Action Buttons - Icon Only -->
+                                    <ng-container *ngIf="smallActionButtons$ | async as smallBtns">
+                                        
+                                        <!-- Pause Button - Icon Only -->
+                                        <button 
+                                            *ngIf="smallBtns.pause"
+                                            class="instance-btn small-btn pause-btn"
+                                            [disabled]="smallBtns.pause.disabled"
+                                            (click)="handlePauseInstance()"
+                                            [title]="smallBtns.pause.text">
+                                            
+                                            <ng-container *ngIf="smallBtns.pause.disabled && smallBtns.pause.text.includes('...'); else pauseIcon">
+                                                <div class="btn-spinner"></div>
+                                            </ng-container>
+                                            <ng-template #pauseIcon>
+                                                <fa-icon [icon]="faStopCircle"></fa-icon>
+                                            </ng-template>
+                                        </button>
+
+                                        <!-- Terminate Button - Icon Only -->
+                                        <button 
+                                            *ngIf="smallBtns.terminate"
+                                            class="instance-btn small-btn terminate-btn"
+                                            [disabled]="smallBtns.terminate.disabled"
+                                            (click)="handleTerminateInstanceAction()"
+                                            [title]="smallBtns.terminate.text">
+                                            
+                                            <ng-container *ngIf="smallBtns.terminate.disabled && smallBtns.terminate.text.includes('...'); else terminateIcon">
+                                                <div class="btn-spinner"></div>
+                                            </ng-container>
+                                            <ng-template #terminateIcon>
+                                                <fa-icon [icon]="faTrashAlt"></fa-icon>
+                                            </ng-template>
+                                        </button>
+                                        
+                                    </ng-container>
                                 </div>
-                            </ng-container>
+
+                                <!-- Status Message and Progress -->
+                                <div class="message-container">
+                                    <!-- Small Progress Bar -->
+                                    <ng-container *ngIf="progressBar$ | async as progressInfo">
+                                        <div 
+                                            *ngIf="progressInfo.show" 
+                                            class="mini-progress-bar"
+                                            [class]="'progress-' + progressInfo.variant">
+                                            <div 
+                                                class="progress-fill" 
+                                                [style.width.%]="progressInfo.progress">
+                                            </div>
+                                        </div>
+                                    </ng-container>
+
+                                    <!-- Status Message -->
+                                    <ng-container *ngIf="statusMessage$ | async as statusMsg">
+                                        <div class="status-message">
+                                            <span class="message-text">{{ statusMsg.message }}</span>
+                                            <!-- IP Address Display -->
+                                            <div *ngIf="statusMsg.ipAddress" class="ip-display">
+                                                <span class="ip-address">{{ statusMsg.ipAddress }}</span>
+                                                <button 
+                                                    class="copy-ip-modern" 
+                                                    (click)="copyIpAddress(statusMsg.ipAddress)"
+                                                    title="Copy IP Address">
+                                                    <fa-icon [icon]="faCopy"></fa-icon>
+                                                </button>
+                                            </div>
+                                            
+                                        </div>
+                                    </ng-container>
+                                </div>
+                                
+                            </div>
                         </div>
-                        
                     </div>
-                </div>
+
+                    <!-- Right Side: VPN Section (35%) -->
+                    <div class="vpn-controls-section">
+                        <div class="vpn-controls-modern">
+                            <!-- VPN Header with Key Icon -->
+                            <div class="vpn-header">
+                                <fa-icon [icon]="faKey" class="vpn-key-icon"></fa-icon>
+                                <h3>OpenVPN</h3>
+                                                            <!-- Download Button -->
+                            <button 
+                                class="instance-btn primary-btn vpn-download-btn"
+                                (click)="downloadVpnConfig()"
+                                [disabled]="isDownloadingVpnConfig$ | async">
+                                
+                                <ng-container *ngIf="isDownloadingVpnConfig$ | async; else downloadIcon">
+                                    <div class="btn-spinner"></div>
+                                </ng-container>
+                                <ng-template #downloadIcon>
+                                    <fa-icon [icon]="faDownload"></fa-icon>
+                                </ng-template>
+                                
+                                <span>Download Config</span>
+                            </button>
+                                <button 
+                                    class="vpn-info-btn"
+                                    (click)="toggleVpnGuide()"
+                                    title="Setup Guide">
+                                    <fa-icon [icon]="faInfoCircle"></fa-icon>
+                                </button>
+                            </div>
+                            
+                            <!-- VPN Description -->
+                            <p class="vpn-description">
+                                To access your VMs you should connect to our network via a VPN
+                            </p>
+                        </div>
+                    </div>
+                      </div>
             </div>
         </div>
 

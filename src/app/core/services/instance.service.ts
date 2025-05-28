@@ -67,4 +67,15 @@ export class InstanceService {
       { params }
     );
   }
+
+  /**
+   * Downloads VPN configuration file for a user.
+   * @param username The username for which to generate the VPN config.
+   * @returns Observable<Blob> - The .ovpn file as a blob
+   */
+  public downloadVpnConfig(username: string): Observable<Blob> {
+    return this.http.get(`${environment.apiUrl}/api/vpn/users/${username}/config`, {
+      responseType: 'blob',
+    });
+  }
 }

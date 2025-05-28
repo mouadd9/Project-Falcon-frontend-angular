@@ -18,6 +18,8 @@ import { ChallengesComponent } from './components/room-detail/challenges/challen
 import { InstanceEffects } from './state/instance/instance.effects';
 import { instanceReducer } from './state/instance/instance.reducer';
 import { ClipboardModule } from '@angular/cdk/clipboard';
+import { VpnEffects } from './state/vpn/vpn.effects';
+import { vpnReducer } from './state/vpn/vpn.reducer';
 
 
 
@@ -36,12 +38,14 @@ import { ClipboardModule } from '@angular/cdk/clipboard';
     RoomsRoutingModule,
     SharedModule, // this will provide us with the icons module and the reusable room card component
     StoreModule.forFeature('room-detail', roomDetailReducer), // when this module loads we provide the store with this feature and the initial state.
-    StoreModule.forFeature('rooms', roomsReducer),
     EffectsModule.forFeature([RoomDetailEffects]),
+    StoreModule.forFeature('rooms', roomsReducer),
     EffectsModule.forFeature([RoomsEffects]),
     StoreModule.forFeature('instance', instanceReducer),
     EffectsModule.forFeature([InstanceEffects]),
-    ClipboardModule,
+    StoreModule.forFeature('vpn', vpnReducer),
+    EffectsModule.forFeature([VpnEffects]),
+    ClipboardModule
   ]
 })
 export class RoomsModule { }

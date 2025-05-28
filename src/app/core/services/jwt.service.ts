@@ -44,4 +44,11 @@ export class JwtService {
     const decoded = this.decodeToken(token);
     return decoded.userId;
   }
+
+  getUsernameFromToken(): string | null {
+    const token = localStorage.getItem('access-token');
+    if (!token) return null;
+    const decoded = this.decodeToken(token);
+    return decoded.sub || "username";
+  }
 }
