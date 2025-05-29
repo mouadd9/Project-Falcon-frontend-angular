@@ -7,7 +7,7 @@ import {
   selectRooms,
   selectRoomsloadingState,
 } from '../../../state/rooms/rooms.selectors';
-import { RoomsActions } from '../../../state/rooms/rooms.actions';
+import { RoomsActions, RoomFilterCriteria } from '../../../state/rooms/rooms.actions';
 
 @Component({
   selector: 'app-rooms-container',
@@ -42,8 +42,12 @@ export class RoomsContainerComponent implements OnInit {
     this.isLoading$ = this.store.select(selectRoomsloadingState);
   }
 
-  private dispatchActionsToLoadData(userId: number): void {
-    this.store.dispatch(RoomsActions.load({ userId: userId }));
+  private dispatchActionsToLoadData(userId: number, criteria?: RoomFilterCriteria): void {
+    this.store.dispatch(RoomsActions.load({ userId, criteria }));
   }
 
+  onFiltersChanged(criteria: RoomFilterCriteria): void {
+    this.store.dispatch(RoomsActions.updateFilterCriteria({ criteria }));
+    this.dispatchActionsToLoadData(this.userId, criteria);
+  }
 }

@@ -1,8 +1,11 @@
 <!-- room tool-bar -->
-<app-rooms-tool-bar class="toolbar-container"></app-rooms-tool-bar>
+<app-rooms-tool-bar 
+    class="toolbar-container"
+    (filtersChanged)="onFiltersChanged($event)">
+</app-rooms-tool-bar>
+
 <!-- rooms grid -->
 <app-rooms-list
     [rooms]="this.rooms$ | async"
-    [isLoading]="this.isLoading$ | async"
-    >
+    [isLoading]="this.isLoading$ | async">
 </app-rooms-list>

@@ -8,7 +8,7 @@ import { authReducer } from './features/auth/state/auth.reducer';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { AuthEffects } from './features/auth/state/auth.effects';
-
+import { MarkdownModule } from 'ngx-markdown';
 // the AppModule should be clean and focused on bootstrapping the application. 
 @NgModule({
   declarations: [AppComponent],
@@ -17,6 +17,7 @@ import { AuthEffects } from './features/auth/state/auth.effects';
     BrowserModule, // this module provides basic CommonModule directives
     AppRoutingModule, // this module provides a configured router service and provides directives like router-link and router-outlet that will be used with router service to naviguate between routes 
     // Keep auth reducer in root store since navbar needs it
+    MarkdownModule.forRoot(),
     StoreModule.forRoot({ auth: authReducer }),  
     EffectsModule.forRoot([AuthEffects]),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() })

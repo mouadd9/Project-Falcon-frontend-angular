@@ -1,9 +1,10 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
 import { RoomModel } from '../models/room.model';
 import { InstanceOperationStarted } from '../models/instance-operation-started.model';
+import { RoomFilterCriteria } from '../../features/rooms/state/rooms/rooms.actions';
 
 @Injectable({
   providedIn: 'root',
@@ -11,9 +12,30 @@ import { InstanceOperationStarted } from '../models/instance-operation-started.m
 export class RoomService {
   constructor(private http: HttpClient) {}
 
-  getAllRooms(userId: number): Observable<RoomModel[]> {
+  getAllRooms(userId: number, criteria?: RoomFilterCriteria): Observable<RoomModel[]> {
+    let params = new HttpParams();
+    
+    if (criteria) {
+      if (criteria.complexity) {
+        params = params.set('complexity', criteria.complexity);
+      }
+      if (criteria.enrollmentStatus) {
+        params = params.set('enrollmentStatus', criteria.enrollmentStatus);
+      }
+      if (criteria.completionStatus) {
+        params = params.set('completionStatus', criteria.completionStatus);
+      }
+      if (criteria.searchTerm) {
+        params = params.set('searchTerm', criteria.searchTerm);
+      }
+      if (criteria.sortBy) {
+        params = params.set('sortBy', criteria.sortBy);
+      }
+    }
+
     return this.http.get<RoomModel[]>(
-      `${environment.apiUrl}/api/users/${userId}/rooms`
+      `${environment.apiUrl}/api/users/${userId}/rooms`,
+      { params }
     );
   }
 
@@ -58,9 +80,6 @@ export class RoomService {
   }
 
   launchInstance(userId: number, roomId: number): Observable<InstanceOperationStarted> {
-    // The backend endpoint is /api/instances/async?roomId=...&userId=...
-    // It's not specific to a user's room collection like /api/users/{userId}/rooms/{roomId}/instances
-    // Adjusting to match the backend WebSocket controller endpoint for async creation
     return this.http.post<InstanceOperationStarted>(
       `${environment.apiUrl}/api/instances/async?roomId=${roomId}&userId=${userId}`,
       null

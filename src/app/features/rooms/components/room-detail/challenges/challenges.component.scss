@@ -118,30 +118,29 @@
 }
 
 .content-wrapper {
-  padding: 20px;
+  padding: 10px;
 }
 
 .challenge-instructions {
-  margin: 15px 0;
-  
+  margin: 10px 0;
+  font-size: 0.88rem;
   ul, ol {
     padding-left: 20px;
     margin: 10px 0;
   }
   
   li {
-    margin-bottom: 8px;
+    margin-bottom: 4px;
   }
 }
 
 .answer-section {
-  margin-top: 30px;
+  margin-top: 9px;
   border-top: 1px solid #EEEEEE;
-  padding-top: 20px;
 }
 
 .answer-prompt {
-  color: #8A7BFF;
+  color: #8979fe;
   font-weight: 500;
   margin-bottom: 15px;
 }
@@ -149,7 +148,6 @@
 .input-row {
   display: flex;
   gap: 10px;
-  margin-bottom: 15px;
 }
 
 .flag-input {

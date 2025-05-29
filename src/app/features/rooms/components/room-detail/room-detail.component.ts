@@ -23,7 +23,7 @@ import {
   faCube,
   faFire,
   faLeaf,
-  faPlayCircle,
+  faPlay,
   faServer,
   faBookmark as faBookmarkSolid,
   faUsers,
@@ -109,7 +109,7 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
   faFlag = faFlag;
   faBookmarkSolid = faBookmarkSolid;
   faBookmarkRegular = faBookmarkRegular;
-  faPlayCircle = faPlayCircle;
+  faPlay = faPlay;
   faSignOutAlt = faSignOutAlt;
   faSpinner = faSpinner;
 

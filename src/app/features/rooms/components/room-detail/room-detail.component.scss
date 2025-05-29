@@ -132,7 +132,7 @@
   z-index: 2;
   display: flex;
   flex-direction: column;
-  padding: 1.2rem 1rem;
+  padding: 1.5rem 1.3rem;
   gap: 1.4rem;
 }
 
@@ -174,15 +174,36 @@
   max-width: 90%;
   font-family: 'Ubuntu', sans-serif;
 }
+.wrapper-header {
+  display: flex;
+  align-items: space; /* Vertically aligns items */
+  gap: 1rem; /* Adjust space between stats and progress section */
+  align-items: flex-end;
+
+  margin-bottom : 5px;
+}
 
 /* Room Stats */
 .room-stats {
   display: flex;
   gap: 0.6rem;
   flex-wrap: wrap;
-  margin-top: 1rem;
-}
+  margin-top: 0rem;
+    flex-shrink: 0; /* Prevents this section from shrinking */
 
+}
+/* New class for the container of progress bar and text */
+.progress-details {
+  flex-grow: 1; /* Allows this section to take up available horizontal space */
+  display: flex;
+  gap: 0.2rem;
+  flex-direction: column; /* Stacks progress bar and text vertically */
+  /* Alternatively, for side-by-side layout:
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  */
+}
 .complexity-badge, .stat-item {
   display: flex;
   align-items: center;
@@ -222,13 +243,39 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+.room-title-and-image-wrapper {
+  display: flex;
+  flex-direction: row; /* Aligns children horizontally */
+  align-items: center; /* Vertically aligns children to the center. You can change this to flex-start, flex-end, etc. */
+  gap: 1rem; /* Optional: Adds some space between the title and the image/renderer */
+}
+
+.room-title {
+  // Potentially remove any margin-bottom if it's causing alignment issues,
+  // or adjust as needed.
+  margin-bottom: 0; 
+}
+
+// You might need to style the app-markdown-renderer or its output
+// if it's not behaving as expected within the flex container.
+// For example, if the image inside is too large:
+.room-title-and-image-wrapper app-markdown-renderer ::ng-deep p { // Or whatever element the image is
+  margin: 0px; // Example: constrain image height
+  // Add other styles as needed
+}
+
+app-markdown-renderer ::ng-deep img { // Or whatever element the image is
+  margin: 0px; // Example: constrain image height
+  // Add other styles as needed
+}
+
 /* Progress Indicator */
 .progress-indicator {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
-  max-width: 350px;
-  margin-top: 1.5rem;
+  gap: 0.5rem;
+  width: 100%; /* Changed from max-width: 350px */
+  margin-top: 1.5rem; /* You might want to adjust or remove this if spacing is handled by .progress-details's gap */
 }
 
 .progress-bar {
@@ -249,7 +296,10 @@
   font-size: 0.8rem;
   color: var(--my-space-text-muted);
   font-family: 'Ubuntu', sans-serif;
-  text-align: right;
+  text-align: left;
+  width: 100%; /* Ensure it takes the full width of .progress-details */
+  overflow-wrap: break-word; /* Allows long words to break and wrap */
+  word-break: break-word; /* Alternative for broader browser support if needed */
 }
 
 /* Room Actions */
@@ -694,7 +744,7 @@
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-weight: 500; /* Medium weight for better readability */
   gap: 0.375rem;
-  height: 1.9rem; /* Slightly shorter for more refined look */
+  height: 1.8rem; /* Slightly shorter for more refined look */
   transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1); /* Smoother easing */
   text-decoration: none;
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -718,7 +768,7 @@
   }
 
   fa-icon {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
 
   span {

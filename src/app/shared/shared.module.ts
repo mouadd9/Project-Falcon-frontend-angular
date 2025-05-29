@@ -7,6 +7,8 @@ import { TimeAgoPipe } from './pipes/time-ago.pipe';
 import { HighlightDirective } from './directives/highlight.directive';
 import { GlowEffectDirective } from './directives/glow-effect.directive';
 import { ConfirmationModalComponent } from './components/confirmation-modal/confirmation-modal.component';
+import { MarkdownRendererComponent } from './components/markdown-renderer/markdown-renderer.component';
+import { MarkdownModule } from 'ngx-markdown';
 
 @NgModule({
   declarations: [
@@ -15,11 +17,13 @@ import { ConfirmationModalComponent } from './components/confirmation-modal/conf
     TimeAgoPipe, // to transform dates to descriptif texts 
     HighlightDirective,
     GlowEffectDirective,
-    ConfirmationModalComponent
+    ConfirmationModalComponent,
+    MarkdownRendererComponent
   ],
   imports: [
     CommonModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    MarkdownModule.forChild() // Add MarkdownModule.forRoot() here
   ],
   exports: [
     CommonModule,
@@ -29,7 +33,9 @@ import { ConfirmationModalComponent } from './components/confirmation-modal/conf
     TimeAgoPipe,
     HighlightDirective,
     GlowEffectDirective,
-    ConfirmationModalComponent
+    ConfirmationModalComponent,
+    MarkdownRendererComponent,
+    MarkdownModule // Add MarkdownModule here as well if you want to use the pipe in other modules
   ]
 // in a lot of times this module will be used to only export Modules without impoting them !!
 // When you export a module directly without importing it, you’re essentially saying:

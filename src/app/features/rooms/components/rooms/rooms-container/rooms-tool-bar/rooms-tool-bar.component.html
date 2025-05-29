@@ -1,39 +1,41 @@
 <div class="rooms-toolbar">
     <div class="toolbar-filters">
-        <select id="sort-select" class="toolbar-select" title="Sort by">
+        <select id="sort-select" class="toolbar-select" title="Sort by" (change)="onSortChange($event)">
             <option value="" disabled selected>Sort by</option>
-            <option value="newest">Newest</option>
-            <option value="most-users">Most Users</option>
-            <option value="most-difficult">Most Difficult</option>
+            <option value="NEWEST">Newest</option>
+            <option value="MOST_USERS">Most Users</option>
         </select>
 
-        <select id="complexity-select" class="toolbar-select" title="Complexity">
+        <select id="complexity-select" class="toolbar-select" title="Complexity" (change)="onComplexityChange($event)">
             <option value="" disabled selected>Complexity</option>
-            <option value="all">All Levels</option>
-            <option value="beginner">Beginner Friendly</option>
-            <option value="easy">Easy</option>
-            <option value="medium">Medium</option>
-            <option value="hard">Hard</option>
+            <option value="">All Levels</option>
+            <option value="EASY">Easy</option>
+            <option value="MEDIUM">Medium</option>
+            <option value="HARD">Hard</option>
         </select>
 
-        <select id="enrollment-select" class="toolbar-select" title="Status">
+        <select id="enrollment-select" class="toolbar-select" title="Status" (change)="onEnrollmentChange($event)">
             <option value="" disabled selected>Status</option>
-            <option value="all">All Rooms</option>
-            <option value="enrolled">Enrolled</option>
-            <option value="not-enrolled">Not Enrolled</option>
+            <option value="ALL">All Rooms</option>
+            <option value="ENROLLED">Enrolled</option>
+            <option value="NOT_ENROLLED">Not Enrolled</option>
         </select>
 
-        <select id="completion-select" class="toolbar-select" title="Progress">
+        <select id="completion-select" class="toolbar-select" title="Progress" (change)="onCompletionChange($event)">
             <option value="" disabled selected>Progress</option>
-            <option value="all">All Progress</option>
-            <option value="completed">Completed</option>
-            <option value="in-progress">In Progress</option>
-            <option value="not-started">Not Started</option>
+            <option value="ALL">All Progress</option>
+            <option value="COMPLETED">Completed</option>
+            <option value="IN_PROGRESS">In Progress</option>
+            <option value="NOT_STARTED">Not Started</option>
         </select>
+
+        <button class="clear-filters-btn" (click)="clearFilters()" title="Clear all filters">
+            Clear Filters
+        </button>
     </div>
 
     <div class="search-bar">
         <fa-icon [icon]="faSearch"></fa-icon>
-        <input type="text" placeholder="Search rooms...">
+        <input type="text" placeholder="Search rooms..." (input)="onSearchChange($event)">
     </div>
 </div>

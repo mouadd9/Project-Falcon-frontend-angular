@@ -18,28 +18,46 @@
     <ng-container *ngIf="(room$ | async) as room; else noRoomData">
         <!-- Top Section - Room Info and Controls -->
         <div class="room-top-section">
-            <div class="room-hero" [style.background-image]="'url(' + (room.imageURL || '../assets/network-enum-bg.jpg') + ')'">
-                <div class="hero-overlay"></div>
-            </div>
-
             <div class="room-main-content">
                 <div class="room-header-container">
                     <div class="room-header">
-                        <h1 class="room-title">{{ room.title }}</h1>
-                        <p class="room-description">{{ room.description }}</p>
-                        <div class="room-stats">
-                            <span class="complexity-badge" [ngClass]="getComplexityClass(room.complexity)">
-                                <fa-icon [icon]="getComplexityIcon(room.complexity)"></fa-icon> {{ room.complexity }}
-                            </span>
-                            <span class="stat-item"><fa-icon [icon]="faClock"></fa-icon> {{ room.estimatedTime }} hours</span>
-                            <span class="stat-item"><fa-icon [icon]="faUsers"></fa-icon> {{ room.totalJoinedUsers }} users</span>
-                            <span class="stat-item"><fa-icon [icon]="faFlag"></fa-icon> {{ getCompletedChallenges(room) }}/{{ room.totalChallenges }} challenges</span>
+                        <div class="room-title-and-image-wrapper">
+                            <app-markdown-renderer [content]="room.imageURL"></app-markdown-renderer>
+                            <h1 class="room-title">{{ room.title }}</h1>
                         </div>
+                        <div class="wrapper-header">
+                            <div class="room-stats">
+                                <span class="complexity-badge" [ngClass]="getComplexityClass(room.complexity)">
+                                    <fa-icon [icon]="getComplexityIcon(room.complexity)"></fa-icon> {{ room.complexity
+                                    }}
+                                </span>
+                                <span class="stat-item"><fa-icon [icon]="faClock"></fa-icon> {{ room.estimatedTime }}
+                                    hours</span>
+                                <span class="stat-item"><fa-icon [icon]="faUsers"></fa-icon> {{ room.totalJoinedUsers }}
+                                    users</span>
+                                <span class="stat-item"><fa-icon [icon]="faFlag"></fa-icon> {{
+                                    getCompletedChallenges(room) }}/{{ room.totalChallenges }} challenges</span>
+                            </div>
+                            <ng-container *ngIf="room.isJoined">
+                                <div class="progress-details">
+                                    <div class="progress-indicator">
+                                        <div class="progress-bar">
+                                            <div class="progress" [style.width.%]="room.percentageCompleted"></div>
+                                        </div>
+                                    </div>
+                                    <span class="progress-text">{{ room.percentageCompleted }}% Complete</span>
+                                </div>
+                            </ng-container>
+                        </div>
+
+                        <app-markdown-renderer [content]="room.description || ''"></app-markdown-renderer>
+
                     </div>
 
                     <div class="room-actions">
                         <ng-container *ngIf="joinButtonState$ | async as joinState">
-                            <button *ngIf="joinState === 'join' || joinState === 'joining...'" (click)="joinRoom()" class="action-button join-button" [disabled]="joinState === 'joining...'">
+                            <button *ngIf="joinState === 'join' || joinState === 'joining...'" (click)="joinRoom()"
+                                class="action-button join-button" [disabled]="joinState === 'joining...'">
                                 <ng-container *ngIf="joinState === 'joining...'; else joinIcon">
                                     <div class="btn-spinner"></div>
                                 </ng-container>
@@ -48,16 +66,12 @@
                                 </ng-template>
                                 <span>{{ joinState }}</span>
                             </button>
-                            
+
                             <!-- FIXED: Separate the visibility condition from the disabled condition -->
-                            <button 
-                                *ngIf="joinState === 'leave' || joinState === 'leaving...'" 
-                                (click)="leaveRoom()" 
-                                class="action-button leave-button" 
-                                [disabled]="joinState === 'leaving...' || (leaveButtonDisabled$ | async)"
-                                
-                                >
-                                
+                            <button *ngIf="joinState === 'leave' || joinState === 'leaving...'" (click)="leaveRoom()"
+                                class="action-button leave-button"
+                                [disabled]="joinState === 'leaving...' || (leaveButtonDisabled$ | async)">
+
                                 <ng-container *ngIf="joinState === 'leaving...'; else leaveIcon">
                                     <div class="btn-spinner"></div>
                                 </ng-container>
@@ -68,7 +82,8 @@
                             </button>
                         </ng-container>
                         <ng-container *ngIf="saveButtonState$ | async as saveState">
-                            <button *ngIf="saveState === 'save' || saveState === 'saving...'" (click)="saveRoom()" class="action-button save-button" [disabled]="saveState === 'saving...'">
+                            <button *ngIf="saveState === 'save' || saveState === 'saving...'" (click)="saveRoom()"
+                                class="action-button save-button" [disabled]="saveState === 'saving...'">
                                 <ng-container *ngIf="saveState === 'saving...'; else saveIcon">
                                     <div class="btn-spinner"></div>
                                 </ng-container>
@@ -77,7 +92,8 @@
                                 </ng-template>
                                 <span>{{ saveState }}</span>
                             </button>
-                            <button *ngIf="saveState === 'unsave' || saveState === 'unsaving...'" (click)="unsaveRoom()" class="action-button unsave-button" [disabled]="saveState === 'unsaving...'">
+                            <button *ngIf="saveState === 'unsave' || saveState === 'unsaving...'" (click)="unsaveRoom()"
+                                class="action-button unsave-button" [disabled]="saveState === 'unsaving...'">
                                 <ng-container *ngIf="saveState === 'unsaving...'; else unsaveIcon">
                                     <div class="btn-spinner"></div>
                                 </ng-container>
@@ -90,56 +106,48 @@
                     </div>
                 </div>
 
-                <div class="progress-indicator" *ngIf="room.isJoined">
-                    <div class="progress-bar">
-                        <div class="progress" [style.width.%]="room.percentageCompleted"></div>
-                    </div>
-                    <span class="progress-text">{{ room.percentageCompleted }}% Complete</span>
-                </div>                <!-- Split Controls Layout: Instance Controls (65%) + VPN Section (35%) -->
+                <!-- Split Controls Layout: Instance Controls (65%) + VPN Section (35%) -->
                 <div class="split-controls-container" *ngIf="room.isJoined">
-                    
+
                     <!-- Left Side: Instance Controls (65%) -->
                     <div class="instance-controls-section">
                         <div class="instance-controls-modern">
                             <!-- Horizontal Layout: Buttons on Left, Message on Right -->
                             <div class="controls-layout">
-                                
+
                                 <!-- Buttons Container -->
                                 <div class="buttons-container">
                                     <!-- Primary Action Button -->
                                     <ng-container *ngIf="primaryActionButton$ | async as primaryBtn">
-                                        <button 
-                                            class="instance-btn primary-btn" 
-                                            [class]="'variant-' + primaryBtn.variant"
-                                            [disabled]="primaryBtn.disabled"
+                                        <button class="instance-btn primary-btn"
+                                            [class]="'variant-' + primaryBtn.variant" [disabled]="primaryBtn.disabled"
                                             (click)="handlePrimaryAction(primaryBtn.variant)">
-                                            
+
                                             <!-- Loading spinner for active operations -->
-                                            <ng-container *ngIf="primaryBtn.variant === 'launching' || primaryBtn.variant === 'starting'; else primaryIcon">
+                                            <ng-container
+                                                *ngIf="primaryBtn.variant === 'launching' || primaryBtn.variant === 'starting'; else primaryIcon">
                                                 <div class="btn-spinner"></div>
                                             </ng-container>
-                                            
+
                                             <!-- Static icon for stable states -->
                                             <ng-template #primaryIcon>
-                                                <fa-icon [icon]="faPlayCircle"></fa-icon>
+                                                <fa-icon [icon]="faPlay"></fa-icon>
                                             </ng-template>
-                                            
+
                                             <span>{{ primaryBtn.text }}</span>
                                         </button>
                                     </ng-container>
 
                                     <!-- Small Action Buttons - Icon Only -->
                                     <ng-container *ngIf="smallActionButtons$ | async as smallBtns">
-                                        
+
                                         <!-- Pause Button - Icon Only -->
-                                        <button 
-                                            *ngIf="smallBtns.pause"
-                                            class="instance-btn small-btn pause-btn"
-                                            [disabled]="smallBtns.pause.disabled"
-                                            (click)="handlePauseInstance()"
+                                        <button *ngIf="smallBtns.pause" class="instance-btn small-btn pause-btn"
+                                            [disabled]="smallBtns.pause.disabled" (click)="handlePauseInstance()"
                                             [title]="smallBtns.pause.text">
-                                            
-                                            <ng-container *ngIf="smallBtns.pause.disabled && smallBtns.pause.text.includes('...'); else pauseIcon">
+
+                                            <ng-container
+                                                *ngIf="smallBtns.pause.disabled && smallBtns.pause.text.includes('...'); else pauseIcon">
                                                 <div class="btn-spinner"></div>
                                             </ng-container>
                                             <ng-template #pauseIcon>
@@ -148,21 +156,20 @@
                                         </button>
 
                                         <!-- Terminate Button - Icon Only -->
-                                        <button 
-                                            *ngIf="smallBtns.terminate"
-                                            class="instance-btn small-btn terminate-btn"
+                                        <button *ngIf="smallBtns.terminate" class="instance-btn small-btn terminate-btn"
                                             [disabled]="smallBtns.terminate.disabled"
                                             (click)="handleTerminateInstanceAction()"
                                             [title]="smallBtns.terminate.text">
-                                            
-                                            <ng-container *ngIf="smallBtns.terminate.disabled && smallBtns.terminate.text.includes('...'); else terminateIcon">
+
+                                            <ng-container
+                                                *ngIf="smallBtns.terminate.disabled && smallBtns.terminate.text.includes('...'); else terminateIcon">
                                                 <div class="btn-spinner"></div>
                                             </ng-container>
                                             <ng-template #terminateIcon>
                                                 <fa-icon [icon]="faTrashAlt"></fa-icon>
                                             </ng-template>
                                         </button>
-                                        
+
                                     </ng-container>
                                 </div>
 
@@ -170,13 +177,9 @@
                                 <div class="message-container">
                                     <!-- Small Progress Bar -->
                                     <ng-container *ngIf="progressBar$ | async as progressInfo">
-                                        <div 
-                                            *ngIf="progressInfo.show" 
-                                            class="mini-progress-bar"
+                                        <div *ngIf="progressInfo.show" class="mini-progress-bar"
                                             [class]="'progress-' + progressInfo.variant">
-                                            <div 
-                                                class="progress-fill" 
-                                                [style.width.%]="progressInfo.progress">
+                                            <div class="progress-fill" [style.width.%]="progressInfo.progress">
                                             </div>
                                         </div>
                                     </ng-container>
@@ -188,18 +191,17 @@
                                             <!-- IP Address Display -->
                                             <div *ngIf="statusMsg.ipAddress" class="ip-display">
                                                 <span class="ip-address">{{ statusMsg.ipAddress }}</span>
-                                                <button 
-                                                    class="copy-ip-modern" 
+                                                <button class="copy-ip-modern"
                                                     (click)="copyIpAddress(statusMsg.ipAddress)"
                                                     title="Copy IP Address">
                                                     <fa-icon [icon]="faCopy"></fa-icon>
                                                 </button>
                                             </div>
-                                            
+
                                         </div>
                                     </ng-container>
                                 </div>
-                                
+
                             </div>
                         </div>
                     </div>
@@ -211,36 +213,31 @@
                             <div class="vpn-header">
                                 <fa-icon [icon]="faKey" class="vpn-key-icon"></fa-icon>
                                 <h3>OpenVPN</h3>
-                                                            <!-- Download Button -->
-                            <button 
-                                class="instance-btn primary-btn vpn-download-btn"
-                                (click)="downloadVpnConfig()"
-                                [disabled]="isDownloadingVpnConfig$ | async">
-                                
-                                <ng-container *ngIf="isDownloadingVpnConfig$ | async; else downloadIcon">
-                                    <div class="btn-spinner"></div>
-                                </ng-container>
-                                <ng-template #downloadIcon>
-                                    <fa-icon [icon]="faDownload"></fa-icon>
-                                </ng-template>
-                                
-                                <span>Download Config</span>
-                            </button>
-                                <button 
-                                    class="vpn-info-btn"
-                                    (click)="toggleVpnGuide()"
-                                    title="Setup Guide">
+                                <!-- Download Button -->
+                                <button class="instance-btn primary-btn vpn-download-btn" (click)="downloadVpnConfig()"
+                                    [disabled]="isDownloadingVpnConfig$ | async">
+
+                                    <ng-container *ngIf="isDownloadingVpnConfig$ | async; else downloadIcon">
+                                        <div class="btn-spinner"></div>
+                                    </ng-container>
+                                    <ng-template #downloadIcon>
+                                        <fa-icon [icon]="faDownload"></fa-icon>
+                                    </ng-template>
+
+                                    <span>Download Config</span>
+                                </button>
+                                <button class="vpn-info-btn" (click)="toggleVpnGuide()" title="Setup Guide">
                                     <fa-icon [icon]="faInfoCircle"></fa-icon>
                                 </button>
                             </div>
-                            
+
                             <!-- VPN Description -->
                             <p class="vpn-description">
                                 To access your VMs you should connect to our network via a VPN
                             </p>
                         </div>
                     </div>
-                      </div>
+                </div>
             </div>
         </div>
 
@@ -252,19 +249,15 @@
 
     <ng-template #noRoomData>
         <div *ngIf="!(isLoadingRoom$ | async) && !(roomError$ | async)" class="loading-state">
-             <p>No room data available.</p>
+            <p>No room data available.</p>
         </div>
     </ng-template>
 
 
     <!-- Leave Room Confirmation Modal -->
-    <app-confirmation-modal
-        [isOpen]="showLeaveConfirmModal"
-        title="Leave Room Confirmation"
+    <app-confirmation-modal [isOpen]="showLeaveConfirmModal" title="Leave Room Confirmation"
         message="Are you sure you want to leave this room? Your progress will be reset and you'll need to start over if you join again."
-        confirmButtonText="Leave Room"
-        cancelButtonText="Cancel"
-        (confirm)="confirmLeaveRoom()"
+        confirmButtonText="Leave Room" cancelButtonText="Cancel" (confirm)="confirmLeaveRoom()"
         (cancel)="cancelLeaveRoom()">
     </app-confirmation-modal>
 </div>

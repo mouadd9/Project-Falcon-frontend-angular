@@ -14,7 +14,7 @@
         <div class="completion-indicator" [class.completed]="challenge.completed">
           <div class="circle-inner"></div>
         </div>
-        <span class="task-title">{{ challenge.title }}</span>
+        <span class="task-title">{{ challenge.name }}</span>
       </div>
 
       <div class="challenge-controls">
@@ -27,15 +27,14 @@
     <!-- Challenge Content (expanded) -->
     <div class="challenge-content" *ngIf="isExpanded(challenge.id)">
       <div class="content-wrapper">
-        <p>{{ challenge.description }}</p>
+      
 
         <!-- Challenge instructions/content -->
-        <div class="challenge-instructions" [innerHTML]="challenge.instructions"></div>
-
+        <div class="challenge-instructions">{{challenge.title}}</div>
+         <em  class="challenge-instructions" style="color: grey;">{{ challenge.instructions }}</em> 
         <!-- Answer section -->
         <div class="answer-section">
-          <p class="answer-prompt">Enter your answer below</p>
-
+        <!--  <p class="answer-prompt">Enter your answer below</p>-->
           <!-- Flag submission form -->
           <div class="input-row">
             <input type="text" class="flag-input" placeholder="Enter flag..." #flagInput 
