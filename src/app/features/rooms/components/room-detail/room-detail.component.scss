@@ -443,7 +443,7 @@ app-markdown-renderer ::ng-deep img { // Or whatever element the image is
 }
 
 .vpn-key-icon {
-  color: #1ba46d;
+  color: #62cb65;
   font-size: 1.2rem;
 }
 
@@ -456,7 +456,7 @@ app-markdown-renderer ::ng-deep img { // Or whatever element the image is
 }
 
 .vpn-info-btn {
-  background: #1ba46d;
+  background: #4CAF50;
   border: none;
   padding-left: 1px;
   width: 1.7rem;
@@ -464,17 +464,17 @@ app-markdown-renderer ::ng-deep img { // Or whatever element the image is
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 20%; // Make icon background circular
+  border-radius: 50%; // Make icon background circular
   cursor: pointer;
   transition: all 0.2s ease;
   // Target only the FontAwesome icon inside the button
   fa-icon {
-    color: #1ba46d;
+    color: #4CAF50;
     background:  white;
     border-radius: 50%; // Make icon background circular
     width:1.6rem;
     height:1.6rem;
-    border: 2px solid #1ba46d;
+    border: 2px solid #62cb65;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -494,11 +494,11 @@ app-markdown-renderer ::ng-deep img { // Or whatever element the image is
   height: 13px ;
   width: 160px;
   padding: 0 0.500rem;
-  background: #1ba46d !important;
+  background: #4CAF50 !important;
   color: white !important;
   
   &:hover:not(:disabled) {
-    background: #199563c5 !important;
+    background: #62cb65 !important;
   }
 }
 
@@ -777,11 +777,11 @@ app-markdown-renderer ::ng-deep img { // Or whatever element the image is
 
   /* Button Variants */
   &.variant-launch {
-    background: #1ba46d;//  #1FD496;
+    background: #4CAF50;//  #1FD496;
     color: white;
 
     &:hover:not(:disabled) {
-      background: #199563c5;
+      background:  #62cb65;
     }
 
     &:active {
@@ -790,10 +790,10 @@ app-markdown-renderer ::ng-deep img { // Or whatever element the image is
   }
 
   &.variant-start {
-     background: #1ba46d;//  #1FD496;
+     background: #4CAF50;//  #1FD496;
     color: white;
     &:hover:not(:disabled) {
-     background: #199563c5;
+     background: #62cb65;
     }
 
     &:active {

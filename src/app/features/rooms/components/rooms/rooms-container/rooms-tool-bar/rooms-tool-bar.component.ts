@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faSearch,faRefresh } from '@fortawesome/free-solid-svg-icons';
 import { RoomFilterCriteria } from '../../../../state/rooms/rooms.actions';
 
 @Component({
@@ -12,6 +12,7 @@ export class RoomsToolBarComponent {
   @Output() filtersChanged = new EventEmitter<RoomFilterCriteria>();
   
   faSearch = faSearch;
+  faRefresh = faRefresh;
   
   currentCriteria: RoomFilterCriteria = {};
 
