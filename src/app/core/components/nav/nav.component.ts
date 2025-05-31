@@ -3,8 +3,6 @@ import { faCube, faDoorOpen, faUser, faChevronDown, faSignOutAlt } from '@fortaw
 import { Store } from '@ngrx/store';
 import { AuthActions } from '../../../features/auth/state/auth.actions';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { selectAuthState } from '../../../features/auth/state/auth.selectors';
 import { JwtService } from '../../services/jwt.service';
 
 @Component({
