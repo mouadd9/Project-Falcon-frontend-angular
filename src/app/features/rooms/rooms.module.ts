@@ -20,6 +20,8 @@ import { instanceReducer } from './state/instance/instance.reducer';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { VpnEffects } from './state/vpn/vpn.effects';
 import { vpnReducer } from './state/vpn/vpn.reducer';
+import { GlobalStatisticsEffects } from './state/global-statistics/glob-stats.effects';
+import { globalStatisticsReducer } from './state/global-statistics/glob-stats.reducer';
 
 
 
@@ -45,6 +47,8 @@ import { vpnReducer } from './state/vpn/vpn.reducer';
     EffectsModule.forFeature([InstanceEffects]),
     StoreModule.forFeature('vpn', vpnReducer),
     EffectsModule.forFeature([VpnEffects]),
+    StoreModule.forFeature('globalStatistics', globalStatisticsReducer),
+    EffectsModule.forFeature([GlobalStatisticsEffects]),
     ClipboardModule
   ]
 })

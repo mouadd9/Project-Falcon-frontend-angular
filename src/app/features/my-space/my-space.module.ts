@@ -15,6 +15,8 @@ import { myRoomsReducer } from './state/my-rooms.reducers';
 import { EffectsModule } from '@ngrx/effects';
 import { MyRoomsEffects } from './state/my-rooms.effects';
 import { MyRoomCardComponent } from './components/my-space/my-rooms/my-rooms-grid/my-room-card/my-room-card.component';
+import { MyProfileStatisticsEffects } from './state/my-statistics/my-statistics.effects';
+import { myProfileStatisticsReducer } from './state/my-statistics/my-statistics.reducers';
 
 
 
@@ -36,6 +38,8 @@ import { MyRoomCardComponent } from './components/my-space/my-rooms/my-rooms-gri
     // now when this Module loads, the feature state will be registered to the store, and feature effects will also be registered to the store.
     StoreModule.forFeature('my-rooms', myRoomsReducer ), // Feature state
     EffectsModule.forFeature([MyRoomsEffects]), // Feature Effects
+    StoreModule.forFeature('myProfileStatistics', myProfileStatisticsReducer),
+    EffectsModule.forFeature([MyProfileStatisticsEffects]),
   ]
 })
 export class MySpaceModule { }

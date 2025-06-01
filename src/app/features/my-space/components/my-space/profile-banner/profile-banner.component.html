@@ -10,41 +10,75 @@
     </div>
 </div>  
 
-<div class="achievement-cards">
-    <div class="stat-card">
-        <div class="stat-left">
-            <fa-icon [icon]="faMedal"></fa-icon>
-            <span class="stat-label">Badges</span>
+<ng-container *ngIf="profileStatisticsState$ | async as state">
+    <div class="achievement-cards">
+        <!-- Joined Rooms -->
+        <div class="stat-card">
+            <div class="stat-left">
+                <fa-icon [icon]="faMedal"></fa-icon>
+                <span class="stat-label">Joined Rooms</span>
+            </div>
+            <div class="stat-right">
+                <div *ngIf="state.loading" class="spinner"></div>
+                <ng-container *ngIf="!state.loading">
+                    <span *ngIf="state.profileStatistics as stats; else errorDashJoined" class="stat-number">{{ stats.joinedRooms }}</span>
+                    <ng-template #errorDashJoined>
+                        <span *ngIf="state.error" class="stat-number">-</span>
+                    </ng-template>
+                </ng-container>
+            </div>
         </div>
-        <div class="stat-right">
-            <span class="stat-number">15</span>
+        <!-- Completed Rooms -->
+        <div class="stat-card">
+            <div class="stat-left">
+                <fa-icon [icon]="faDoorOpen"></fa-icon>
+                <span class="stat-label">Completed Rooms</span>
+            </div>
+            <div class="stat-right">
+                <div *ngIf="state.loading" class="spinner"></div>
+                <ng-container *ngIf="!state.loading">
+                    <span *ngIf="state.profileStatistics as stats; else errorDashCompleted" class="stat-number">{{ stats.completedRooms }}</span>
+                    <ng-template #errorDashCompleted>
+                        <span *ngIf="state.error" class="stat-number">-</span>
+                    </ng-template>
+                </ng-container>
+            </div>
+        </div>
+        <!-- Active Instances -->
+        <div class="stat-card">
+            <div class="stat-left">
+                <fa-icon [icon]="faServer"></fa-icon>
+                <span class="stat-label">Active Instances</span>
+            </div>
+            <div class="stat-right">
+                <div *ngIf="state.loading" class="spinner"></div>
+                <ng-container *ngIf="!state.loading">
+                    <span *ngIf="state.profileStatistics as stats; else errorDashActive" class="stat-number">{{ stats.activeInstances }}</span>
+                    <ng-template #errorDashActive>
+                        <span *ngIf="state.error" class="stat-number">-</span>
+                    </ng-template>
+                </ng-container>
+            </div>
+        </div>
+        <!-- Daily Streak -->
+        <div class="stat-card">
+            <div class="stat-left">
+                <fa-icon [icon]="faFire"></fa-icon>
+                <span class="stat-label">Daily Streak</span>
+            </div>
+            <div class="stat-right">
+                <div *ngIf="state.loading" class="spinner"></div>
+                <ng-container *ngIf="!state.loading">
+                    <span *ngIf="state.profileStatistics as stats; else errorDashStreak" class="stat-number">{{ stats.dailyStreak }}</span>
+                    <ng-template #errorDashStreak>
+                        <span *ngIf="state.error" class="stat-number">-</span>
+                    </ng-template>
+                </ng-container>
+            </div>
         </div>
     </div>
-    <div class="stat-card">
-        <div class="stat-left">
-            <fa-icon [icon]="faDoorOpen"></fa-icon>
-            <span class="stat-label">Completed Rooms</span>
-        </div>
-        <div class="stat-right">
-            <span class="stat-number">8</span>
-        </div>
+    <!-- Global error message display -->
+    <div *ngIf="!state.loading && state.error && !state.profileStatistics" class="error-message">
+        Could not load profile statistics. {{ state.error.message || 'Please try again later.' }}
     </div>
-    <div class="stat-card">
-        <div class="stat-left">
-            <fa-icon [icon]="faServer"></fa-icon>
-            <span class="stat-label">Instance Time</span>
-        </div>
-        <div class="stat-right">
-            <span class="stat-number">12h 45m</span>
-        </div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-left">
-            <fa-icon [icon]="faFire"></fa-icon>
-            <span class="stat-label">Daily Streak</span>
-        </div>
-        <div class="stat-right">
-            <span class="stat-number">7</span>
-        </div>
-    </div>
-</div>
+</ng-container>

@@ -1,12 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { faMedal, faDoorOpen, faServer, faFire } from '@fortawesome/free-solid-svg-icons';
 import { JwtService } from '../../../../../core/services/jwt.service';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import * as MyStatisticsActions from '../../../state/my-statistics/my-statistics.actions';
+import * as MyStatisticsSelectors from '../../../state/my-statistics/my-statistics.selectors';
+import { MyProfileStatisticsState } from '../../../state/my-statistics/my-statistics.state'; // Import the state interface
 
 @Component({
   selector: 'app-profile-banner',
   standalone: false,
   templateUrl: './profile-banner.component.html',
-  styleUrl: './profile-banner.component.scss'
+  styleUrls: ['./profile-banner.component.scss']
 })
 export class ProfileBannerComponent implements OnInit {
   // Font Awesome icons
@@ -17,10 +22,20 @@ export class ProfileBannerComponent implements OnInit {
 
   username: string = '';
 
-  constructor(private jwtService: JwtService) {}   
+  // Single observable for the entire profile statistics state
+  profileStatisticsState$: Observable<MyProfileStatisticsState>;
+
+  constructor(
+    private jwtService: JwtService,
+    private store: Store
+  ) {
+    // Select the entire feature state
+    this.profileStatisticsState$ = this.store.select(MyStatisticsSelectors.selectMyProfileStatisticsState);
+  }   
 
   ngOnInit(): void {
     this.initializeUserData();
+    this.store.dispatch(MyStatisticsActions.loadProfileStatistics());
   }
 
    private initializeUserData(): void {

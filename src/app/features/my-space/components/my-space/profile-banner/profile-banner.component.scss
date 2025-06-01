@@ -122,3 +122,27 @@
     }
 }
 
+/* Loading State Spinner */
+.spinner {
+  width: 24px; /* Adjusted size to fit better in place of numbers */
+  height: 24px;
+  border: 3px solid rgba(255, 51, 153, 0.2); /* Using my-space colors might be better */
+  border-top: 3px solid var(--my-space-primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  display: inline-block; /* To align with text if needed, or center in its container */
+  margin: auto; /* If its parent is flex and centered */
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Optional: Error message styling */
+.error-message {
+  color: var(--my-space-primary-color); /* Or your error color */
+  text-align: center;
+  padding: 1rem;
+}
+
