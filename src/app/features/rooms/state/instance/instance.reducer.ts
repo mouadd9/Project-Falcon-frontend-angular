@@ -87,9 +87,8 @@ export const instanceReducer = createReducer(
     instanceId,
     userId,
     roomId,
-    currentOperationId: null,
     currentOperationType: 'TERMINATE',
-    lifecycleStatus: 'TERMINATING', // Tentative status
+    lifecycleStatus: 'TERMINATING',
     isHttpLoading: true,
     progress: 0,
     error: null,

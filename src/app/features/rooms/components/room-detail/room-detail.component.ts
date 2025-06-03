@@ -289,7 +289,7 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
 
   public confirmLeaveRoom() {
     this.showLeaveConfirmModal = false;
-
+ 
     // Check if there's an instance to terminate first
     this.instanceId$.pipe(take(1)).subscribe(instanceId => {
       if (instanceId) {        
@@ -310,15 +310,15 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
     });
   }
 
-  // Keep the simple termination for ngOnDestroy
-  private terminateCurrentInstance(): void {
-    this.instanceId$.pipe(take(1)).subscribe(instanceId => {
-      if (instanceId) {
-        console.log(`Terminating current instance ${instanceId}`);
-        this.handleTerminateInstance(instanceId);
-      }
-    });
-  }
+  // // Keep the simple termination for ngOnDestroy
+  // private terminateCurrentInstance(): void {
+  //   this.instanceId$.pipe(take(1)).subscribe(instanceId => {
+  //     if (instanceId) {
+  //       console.log(`Terminating current instance ${instanceId}`);
+  //       this.handleTerminateInstance(instanceId);
+  //     }
+  //   });
+  // }
 
   public cancelLeaveRoom() {
     this.showLeaveConfirmModal = false;
@@ -402,7 +402,7 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
     if (variant === 'launch' || variant === 'launching') {
       this.handleLaunchInstance();
     } else if (variant === 'start' || variant === 'starting') {
-      this.instanceId$.pipe(takeUntil(this.destroy$)).subscribe(instanceId => {
+      this.instanceId$.pipe(take(1)).subscribe(instanceId => { // ✅ Changed to take(1)
         if (instanceId) {
           this.handleStartInstance(instanceId);
         }
@@ -411,7 +411,7 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
   }
 
   handlePauseInstance(): void {
-    this.instanceId$.pipe(takeUntil(this.destroy$)).subscribe(instanceId => {
+    this.instanceId$.pipe(take(1)).subscribe(instanceId => { // ✅ Changed to take(1)
       if (instanceId) {
         this.handleStopInstance(instanceId);
       }
@@ -419,7 +419,7 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
   }
 
   handleTerminateInstanceAction(): void {
-    this.instanceId$.pipe(takeUntil(this.destroy$)).subscribe(instanceId => {
+    this.instanceId$.pipe(take(1)).subscribe(instanceId => { // ✅ Changed to take(1)
       if (instanceId) {
         this.handleTerminateInstance(instanceId);
       }
@@ -856,11 +856,14 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    console.log('🔴 COMPONENT DESTROYED');
+    console.log('🔴 Stack trace:', new Error().stack); // ← CRUCIAL
+  
     // Clean up VPN portal
     this.destroyVpnPortal();
 
-    // Terminate current instance before destroying component
-    this.terminateCurrentInstance();
+    // // Terminate current instance before destroying component
+    // this.terminateCurrentInstance();
 
     // Clear states
     this.store.dispatch(RoomDetailActions.clearRoomDetail());

@@ -13,6 +13,9 @@ export class WebSocketService {
   private stompClient: CompatClient | null = null;
   private messageSubject = new Subject<InstanceOperationUpdate>();
   public messages$: Observable<InstanceOperationUpdate> = this.messageSubject.asObservable();
+  
+  // ✅ AJOUT : Tracker la souscription active
+  private currentSubscription: any = null;
 
   constructor(private jwtService: JwtService) {}
 
@@ -21,6 +24,12 @@ export class WebSocketService {
   }
 
   public connect(userId: string, operationId: string): void {
+    // ✅ AJOUT : Nettoyer la souscription existante
+    if (this.currentSubscription) {
+      console.log('Unsubscribing from previous WebSocket subscription');
+      this.currentSubscription.unsubscribe();
+      this.currentSubscription = null;
+    }
 
     if (this.stompClient && this.stompClient.connected) {
       console.log('WebSocket already connected.');
@@ -53,7 +62,9 @@ export class WebSocketService {
       // The backend InstanceWebSocketService sends to /user/{userId}/queue/instance-updates
       // The STOMP client resolves this to /user/queue/instance-updates for the authenticated user
       const userQueue = `/user/${userId}/queue/instance-updates`; // <--- KEY LINE
-      this.stompClient.subscribe(userQueue, (message) => {
+      
+      // ✅ MODIFICATION : Stocker la référence de souscription
+      this.currentSubscription = this.stompClient.subscribe(userQueue, (message) => {
         try {
           const update = JSON.parse(message.body) as InstanceOperationUpdate;
           console.log('Received WebSocket update:', update);
@@ -68,6 +79,7 @@ export class WebSocketService {
           console.error('Error parsing WebSocket message:', e);
         }
       });
+      
       console.log(`Subscribed to ${userQueue}`);
     } else {
       console.error('STOMP client not connected. Cannot subscribe.');
@@ -75,6 +87,13 @@ export class WebSocketService {
   }
 
   public disconnect(): void {
+    // ✅ AJOUT : Nettoyer la souscription avant déconnexion
+    if (this.currentSubscription) {
+      console.log('Unsubscribing from WebSocket subscription');
+      this.currentSubscription.unsubscribe();
+      this.currentSubscription = null;
+    }
+
     if (this.stompClient && this.stompClient.connected) {
       this.stompClient.disconnect(() => {
         console.log('WebSocket disconnected.');

@@ -15,6 +15,7 @@ import { JwtService } from './core/services/jwt.service';
 export class AppComponent implements OnInit/*, OnDestroy*/ {
   showNavBar$!: Observable<boolean>;
   
+  
   constructor(private router: Router, private store: Store, private jwtService: JwtService) {
     // Set up router event subscription in constructor
     this.showNavBar$ = this.router.events.pipe(

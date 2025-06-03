@@ -8,7 +8,9 @@ import {
   tap,
   withLatestFrom,
   filter,
-  exhaustMap
+  exhaustMap,
+  debounceTime,
+  distinctUntilChanged
 } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { InstanceActions } from './instance.actions';
@@ -33,8 +35,21 @@ export class InstanceEffects {
   launchInstance$ = createEffect(() =>
     this.actions$.pipe(
       ofType(InstanceActions.launchInstance),
-      exhaustMap((action) =>
+      // ✅ MOVED TAP HERE: Cleanup before starting the new operation
+      tap((action) => { // action here is launchInstance
+        console.log('🚀 Preparing for new instance launch - clearing stale state FIRST. RoomId:', action.roomId, 'UserId:', action.userId);
+        localStorage.removeItem('currentOperationId');
+        this.webSocketService.disconnect();
+        // The reducer for launchInstance already resets the main instance state.
+      }),
+      exhaustMap((action) => // action is still launchInstance
         this.instanceService.createInstance(action.roomId, action.userId).pipe(
+          // The original tap for logging/debugging the service call can remain or be removed if not needed.
+          // tap(() => {
+          //   console.log('🚀 Instance service createInstance called. Clearing stale state (if any was missed).');
+          //   localStorage.removeItem('currentOperationId');
+          //   this.webSocketService.disconnect();
+          // }),
           map((response: InstanceOperationStarted) =>
             InstanceActions.operationAccepted({ response, roomId: action.roomId, userId: action.userId })
           ),
@@ -119,14 +134,22 @@ export class InstanceEffects {
       ofType(InstanceActions.operationAccepted),
       // Ensure there's a userId and operationId from the accepted operation
       filter(action => !!action.userId && !!action.response.operationId),
+      debounceTime(100),
       tap((action) => {
+        console.log('🔌 Connecting WebSocket for operation:', action.response.operationId);
+        this.webSocketService.disconnect();
+
         // The backend topic is /user/{userId}/queue/instance-updates
         // The WebSocketService connect method needs the userId for this topic
         // and operationId to potentially filter messages if the service implements that,
         // or for the action InstanceActions.webSocketConnectionOpened.
+      setTimeout(() => {
         this.webSocketService.connect(action.userId, action.response.operationId);
-        // Dispatch an action indicating connection attempt
-        this.store.dispatch(InstanceActions.connectWebSocket({ userId: action.userId, operationId: action.response.operationId }));
+        this.store.dispatch(InstanceActions.connectWebSocket({ 
+          userId: action.userId, 
+          operationId: action.response.operationId 
+        }));
+      }, 100);
       })
     ),
     { dispatch: false }
@@ -164,40 +187,59 @@ export class InstanceEffects {
   this.webSocketService.messages$.pipe(
     withLatestFrom(
       this.store.select(selectCurrentOperationId),
-      this.store.select(selectIsWsConnected) // Add this to withLatestFrom
+      this.store.select(selectIsWsConnected)
     ),
-    // Filter messages: only process if there's a currentOperationId in state
-    // and the message's operationId matches it.
+    // ✅ ADD DEBUGGING
+    tap(([update, currentOpIdInState, isWsConnected]) => {
+      console.log('🔍 WebSocket update received:', {
+        messageOpId: update.operationId,
+        stateOpId: currentOpIdInState,
+        messageType: update.operationType,
+        messageStatus: update.status,
+        isConnected: isWsConnected
+      });
+    }),
     filter(([update, currentOpIdInState, isWsConnected]) => {
       if (!currentOpIdInState) {
-        console.warn('WS Update: No current operation ID in state. Ignoring message.', update);
+        console.warn('🚫 WS Update: No current operation ID in state. Ignoring message.', update);
         return false;
       }
       if (!update || !update.operationId) {
-        console.warn('WS Update: Received invalid message structure.', update);
+        console.warn('🚫 WS Update: Received invalid message structure.', update);
         return false;
       }
       if (update.operationId !== currentOpIdInState) {
-        console.warn(`WS Update: Mismatched operation ID. State: ${currentOpIdInState}, Msg: ${update.operationId}. Ignoring.`, update);
+        console.warn(`🚫 WS Update: Mismatched operation ID. State: ${currentOpIdInState}, Msg: ${update.operationId}. Ignoring.`, update);
         return false;
       }
       return true;
     }),
+    // ✅ ADD CIRCUIT BREAKER
+    distinctUntilChanged(([prevUpdate], [currUpdate]) => 
+      prevUpdate.operationId === currUpdate.operationId && 
+      prevUpdate.status === currUpdate.status
+    ),
     map(([update, _currentOpIdInState, isWsConnected]) => {
-      // Mark WebSocket as connected if this is the first message
       if (!isWsConnected) {
         this.store.dispatch(InstanceActions.webSocketConnectionOpened({ operationId: update.operationId }));
       }
       
-      // Handle termination - reset instance state
-      if (update.operationType === 'TERMINATE' && update.status === 'TERMINATED') {
-        return InstanceActions.resetInstanceState();
+      // ✅ Add logging before dispatch
+      console.log('🎯 Dispatching action for WebSocket update:', update);
+      
+      if (update.operationType === 'TERMINATE') {
+        if (update.status === 'TERMINATING') {
+          return InstanceActions.instanceUpdateReceived({ update });
+        } else if (update.status === 'TERMINATED') {
+          console.log('🏁 Final TERMINATED status - resetting state');
+          return InstanceActions.resetInstanceState();
+        }
       }
       
       return InstanceActions.instanceUpdateReceived({ update });
     }),
     catchError(error => {
-      console.error('Error in WebSocket messages stream:', error);
+      console.error('❌ Error in WebSocket messages stream:', error);
       return EMPTY;
     })
   )
@@ -209,19 +251,44 @@ export class InstanceEffects {
       ofType(InstanceActions.loadInstanceDetailsForRoom),
       switchMap((action) => {
         const userId = this.jwtService.getUserIdFromToken();
-        
+
         if (!userId) {
           console.warn('No userId available for loading instance details');
-          return of(InstanceActions.loadInstanceDetailsFailure({ 
-            error: 'User ID not available' 
-          }));
+          return of(
+            InstanceActions.loadInstanceDetailsFailure({ 
+              error: 'User ID not available' 
+            })
+          );
         }
-        
+
         return this.instanceService.getInstanceForRoom(action.roomId, userId.toString()).pipe(
-          map(instanceData => InstanceActions.loadInstanceDetailsSuccess({ partialState: instanceData })),
-          catchError(error => of(InstanceActions.loadInstanceDetailsFailure({ 
-            error: error.message || 'Failed to load instance details' 
-          })))
+          switchMap(instanceData => {
+            const actions = [];
+            // Since the backend does not return an operationId,
+            // check localStorage for a persisted operationId.
+            const storedOpId = localStorage.getItem('currentOperationId');
+            if (storedOpId) {
+              actions.push(
+                InstanceActions.operationAccepted({
+                  response: { operationId: storedOpId } as any,
+                  roomId: action.roomId,
+                  userId: userId.toString() 
+                })
+              );
+            }
+            // Always dispatch the load success action.
+            actions.push(
+              InstanceActions.loadInstanceDetailsSuccess({ partialState: instanceData })
+            );
+            return actions;
+          }),
+          catchError(error =>
+            of(
+              InstanceActions.loadInstanceDetailsFailure({
+                error: error.message || 'Failed to load instance details'
+              })
+            )
+          )
         );
       })
     )
@@ -260,4 +327,24 @@ export class InstanceEffects {
     )
   )
   )
+
+    persistOperationId$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(InstanceActions.operationAccepted),
+      tap(action => {
+        localStorage.setItem('currentOperationId', action.response.operationId);
+      })
+    ),
+    { dispatch: false }
+  );
+
+    clearOperationId$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(InstanceActions.resetInstanceState, InstanceActions.clearInstanceState, InstanceActions.operationHTTPFailure),
+      tap(() => {
+        localStorage.removeItem('currentOperationId');
+      })
+    ),
+    { dispatch: false }
+  );
 }
