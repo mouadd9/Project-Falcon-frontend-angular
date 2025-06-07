@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, Renderer2, ViewContainerRef, ComponentRef, Injector, TemplateRef, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable, Subject, takeUntil, take, Subscription } from 'rxjs';
+import { Observable, take } from 'rxjs';
 import { RoomModel } from '../../../../core/models/room.model';
 import {
   JoinRoomActions,
@@ -53,52 +53,36 @@ import { Clipboard } from '@angular/cdk/clipboard';
   selector: 'app-room-detail',
   standalone: false,
   templateUrl: './room-detail.component.html',
-  styleUrls: ['./room-detail.component.scss'], // Changed from styleUrl
+  styleUrls: ['./room-detail.component.scss'],
 })
 export class RoomDetailComponent implements OnInit, OnDestroy {
+  
+  // Room details State Observables
   public room$!: Observable<RoomModel | null>;
-  public isLoadingRoom$!: Observable<boolean>; // Renamed to avoid conflict
-  public roomError$!: Observable<string | null>; // Renamed
+  public isLoadingRoom$!: Observable<boolean>;
+  public roomError$!: Observable<string | null>;
+  joinButtonState$!: Observable<string | undefined>;
+  saveButtonState$!: Observable<string | undefined>;
+  leaveButtonDisabled$!: Observable<boolean>;
+  public isDisabled: boolean = false; // For the leave button
+
   // Instance State Observables
   instanceId$!: Observable<string | null>;
-  lifecycleStatus$!: Observable<fromInstance.InstanceState['lifecycleStatus']>;
-  isOperationInProgress$!: Observable<boolean>;
-  instanceDisplayInfo$!: Observable<any>; // Using 'any' for now, refine with a specific model if needed
-  
-  // NEW: Redesigned selectors for professional UI
+  statusMessage$!: Observable<{ status: string; message: string; progress: number; ipAddress: string | null; isError: boolean; showProgress: boolean; }>
   primaryActionButton$!: Observable<{ text: string; disabled: boolean; variant: string }>;
   smallActionButtons$!: Observable<{ pause?: { text: string; disabled: boolean }; terminate?: { text: string; disabled: boolean } }>;
   progressBar$!: Observable<{ show: boolean; progress: number; variant: string }>;
-  statusMessage$!: Observable<{ status: string; phase: string; message: string; progress: number; ipAddress: string | null; isError: boolean; showProgress: boolean; }>;
   
-  // OLD: Keep for backward compatibility during transition
-  launchButtonState$!: Observable<{ text: string; disabled: boolean }>;
-  startButtonState$!: Observable<{ text: string; disabled: boolean }>;
-  stopButtonState$!: Observable<{ text: string; disabled: boolean }>;
-  terminateButtonState$!: Observable<{ text: string; disabled: boolean }>;
-
   userId!: string;
   private roomId!: string;
 
-  // Modal state
+  // VPN & Modal state
   showLeaveConfirmModal: boolean = false;
-
-  joinButtonState$!: Observable<string | undefined>;
-  saveButtonState$!: Observable<string | undefined>;
-  // Add this new observable
-  leaveButtonDisabled$!: Observable<boolean>;  // VPN state
   showVpnGuide: boolean = false;
-  selectedOS: string = 'windows';  isDownloadingVpnConfig$!: Observable<boolean>;
-  
-  // VPN Portal Management
+  selectedOS: string = 'windows';  isDownloadingVpnConfig$!: Observable<boolean>;  
   private vpnPortalElement: HTMLElement | null = null;
 
-  public isDisabled: boolean = false; // For the leave button
-
-  private destroy$ = new Subject<void>();
-
-  // font awesome
-  // Font Awesome icons
+  // icons
   faClock = faClock;
   faLeaf = faLeaf;
   faCube = faCube;
@@ -112,13 +96,10 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
   faPlay = faPlay;
   faSignOutAlt = faSignOutAlt;
   faSpinner = faSpinner;
-
   faStopCircle = faStopCircle;
   faTrashAlt = faTrashAlt;
   faCopy = faCopy;
   faCircleNotch = faCircleNotch;
-
-  // VPN icons
   faKey = faKey;
   faDownload = faDownload;
   faInfoCircle = faInfoCircle;
@@ -130,8 +111,6 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
     private jwtService: JwtService,
     private clipboard: Clipboard,
     private renderer: Renderer2,
-    private viewContainerRef: ViewContainerRef,
-    private injector: Injector
   ) {}
 
   ngOnInit(): void {
@@ -144,16 +123,11 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
   }
 
   private getUserIdAndRoomId(): void {
-    // this.userId = this.jwtService.getUserIdFromToken();
-    // this.roomId = +this.route.snapshot.params['id'];
     this.userId = this.jwtService.getUserIdFromToken()?.toString() || '';
     this.roomId = this.route.snapshot.params['id']?.toString() || '';
 
     if (!this.userId) {
-      console.error(
-        'User ID is missing. Cannot proceed with instance operations.'
-      );
-      // Handle error, e.g., redirect to login or show error message
+      console.error('User ID is missing. Cannot proceed with instance operations.'); // Handle error, e.g., redirect to login or show error message
     }
     if (!this.roomId) {
       console.error('Room ID is missing from route. Cannot load details.');
@@ -166,50 +140,17 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
     this.roomError$ = this.store.select(selectRoomDetailError);
     this.joinButtonState$ = this.store.select(joiningButtonState);
     this.saveButtonState$ = this.store.select(savingButtonState);
-    
-    // Add this new selector
     this.leaveButtonDisabled$ = this.store.select(selectLeaveButtonDisabled);
   }
+  // instance state selectors
   private selectInstanceState(): void {
     this.instanceId$ = this.store.select(fromInstance.selectInstanceId);
-    this.lifecycleStatus$ = this.store.select(
-      fromInstance.selectLifecycleStatus
-    );
-    this.isOperationInProgress$ = this.store.select(
-      fromInstance.selectIsOperationInProgress
-    );
-    this.instanceDisplayInfo$ = this.store.select(
-      fromInstance.selectInstanceDisplayInfo
-    );    // NEW: Professional redesigned selectors
-    this.primaryActionButton$ = this.store.select(
-      fromInstance.selectPrimaryActionButton
-    );
-    this.smallActionButtons$ = this.store.select(
-      fromInstance.selectSmallActionButtons
-    );
-    this.progressBar$ = this.store.select(
-      fromInstance.selectProgressBar
-    );
+    this.primaryActionButton$ = this.store.select(fromInstance.selectPrimaryActionButton);
+    this.smallActionButtons$ = this.store.select(fromInstance.selectSmallActionButtons);
+    this.progressBar$ = this.store.select(fromInstance.selectProgressBar);
     this.statusMessage$ = this.store.select(fromInstance.selectInstanceDisplayInfo);
-
-    // OLD: Keep for backward compatibility
-    this.launchButtonState$ = this.store.select(
-      fromInstance.selectLaunchButtonState
-    );
-    this.startButtonState$ = this.store.select(
-      fromInstance.selectStartButtonState
-    );
-    this.stopButtonState$ = this.store.select(
-      fromInstance.selectStopButtonState
-    );
-    this.terminateButtonState$ = this.store.select(
-      fromInstance.selectTerminateButtonState
-    );
-
     // VPN state selectors
-    this.isDownloadingVpnConfig$ = this.store.select(
-      fromVpn.selectIsDownloadingVpnConfig
-    );
+    this.isDownloadingVpnConfig$ = this.store.select(fromVpn.selectIsDownloadingVpnConfig);
   }
 
   public loadRoomAndInstanceDetails(): void {
@@ -269,6 +210,7 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
       })
     );
   }
+
   public joinRoom() {
     this.store.dispatch(
       JoinRoomActions.joinRoom({ userId: +this.userId, roomId: +this.roomId })
@@ -309,16 +251,6 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
       }
     });
   }
-
-  // // Keep the simple termination for ngOnDestroy
-  // private terminateCurrentInstance(): void {
-  //   this.instanceId$.pipe(take(1)).subscribe(instanceId => {
-  //     if (instanceId) {
-  //       console.log(`Terminating current instance ${instanceId}`);
-  //       this.handleTerminateInstance(instanceId);
-  //     }
-  //   });
-  // }
 
   public cancelLeaveRoom() {
     this.showLeaveConfirmModal = false;
@@ -389,6 +321,7 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
       );
     }
   }
+
   copyIpAddress(ipAddress?: string | null): void {
     if (ipAddress) {
       this.clipboard.copy(ipAddress);
@@ -402,7 +335,7 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
     if (variant === 'launch' || variant === 'launching') {
       this.handleLaunchInstance();
     } else if (variant === 'start' || variant === 'starting') {
-      this.instanceId$.pipe(take(1)).subscribe(instanceId => { // ✅ Changed to take(1)
+      this.instanceId$.pipe(take(1)).subscribe(instanceId => {
         if (instanceId) {
           this.handleStartInstance(instanceId);
         }
@@ -411,7 +344,7 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
   }
 
   handlePauseInstance(): void {
-    this.instanceId$.pipe(take(1)).subscribe(instanceId => { // ✅ Changed to take(1)
+    this.instanceId$.pipe(take(1)).subscribe(instanceId => { 
       if (instanceId) {
         this.handleStopInstance(instanceId);
       }
@@ -419,12 +352,14 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
   }
 
   handleTerminateInstanceAction(): void {
-    this.instanceId$.pipe(take(1)).subscribe(instanceId => { // ✅ Changed to take(1)
+    this.instanceId$.pipe(take(1)).subscribe(instanceId => { 
       if (instanceId) {
         this.handleTerminateInstance(instanceId);
       }
     });
-  }  // VPN methods
+  }  
+  
+  // VPN methods
   toggleVpnGuide(): void {
     if (this.showVpnGuide) {
       this.closeVpnGuide();
@@ -601,7 +536,9 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
 
     // Set the content for the current OS
     this.updateVpnGuideContent();
-  }  private updateVpnGuideContent(): void {
+  }  
+  
+  private updateVpnGuideContent(): void {
     if (!this.vpnPortalElement) return;
 
     const guideContent = this.vpnPortalElement.querySelector('.guide-content');
@@ -856,19 +793,11 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.log('🔴 COMPONENT DESTROYED');
-    console.log('🔴 Stack trace:', new Error().stack); // ← CRUCIAL
-  
     // Clean up VPN portal
     this.destroyVpnPortal();
-
-    // // Terminate current instance before destroying component
-    // this.terminateCurrentInstance();
-
     // Clear states
     this.store.dispatch(RoomDetailActions.clearRoomDetail());
     this.store.dispatch(fromInstance.InstanceActions.clearInstanceState());
-    this.destroy$.next();
-    this.destroy$.complete();
   }
+  
 }

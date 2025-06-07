@@ -10,7 +10,6 @@ export interface InstanceOperationUpdate {
   timestamp: string; // ISO date string
   error?: string;
   operationType: 'CREATE' | 'START' | 'STOP' | 'TERMINATE'; // Crucial for interpreting the status
-  phase?: string; // Human-readable phase (e.g., "Database Setup", "Cloud Request")
   ipAddress?: string;
   // cloudInstanceId is NOT expected from the backend as per our last discussion
 }

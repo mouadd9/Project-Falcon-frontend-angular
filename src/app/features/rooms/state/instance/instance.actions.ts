@@ -1,4 +1,4 @@
-import { createAction, createActionGroup, emptyProps, props } from '@ngrx/store';
+import { createActionGroup, emptyProps, props } from '@ngrx/store';
 import { InstanceOperationStarted } from '../../../../core/models/instance-operation-started.model';
 import { InstanceOperationUpdate } from '../../../../core/models/instance-operation-update.model';
 import { InstanceState } from './instance.state';
@@ -15,28 +15,16 @@ export const InstanceActions = createActionGroup({
 
     // --- HTTP Response Handling ---
     // Dispatched when the backend accepts an operation and returns an operationId
-    'Operation Accepted': props<{
-      response: InstanceOperationStarted;
-      roomId: string; // Pass roomId along for context
-      userId: string; // Pass userId along for context
-      // instanceId from response.instanceId might be null for CREATE
-    }>(),
+    'Operation Accepted': props<{ response: InstanceOperationStarted; roomId: string; userId: string; }>(),
     // Dispatched if the initial HTTP call to start an operation fails
-    'Operation HTTP Failure': props<{
-      error: string;
-      operationType: 'CREATE' | 'START' | 'STOP' | 'TERMINATE';
-      roomId: string; // For context, especially for CREATE
-      instanceId?: string; // If known
-    }>(),
+    'Operation HTTP Failure': props<{ error: string; operationType: 'CREATE' | 'START' | 'STOP' | 'TERMINATE'; roomId: string; instanceId?: string; }>(),
 
     // --- WebSocket Message Handling ---
     // Dispatched when a new InstanceOperationUpdate is received from WebSocket
     'Instance Update Received': props<{ update: InstanceOperationUpdate }>(),
 
     // --- WebSocket Connection Management (handled by effects, but actions can exist) ---
-    'Connect WebSocket': props<{ userId: string; operationId: string }>(),
     'Disconnect WebSocket': emptyProps(),
-    'WebSocket Connection Opened': props<{ operationId: string }>(),
     'WebSocket Connection Closed': props<{ operationId: string; error?: any }>(),
     'WebSocket Connection Error': props<{ operationId: string; error: any }>(),
 

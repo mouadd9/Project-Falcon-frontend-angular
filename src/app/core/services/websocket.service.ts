@@ -14,7 +14,7 @@ export class WebSocketService {
   private messageSubject = new Subject<InstanceOperationUpdate>();
   public messages$: Observable<InstanceOperationUpdate> = this.messageSubject.asObservable();
   
-  // ✅ AJOUT : Tracker la souscription active
+  // Tracker la souscription active
   private currentSubscription: any = null;
 
   constructor(private jwtService: JwtService) {}
@@ -23,21 +23,22 @@ export class WebSocketService {
     return this.jwtService.getTokenFromLocalStorage();
   }
 
-  public connect(userId: string, operationId: string): void {
-    // ✅ AJOUT : Nettoyer la souscription existante
+  public connect(userId: string): void {
+    // Clean up existing subscription
     if (this.currentSubscription) {
       console.log('Unsubscribing from previous WebSocket subscription');
       this.currentSubscription.unsubscribe();
       this.currentSubscription = null;
     }
-
+    
+    // Check if already connected
     if (this.stompClient && this.stompClient.connected) {
       console.log('WebSocket already connected.');
-      this.subscribeToUserUpdates(userId, operationId);
+      this.subscribeToUserUpdates(userId);
       return;
     }
 
-    // we create a new websocket connection using SockJS and STOMP
+    // if not connected we Create new connection
     const socket = new SockJS(`${environment.apiUrl}/ws`);
     this.stompClient = Stomp.over(socket);
 
@@ -48,8 +49,8 @@ export class WebSocketService {
     
     // we connect to the STOMP server
     this.stompClient.connect(headers, () => {
-        console.log('WebSocket connected successfully.');
-        this.subscribeToUserUpdates(userId, operationId);
+        console.log('WebSocket connected successfully.'); // this is sufficient no need to dispatch an action
+        this.subscribeToUserUpdates(userId);
       }, (error: any) => {
         console.error('Error connecting to WebSocket:', error);
         // Optionally, you could emit an error state here
@@ -57,24 +58,17 @@ export class WebSocketService {
     );
   }
 
-  private subscribeToUserUpdates(userId: string, operationIdToFilterBy?: string): void {
+  private subscribeToUserUpdates(userId: string): void {
     if (this.stompClient && this.stompClient.connected) {
       // The backend InstanceWebSocketService sends to /user/{userId}/queue/instance-updates
       // The STOMP client resolves this to /user/queue/instance-updates for the authenticated user
       const userQueue = `/user/${userId}/queue/instance-updates`; // <--- KEY LINE
       
-      // ✅ MODIFICATION : Stocker la référence de souscription
       this.currentSubscription = this.stompClient.subscribe(userQueue, (message) => {
         try {
           const update = JSON.parse(message.body) as InstanceOperationUpdate;
           console.log('Received WebSocket update:', update);
-          // If an operationId filter is provided, only emit messages for that operation
-          if (operationIdToFilterBy && update.operationId === operationIdToFilterBy) {
             this.messageSubject.next(update);
-          } else if (!operationIdToFilterBy) {
-            // If no filter, emit all messages (though typically you'd filter)
-            this.messageSubject.next(update);
-          }
         } catch (e) {
           console.error('Error parsing WebSocket message:', e);
         }
@@ -87,7 +81,6 @@ export class WebSocketService {
   }
 
   public disconnect(): void {
-    // ✅ AJOUT : Nettoyer la souscription avant déconnexion
     if (this.currentSubscription) {
       console.log('Unsubscribing from WebSocket subscription');
       this.currentSubscription.unsubscribe();

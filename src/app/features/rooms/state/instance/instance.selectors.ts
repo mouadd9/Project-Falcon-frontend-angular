@@ -11,18 +11,15 @@ export const selectCurrentOperationId = createSelector(selectInstanceState, (sta
 export const selectCurrentOperationType = createSelector(selectInstanceState, (state) => state.currentOperationType);
 export const selectLifecycleStatus = createSelector(selectInstanceState, (state) => state.lifecycleStatus);
 export const selectIsHttpLoading = createSelector(selectInstanceState, (state) => state.isHttpLoading);
-export const selectIsWsConnected = createSelector(selectInstanceState, (state) => state.isWsConnected);
 export const selectInstanceProgress = createSelector(selectInstanceState, (state) => state.progress);
-export const selectInstanceCurrentPhase = createSelector(selectInstanceState, (state) => state.currentPhase);
 export const selectInstanceMessage = createSelector(selectInstanceState, (state) => state.message);
 export const selectInstanceIpAddress = createSelector(selectInstanceState, (state) => state.ipAddress);
 export const selectInstanceError = createSelector(selectInstanceState, (state) => state.error);
-export const selectInstanceCreatedAt = createSelector(selectInstanceState, (state) => state.createdAt);
-export const selectLastStatusUpdateAt = createSelector(selectInstanceState, (state) => state.lastStatusUpdateAt);
+
 
 // --- Derived Selectors for UI Logic ---
 
-// Determines if any operation is currently in a pending HTTP or WebSocket phase
+// Determines if any operation is currently in a pending HTTP or WebSocket
 export const selectIsOperationInProgress = createSelector(
   selectIsHttpLoading,
   selectCurrentOperationId, // If an operationId is set, WS updates are expected
@@ -36,84 +33,19 @@ export const selectIsOperationInProgress = createSelector(
       status === 'TERMINATING'))
 );
 
-
-// --- Button States ---
-// Launch Button
-export const selectLaunchButtonState = createSelector(
-  selectLifecycleStatus,
-  selectIsHttpLoading,
-  selectCurrentOperationType,
-  (status, isLoading, opType): { text: string; disabled: boolean } => {
-    if (isLoading && opType === 'CREATE') return { text: 'Launching...', disabled: true };
-    if (status === 'CREATING') return { text: 'Launching...', disabled: true };
-    
-    // Enable launch for users who haven't started an instance yet OR for terminated/failed instances
-    if (status === 'NON_EXISTENT' || status === 'NOT_STARTED' || status === 'TERMINATED' || status === 'UNKNOWN' || status === 'FAILED') {
-      return { text: 'Launch Instance', disabled: false };
-    }
-    
-    // If instance exists in any other state (RUNNING, STOPPED, etc.), launch is not an option
-    return { text: 'Launch Instance', disabled: true };
-  }
-);
-
-// Start Button
-export const selectStartButtonState = createSelector(
-  selectLifecycleStatus,
-  selectIsHttpLoading,
-  selectCurrentOperationType,
-  (status, isLoading, opType): { text: string; disabled: boolean } => {
-    if (isLoading && opType === 'START') return { text: 'Starting...', disabled: true };
-    if (status === 'STARTING') return { text: 'Starting...', disabled: true };
-    if (status === 'STOPPED') return { text: 'Start Instance', disabled: false };
-    return { text: 'Start Instance', disabled: true };
-  }
-);
-
-// Stop Button
-export const selectStopButtonState = createSelector(
-  selectLifecycleStatus,
-  selectIsHttpLoading,
-  selectCurrentOperationType,
-  (status, isLoading, opType): { text: string; disabled: boolean } => {
-    if (isLoading && opType === 'STOP') return { text: 'Stopping...', disabled: true };
-    if (status === 'STOPPING') return { text: 'Stopping...', disabled: true };
-    if (status === 'RUNNING') return { text: 'Stop Instance', disabled: false };
-    return { text: 'Stop Instance', disabled: true };
-  }
-);
-
-// Terminate Button
-export const selectTerminateButtonState = createSelector(
-  selectLifecycleStatus,
-  selectIsHttpLoading,
-  selectCurrentOperationType,
-  (status, isLoading, opType): { text: string; disabled: boolean } => {
-    if (isLoading && opType === 'TERMINATE') return { text: 'Terminating...', disabled: true };
-    if (status === 'TERMINATING') return { text: 'Terminating...', disabled: true };
-    if (status === 'RUNNING' || status === 'STOPPED' || status === 'PAUSED' || status === 'FAILED') {
-      // Allow termination from FAILED state if an instanceId exists
-      return { text: 'Terminate Instance', disabled: false };
-    }
-    return { text: 'Terminate Instance', disabled: true };
-  }
-);
-
 // Information to display in the "grey box" under buttons
 export const selectInstanceDisplayInfo = createSelector(
   selectLifecycleStatus,
-  selectInstanceCurrentPhase,
   selectInstanceMessage,
   selectInstanceProgress,
   selectInstanceIpAddress,
   selectInstanceError,
   selectIsOperationInProgress,
-  (status, phase, message, progress, ip, error, isOpInProgress) => {
+  (status, message, progress, ip, error, isOpInProgress) => {
     // Show info for NOT_STARTED state
     if (status === 'NOT_STARTED') {
       return {
         status,
-        phase: 'Ready to Launch',
         message: message || 'No instance created yet. Click Launch to get started.',
         progress: 0,
         ipAddress: null,
@@ -126,7 +58,6 @@ export const selectInstanceDisplayInfo = createSelector(
         if (status === 'NON_EXISTENT' || status === 'TERMINATED' || status === 'UNKNOWN') {
             return {
               status,
-              phase: 'Ready to Launch',
               message: 'No active instance. Click Launch to create one.',
               progress: 0,
               ipAddress: null,
@@ -136,7 +67,6 @@ export const selectInstanceDisplayInfo = createSelector(
         }
     }    return {
       status, // Frontend lifecycle status
-      phase: phase || 'Processing...',
       message: error || message || 'Awaiting update...',
       progress: progress,
       // Hide IP address for PAUSED instances since they get new IP on resume
@@ -147,20 +77,21 @@ export const selectInstanceDisplayInfo = createSelector(
   }
 );
 
-// --- NEW REDESIGNED SELECTORS FOR PROFESSIONAL UI ---
-
 // Primary Dynamic Button - Single button that changes based on state
 export const selectPrimaryActionButton = createSelector(
   selectLifecycleStatus,
   selectIsHttpLoading,
   selectCurrentOperationType,
   (status, isLoading, opType): { text: string; disabled: boolean; variant: 'launch' | 'start' | 'launching' | 'starting' } => {
-    // Loading states with current operation
+    
+    // Lauching 
     if (isLoading && opType === 'CREATE') return { text: 'Launching...', disabled: true, variant: 'launching' };
     if (status === 'CREATING') return { text: 'Launching...', disabled: true, variant: 'launching' };
+
+    // Starting
     if (isLoading && opType === 'START') return { text: 'Starting...', disabled: true, variant: 'starting' };
     if (status === 'STARTING') return { text: 'Starting...', disabled: true, variant: 'starting' };
-    
+     
     // Ready to start from stopped/paused state
     if (status === 'STOPPED' || status === 'PAUSED') return { text: 'Resume', disabled: false, variant: 'start' };
     
@@ -227,7 +158,11 @@ export const selectSmallActionButtons = createSelector(
 export const selectProgressBar = createSelector(
   selectLifecycleStatus,
   selectInstanceProgress,
-  (status, progress): { show: boolean; progress: number; variant: string } => {
+  (status, progress): 
+  { show: boolean;
+    progress: number;
+    variant: string 
+  } => {
     const isOperationActive = status === 'CREATING' || status === 'STARTING' || status === 'STOPPING' || status === 'TERMINATING';
     
     if (!isOperationActive) {
@@ -256,12 +191,6 @@ export const selectProgressBar = createSelector(
       variant
     };
   }
-);
-
-// Status Message - Simplified version for the new UI
-export const selectStatusMessage = createSelector(
-  selectInstanceDisplayInfo,
-  (displayInfo) => displayInfo
 );
 
 // Add this new selector

@@ -1,64 +1,45 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of, EMPTY } from 'rxjs';
-import {
-  switchMap,
-  map,
-  catchError,
-  tap,
-  withLatestFrom,
-  filter,
-  exhaustMap,
-  debounceTime,
-  distinctUntilChanged
-} from 'rxjs/operators';
+import { switchMap, map, catchError, tap, withLatestFrom, filter, exhaustMap } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { InstanceActions } from './instance.actions';
 import { InstanceState } from './instance.state';
 import { InstanceService } from '../../../../core/services/instance.service';
 import { WebSocketService } from '../../../../core/services/websocket.service';
 import { InstanceOperationStarted } from '../../../../core/models/instance-operation-started.model';
-import { selectCurrentOperationId, selectUserId as selectInstanceUserId, selectIsWsConnected, selectRoomId, selectUserId } from './instance.selectors'; // Renamed to avoid conflict
-import { JwtService } from '../../../../core/services/jwt.service'; // Add this import
-import { LeaveRoomActions } from '../room-detail/room-detail.actions'; // Add this import
-
+import { selectCurrentOperationId } from './instance.selectors';
+import { JwtService } from '../../../../core/services/jwt.service';
+import { LeaveRoomActions } from '../room-detail/room-detail.actions';
 
 @Injectable()
 export class InstanceEffects {
   private actions$ = inject(Actions);
   private instanceService = inject(InstanceService);
   private webSocketService = inject(WebSocketService);
-  private store = inject(Store<InstanceState>); // Use InstanceState for the store type
+  private store = inject(Store<InstanceState>);
   private jwtService = inject(JwtService);
 
-  // --- HTTP Effects for Initiating Operations ---
   launchInstance$ = createEffect(() =>
     this.actions$.pipe(
       ofType(InstanceActions.launchInstance),
-      // ✅ MOVED TAP HERE: Cleanup before starting the new operation
-      tap((action) => { // action here is launchInstance
-        console.log('🚀 Preparing for new instance launch - clearing stale state FIRST. RoomId:', action.roomId, 'UserId:', action.userId);
-        localStorage.removeItem('currentOperationId');
-        this.webSocketService.disconnect();
-        // The reducer for launchInstance already resets the main instance state.
-      }),
-      exhaustMap((action) => // action is still launchInstance
+      exhaustMap((action) =>
         this.instanceService.createInstance(action.roomId, action.userId).pipe(
-          // The original tap for logging/debugging the service call can remain or be removed if not needed.
-          // tap(() => {
-          //   console.log('🚀 Instance service createInstance called. Clearing stale state (if any was missed).');
-          //   localStorage.removeItem('currentOperationId');
-          //   this.webSocketService.disconnect();
-          // }),
           map((response: InstanceOperationStarted) =>
-            InstanceActions.operationAccepted({ response, roomId: action.roomId, userId: action.userId })
+            InstanceActions.operationAccepted({
+              response,
+              roomId: action.roomId,
+              userId: action.userId,
+            })
           ),
           catchError((error) =>
-            of(InstanceActions.operationHTTPFailure({
+            of(
+              InstanceActions.operationHTTPFailure({
                 error: error.message || 'Failed to launch instance',
                 operationType: 'CREATE',
-                roomId: action.roomId
-            }))
+                roomId: action.roomId,
+              })
+            )
           )
         )
       )
@@ -69,17 +50,23 @@ export class InstanceEffects {
     this.actions$.pipe(
       ofType(InstanceActions.startInstance),
       exhaustMap((action) =>
-        this.instanceService.startInstance(action.instanceId).pipe( // Pass only instanceId
+        this.instanceService.startInstance(action.instanceId).pipe(
           map((response: InstanceOperationStarted) =>
-            InstanceActions.operationAccepted({ response, roomId: action.roomId, userId: action.userId })
+            InstanceActions.operationAccepted({
+              response,
+              roomId: action.roomId,
+              userId: action.userId,
+            })
           ),
           catchError((error) =>
-            of(InstanceActions.operationHTTPFailure({
+            of(
+              InstanceActions.operationHTTPFailure({
                 error: error.message || 'Failed to start instance',
                 operationType: 'START',
                 instanceId: action.instanceId,
-                roomId: action.roomId
-            }))
+                roomId: action.roomId,
+              })
+            )
           )
         )
       )
@@ -90,17 +77,23 @@ export class InstanceEffects {
     this.actions$.pipe(
       ofType(InstanceActions.stopInstance),
       exhaustMap((action) =>
-        this.instanceService.stopInstance(action.instanceId).pipe( // Pass only instanceId
+        this.instanceService.stopInstance(action.instanceId).pipe(
           map((response: InstanceOperationStarted) =>
-            InstanceActions.operationAccepted({ response, roomId: action.roomId, userId: action.userId })
+            InstanceActions.operationAccepted({
+              response,
+              roomId: action.roomId,
+              userId: action.userId,
+            })
           ),
           catchError((error) =>
-            of(InstanceActions.operationHTTPFailure({
+            of(
+              InstanceActions.operationHTTPFailure({
                 error: error.message || 'Failed to stop instance',
                 operationType: 'STOP',
                 instanceId: action.instanceId,
-                roomId: action.roomId
-            }))
+                roomId: action.roomId,
+              })
+            )
           )
         )
       )
@@ -108,142 +101,101 @@ export class InstanceEffects {
   );
 
   terminateInstance$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(InstanceActions.terminateInstance),
-      exhaustMap((action) =>
-        this.instanceService.terminateInstance(action.instanceId).pipe( // Pass only instanceId
-          map((response: InstanceOperationStarted) =>
-            InstanceActions.operationAccepted({ response, roomId: action.roomId, userId: action.userId })
-          ),
-          catchError((error) =>
-            of(InstanceActions.operationHTTPFailure({
-                error: error.message || 'Failed to terminate instance',
-                operationType: 'TERMINATE',
-                instanceId: action.instanceId,
-                roomId: action.roomId
-            }))
+      this.actions$.pipe(
+        ofType(InstanceActions.terminateInstance),
+        exhaustMap((action) =>
+          this.instanceService.terminateInstance(action.instanceId).pipe(
+            map((response: InstanceOperationStarted) =>
+              InstanceActions.operationAccepted({
+                response,
+                roomId: action.roomId,
+                userId: action.userId,
+             })
+            ),
+            catchError((error) =>
+              of(
+                InstanceActions.operationHTTPFailure({
+                  error: error.message || 'Failed to terminate instance',
+                  operationType: 'TERMINATE',
+                  instanceId: action.instanceId,
+                  roomId: action.roomId,
+                })
+              )
+            )
           )
         )
       )
+  );
+  // this effect only listens for the operationAccepted action and then connects to the WebSocket.
+  connectWebSocket$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(InstanceActions.operationAccepted),
+        filter((action) => !!action.userId && !!action.response.operationId), // only let pass actions that have user id and operation id
+        tap((action) => {
+          this.webSocketService.connect(action.userId);
+          localStorage.setItem('currentOperationId',action.response.operationId);
+        })
+      ),
+    { dispatch: false }
+  );
+
+  // we disconnect when the operation is completed or failed
+  disconnectWebSocket$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(
+          InstanceActions.clearInstanceState,
+          InstanceActions.operationHTTPFailure,
+          InstanceActions.instanceUpdateReceived
+        ),
+        withLatestFrom(this.store.select(selectCurrentOperationId)),
+        filter(([action, operationId]) => {
+          if (!operationId) return false;
+
+          if (action.type === InstanceActions.instanceUpdateReceived.type) {
+            const update = action.update;
+            const isComplete = 
+              (update.status === 'RUNNING' && ['CREATE', 'START'].includes(update.operationType)) ||
+              (update.status === 'STOPPED' && update.operationType === 'STOP') ||
+              (update.status === 'TERMINATED' && update.operationType === 'TERMINATE') ||
+              update.status === 'FAILED'; 
+            return isComplete;
+          } 
+         return true;
+        }),
+        tap(([action, operationId]) => {
+            console.log('🔌 Disconnecting WebSocket for operation:', operationId);
+            this.webSocketService.disconnect();
+            localStorage.removeItem('currentOperationId');
+        })
+      ),
+    { dispatch: false }
+  );
+
+  // this Effect handles incoming WebSocket messages
+  webSocketInstanceUpdates$ = createEffect(() =>
+    this.webSocketService.messages$.pipe(
+      withLatestFrom(this.store.select(selectCurrentOperationId)),
+      filter(([update, currentOpIdInState]) => { // here we only let pass updates that are related to an active operation from this client.
+        if (!currentOpIdInState) {
+          console.warn('🚫 WS Update: No current operation ID in state. Ignoring message.',update);
+          return false;
+        }
+        if (!update || !update.operationId) {
+          console.warn('🚫 WS Update: Received invalid message structure.',update);
+          return false;
+        }
+        return true;
+      }),
+      map(([update, _currentOpIdInState]) => {
+       if (update.status === 'TERMINATED') { return InstanceActions.clearInstanceState(); }
+        return InstanceActions.instanceUpdateReceived({ update });
+      }),
+      catchError((error) => {
+        console.error('❌ Error in WebSocket messages stream:', error);
+        return EMPTY;
+      })
     )
   );
-
-  // --- WebSocket Connection Management Effects ---
-  connectWebSocket$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(InstanceActions.operationAccepted),
-      // Ensure there's a userId and operationId from the accepted operation
-      filter(action => !!action.userId && !!action.response.operationId),
-      debounceTime(100),
-      tap((action) => {
-        console.log('🔌 Connecting WebSocket for operation:', action.response.operationId);
-        this.webSocketService.disconnect();
-
-        // The backend topic is /user/{userId}/queue/instance-updates
-        // The WebSocketService connect method needs the userId for this topic
-        // and operationId to potentially filter messages if the service implements that,
-        // or for the action InstanceActions.webSocketConnectionOpened.
-      setTimeout(() => {
-        this.webSocketService.connect(action.userId, action.response.operationId);
-        this.store.dispatch(InstanceActions.connectWebSocket({ 
-          userId: action.userId, 
-          operationId: action.response.operationId 
-        }));
-      }, 100);
-      })
-    ),
-    { dispatch: false }
-  );
-
-  // Listen to WebSocketService connection status and dispatch NgRx actions
-  // This assumes WebSocketService emits events for open, close, error
-  // For simplicity, we'll assume connect() in tap above is enough to trigger listening
-  // and webSocketMessages$ below handles incoming messages.
-  // A more robust solution would have WebSocketService emit status events.
-  // For now, we'll dispatch open/close from message handling.
-
-  disconnectWebSocket$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(
-        InstanceActions.clearInstanceState,
-        InstanceActions.operationHTTPFailure,
-        InstanceActions.resetInstanceState // Add this - disconnect after termination
-      ),
-      withLatestFrom(this.store.select(selectCurrentOperationId)),
-      filter(([_action, operationId]) => !!operationId),
-      tap(([_action, operationId]) => {
-        if (operationId) {
-          this.webSocketService.disconnect();
-          this.store.dispatch(InstanceActions.webSocketConnectionClosed({ operationId }));
-        }
-      })
-    ),
-    { dispatch: false }
-  );
-
-
-  // --- WebSocket Message Handling Effect ---
-  webSocketInstanceUpdates$ = createEffect(() =>
-  this.webSocketService.messages$.pipe(
-    withLatestFrom(
-      this.store.select(selectCurrentOperationId),
-      this.store.select(selectIsWsConnected)
-    ),
-    // ✅ ADD DEBUGGING
-    tap(([update, currentOpIdInState, isWsConnected]) => {
-      console.log('🔍 WebSocket update received:', {
-        messageOpId: update.operationId,
-        stateOpId: currentOpIdInState,
-        messageType: update.operationType,
-        messageStatus: update.status,
-        isConnected: isWsConnected
-      });
-    }),
-    filter(([update, currentOpIdInState, isWsConnected]) => {
-      if (!currentOpIdInState) {
-        console.warn('🚫 WS Update: No current operation ID in state. Ignoring message.', update);
-        return false;
-      }
-      if (!update || !update.operationId) {
-        console.warn('🚫 WS Update: Received invalid message structure.', update);
-        return false;
-      }
-      if (update.operationId !== currentOpIdInState) {
-        console.warn(`🚫 WS Update: Mismatched operation ID. State: ${currentOpIdInState}, Msg: ${update.operationId}. Ignoring.`, update);
-        return false;
-      }
-      return true;
-    }),
-    // ✅ ADD CIRCUIT BREAKER
-    distinctUntilChanged(([prevUpdate], [currUpdate]) => 
-      prevUpdate.operationId === currUpdate.operationId && 
-      prevUpdate.status === currUpdate.status
-    ),
-    map(([update, _currentOpIdInState, isWsConnected]) => {
-      if (!isWsConnected) {
-        this.store.dispatch(InstanceActions.webSocketConnectionOpened({ operationId: update.operationId }));
-      }
-      
-      // ✅ Add logging before dispatch
-      console.log('🎯 Dispatching action for WebSocket update:', update);
-      
-      if (update.operationType === 'TERMINATE') {
-        if (update.status === 'TERMINATING') {
-          return InstanceActions.instanceUpdateReceived({ update });
-        } else if (update.status === 'TERMINATED') {
-          console.log('🏁 Final TERMINATED status - resetting state');
-          return InstanceActions.resetInstanceState();
-        }
-      }
-      
-      return InstanceActions.instanceUpdateReceived({ update });
-    }),
-    catchError(error => {
-      console.error('❌ Error in WebSocket messages stream:', error);
-      return EMPTY;
-    })
-  )
-);
 
   // --- Data Loading Effect ---
   loadInstanceDetails$ = createEffect(() =>
@@ -255,96 +207,89 @@ export class InstanceEffects {
         if (!userId) {
           console.warn('No userId available for loading instance details');
           return of(
-            InstanceActions.loadInstanceDetailsFailure({ 
-              error: 'User ID not available' 
+            InstanceActions.loadInstanceDetailsFailure({
+              error: 'User ID not available',
             })
           );
         }
 
-        return this.instanceService.getInstanceForRoom(action.roomId, userId.toString()).pipe(
-          switchMap(instanceData => {
-            const actions = [];
-            // Since the backend does not return an operationId,
-            // check localStorage for a persisted operationId.
-            const storedOpId = localStorage.getItem('currentOperationId');
-            if (storedOpId) {
+        return this.instanceService
+          .getInstanceForRoom(action.roomId, userId.toString())
+          .pipe(
+            switchMap((instanceData) => {
+              const actions = [];
+              // Since the backend does not return an operationId,
+              // check localStorage for a persisted operationId.
+              const storedOpId = localStorage.getItem('currentOperationId');
+              if (storedOpId) {
+                actions.push(
+                  InstanceActions.operationAccepted({
+                    response: { operationId: storedOpId } as any,
+                    roomId: action.roomId,
+                    userId: userId.toString(),
+                  })
+                );
+              }
+              // Always dispatch the load success action.
               actions.push(
-                InstanceActions.operationAccepted({
-                  response: { operationId: storedOpId } as any,
-                  roomId: action.roomId,
-                  userId: userId.toString() 
+                InstanceActions.loadInstanceDetailsSuccess({
+                  partialState: instanceData,
                 })
               );
-            }
-            // Always dispatch the load success action.
-            actions.push(
-              InstanceActions.loadInstanceDetailsSuccess({ partialState: instanceData })
-            );
-            return actions;
-          }),
-          catchError(error =>
-            of(
-              InstanceActions.loadInstanceDetailsFailure({
-                error: error.message || 'Failed to load instance details'
-              })
+              return actions;
+            }),
+            catchError((error) =>
+              of(
+                InstanceActions.loadInstanceDetailsFailure({
+                  error: error.message || 'Failed to load instance details',
+                })
+              )
             )
-          )
-        );
+          );
       })
     )
   );
 
   // --- New Effects for Termination Before Leave ---
   terminateInstanceBeforeLeave$ = createEffect(() =>
-  this.actions$.pipe(
-    ofType(InstanceActions.terminateInstanceBeforeLeave),
-    exhaustMap((action) =>
-      this.instanceService.terminateInstance(action.instanceId).pipe(
-        map((response: InstanceOperationStarted) =>
-          InstanceActions.operationAccepted({ 
-            response, 
-            roomId: action.roomId, 
-            userId: action.userId 
-          })
-        ),
-        // Add tap here to dispatch leave room action
-        tap((operationAcceptedAction) => {
-          // Dispatch leave room action immediately after termination is accepted
-          this.store.dispatch(LeaveRoomActions.leaveRoom({ 
-            userId: +action.userId, 
-            roomId: +action.roomId 
-          }));
-        }),
-        catchError((error) =>
-          of(InstanceActions.operationHTTPFailure({
-            error: error.message || 'Failed to terminate instance before leaving',
-            operationType: 'TERMINATE',
-            instanceId: action.instanceId,
-            roomId: action.roomId
-          }))
+    this.actions$.pipe(
+      ofType(InstanceActions.terminateInstanceBeforeLeave),
+      exhaustMap((action) =>
+        this.instanceService.terminateInstance(action.instanceId).pipe(
+          map((response: InstanceOperationStarted) =>
+            InstanceActions.operationAccepted({
+              response,
+              roomId: action.roomId,
+              userId: action.userId,
+            })
+          ),
+          // Add tap here to dispatch leave room action
+          tap((operationAcceptedAction) => {
+            // Dispatch leave room action immediately after termination is accepted
+            this.store.dispatch(
+              LeaveRoomActions.leaveRoom({
+                userId: +action.userId,
+                roomId: +action.roomId,
+              })
+            );
+          }),
+          catchError((error) =>
+            of(
+              InstanceActions.operationHTTPFailure({
+                error:
+                  error.message ||
+                  'Failed to terminate instance before leaving',
+                operationType: 'TERMINATE',
+                instanceId: action.instanceId,
+                roomId: action.roomId,
+              })
+            )
+          )
         )
       )
     )
-  )
-  )
-
-    persistOperationId$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(InstanceActions.operationAccepted),
-      tap(action => {
-        localStorage.setItem('currentOperationId', action.response.operationId);
-      })
-    ),
-    { dispatch: false }
-  );
-
-    clearOperationId$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(InstanceActions.resetInstanceState, InstanceActions.clearInstanceState, InstanceActions.operationHTTPFailure),
-      tap(() => {
-        localStorage.removeItem('currentOperationId');
-      })
-    ),
-    { dispatch: false }
   );
 }
+
+
+// A more sophisticated approach would be to modify your client-side code to establish the WebSocket connection before making the HTTP request. Your NgRx effect could first ensure the WebSocket connection is ready, then make the HTTP request, and then subscribe to the operation-specific destination using the operation ID from the response. This eliminates the race condition entirely because the subscription is guaranteed to exist before any messages are sent.
